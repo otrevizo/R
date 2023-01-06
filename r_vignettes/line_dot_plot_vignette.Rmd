@@ -1,0 +1,63 @@
+---
+title: "line and dot plot vignette"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+# library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Line / dot plot of a random variable 
+
+The mean of a sample will be used as a random variable and standard deviation. The size of the sample will impact the s.d.
+
+```{r line_dot, eval=TRUE}
+# different sample sizes to try:
+sample.sizes <- c(3, 10, 50, 100, 500, 1000)
+
+# vector to save the sd of the *distribution of the means* per sample size.
+mean.sds <- numeric(0) 
+
+# i will use a matrix 1000 rows x 6 columns to store my sample means.
+sample.mean <- matrix(1:6000, ncol=6, nrow=1000)
+
+# Two nested loops: One for the columns and one for the rows. 
+# Each sample size corresponds to a column in the matrix.
+
+# Outer loop goes through each sample size, one matrix column at a time.
+for (j in 1:length(sample.sizes)) {
+  
+  # Inner loop draws 1000 samples.
+  # Get the mean and put it in the matrix rows
+  for ( i in 1:1000 ) {
+    sample.mean[i,j] <- mean(rnorm(sample.sizes[j]))
+  }
+  # Obtain standard distribution of the sample mean.
+  # Place the sd into vector mean.sds[j]
+  mean.sds[j] <- sd(sample.mean[,j])
+}
+
+plot(sample.sizes,
+     mean.sds, 
+     main = "SEM vs Sample Size", 
+     xlab = "Sample Size", 
+     ylab =  "SEM",
+     pch=19)
+
+# Assuming sigma = 1, these are theoretical connections (line by line)
+lines(sample.sizes, 1/sqrt(sample.sizes), col='blue')
+
+# This next line is there just for kicks... to see what happens
+lines(sample.sizes, c(0.5, 0.25, 0.5, 0.25, 0.5, 0.25), col='red')
+```
+
+The first argument in plot() is a vector of $x$-coordinates, the second argument is a vector of corresponding $y$-coordinates, and the function adds each data point $(x_i, y_i)$ to the plot. 
+
+The function `lines()` is a wrapper for the same function `plot()`. It draws lines connecting the data points. The data points we specify for this function are calculated according to the theoretical prediction: it can be shown that when samples of size $N$ are repeatedly drawn from a distribution with standard deviation $\sigma$, the standard error of the mean (i.e. the standard deviation of the *distribution of the means* of such samples) is $SEM=\frac{\sigma}{\sqrt{N}}$. 
+
+
+
