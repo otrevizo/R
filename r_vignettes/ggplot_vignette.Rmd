@@ -1,0 +1,145 @@
+---
+title: "ggplot vignette"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Histograms (hist function)
+
+Plot histograms of three independent samples standard normal distribution, zero mean, unit variance, size 50.
+
+```{r simple,fig.width=9,fig.height=3}
+old.par <- par(mfrow=c(1, 3),ps=16)
+for ( iTry in 1:3 ) {
+  x <- rnorm(50, mean=0, sd=1)
+  hist(x, breaks=10, col='lightgreen', main=paste("Average =",signif(mean(x), 3)))
+}
+par(old.par)
+```
+
+# Histograms (ggplot)
+
+
+```{r simpleggplot,fig.width=9,fig.height=3}
+
+ggplot(transform(data.frame(x=rnorm(150), y=rep(1:3,50)), y=paste("Average =", signif(unlist(lapply(unstack(data.frame(x,y)),mean))[y],3))),
+       aes(x=x)) + 
+  geom_histogram(binwidth=0.5, colour="black",fill='lightgreen') +
+  facet_wrap(~y)
+```
+
+
+# Plot changing mean (plot())
+
+Look at the mean of a sample as a random variable. Characterize the distribution of those sample means with its standard deviation. A larger sample, then its mean is expected to be closer, at least on average, to the true mean of the underlying population the sample was drawn from.
+
+```{r sem, eval=TRUE}
+# different sample sizes to try:
+sample.sizes <- c(3, 10, 50, 100, 500, 1000)
+
+# vector to save the sd of the *distribution of the means* per sample size.
+mean.sds <- numeric(0) 
+
+# i will use a matrix 1000 rows x 6 columns to store my sample means.
+sample.mean <- matrix(1:6000, ncol=6, nrow=1000)
+
+# Two nested loops: One for the columns and one for the rows. 
+# Each sample size corresponds to a column in the matrix.
+
+# Outer loop goes through each sample size, one matrix column at a time.
+for (j in 1:length(sample.sizes)) {
+  
+  # Inner loop draws 1000 samples.
+  # Get the mean and put it in the matrix rows
+  for ( i in 1:1000 ) {
+    sample.mean[i,j] <- mean(rnorm(sample.sizes[j]))
+  }
+  # Obtain standard distribution of the sample mean.
+  # Place the sd into vector mean.sds[j]
+  mean.sds[j] <- sd(sample.mean[,j])
+}
+
+plot(sample.sizes,
+     mean.sds, 
+     main = "SEM vs Sample Size", 
+     xlab = "Sample Size", 
+     ylab =  "SEM",
+     pch=19)
+
+# Assuming sigma = 1
+lines(sample.sizes, 1/sqrt(sample.sizes), col='blue')
+```
+
+In `plot()` function: the first argument is the vector of $x$-coordinates, the second argument is the vector of corresponding $y$-coordinates, and the function adds each data point $(x_i, y_i)$ to the plot. 
+
+The function `lines()` is a wrapper for the same function `plot()`. It adds to the plot. It draws lines connecting the data points. The data points we specify for this function are calculated according to the theoretical prediction: it can be shown that when samples of size $N$ are repeatedly drawn from a distribution with standard deviation $\sigma$, the standard error of the mean (i.e. the standard deviation of the *distribution of the means* of such samples) is $SEM=\frac{\sigma}{\sqrt{N}}$. 
+
+
+# Central Limit Theorem (CLT)
+
+The distribution of a sum of $N$ independent, identically distributed (i.i.d.) random variables $X_i$ has normal distribution in the limit of large $N$, regardless of the distribution of the variables $X_i$. 
+
+Let us now calculate the sum $s=\sum_1^Nx_i=x_1+\ldots+x_N$ and call *this* an "experiment". 
+Clearly, $s$ is a realization of some random variable: if we repeat the experiment (i.e. draw $N$ random values from the distribution again) we will get a completely new realization $x_1, \ldots, x_N$ and the sum will thus take a new value too! Using our notations, we can also describe the situation outlined above as
+
+$$S=X_1+X_2+\ldots+X_N, \;\; X_i \;\; \text{i.i.d.}$$
+
+
+```{r clt,eval=TRUE}
+# N is the number of i.i.d. variables X that I am going to sum.
+# I will repeat my analysis using different values of N.
+N <- c(1, 1000, 30)
+N.names <- c("Small", "Large", "Intermediate")
+
+# The number of times we will repeat the experiment, number s values.
+n.repeats <- 1000
+
+# The following code is needed to build three histograms in a row at the end.
+old.par <- par(mfrow=c(1,3),ps=16)
+
+# I will use a matrix structure to capture the s values for the entire analysis.
+# A matrix data structure gives me a chance to better study the results.
+# The number of columns is the number of N's that I will use: length(N).
+# The number of rows is the number of experiments per s = n.repeats.
+# Think of each column as if it were a vector for s.values.
+# Initiate the the matrix. The experiments will fill in the matrix with values.
+s.values <- matrix(0, ncol = length(N), nrow = n.repeats)
+
+# Outer Loop: Goes through the matrix columns, one column for each value of N.
+# Call them "j" columns.
+for (j in 1:length(N)) {
+  
+  # Inner Loop: Goes through the matrix rows, one column at a time.
+  # Create s.values for each row 1 to n.repeats.
+  # Call them "i.exp" rows.
+  for (i.exp in 1:n.repeats){
+    
+    # Exponential distribution using default paramter rate = 1
+    # Expected value = 1/rate, and variance = 1 / rate^2
+    # Therefore in these simulations the expected value = 1, var = 1, sd = 1
+    sampling.ftn <- c("Exponential D.")
+    x <- rexp(N[j])
+
+    
+    # Now sum all the x values drawn and create the next s[i.exp, j].
+    # Draw column by column to fill the matrix (n.repeats x length(N))
+    s.values[i.exp,j] = sum(x)
+  }
+  
+  # Build the histogram. I will have 
+  hist(s.values[,j], breaks=10, col='lightgreen',
+       main=paste(sampling.ftn, "N=", N[j]), 
+       xlab=paste("S"),
+       ylab=paste("Frequency of S"))
+  
+}
+```
+
+
