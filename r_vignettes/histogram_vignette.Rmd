@@ -1,5 +1,5 @@
 ---
-title: "ggplot vignette"
+title: "histograms vignette"
 output:
   html_document:
     toc: true
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Histograms (hist function)
 
-```{r simple,fig.width=9,fig.height=3}
+```{r hist, fig.width=9,fig.height=3}
 ##
 #
 # Plot three histograms
@@ -64,7 +64,7 @@ ggplot(sample_df, aes(x=x)) +
 ## Iterative example
 
 
-```{r simpleggplot,fig.width=9,fig.height=3}
+```{r itrerativeggplot,fig.width=9,fig.height=3}
 ##
 #
 # Now use ggplot()
@@ -83,53 +83,6 @@ ggplot(sample_xform, aes(x=x)) +
 ```
 
 
-
-# Plot changing mean (plot())
-
-Look at the mean of a sample as a random variable. Characterize the distribution of those sample means with its standard deviation. A larger sample, then its mean is expected to be closer, at least on average, to the true mean of the underlying population the sample was drawn from.
-
-```{r sem, eval=TRUE}
-# different sample sizes to try:
-sample.sizes <- c(3, 10, 50, 100, 500, 1000)
-
-# vector to save the sd of the *distribution of the means* per sample size.
-mean.sds <- numeric(0) 
-
-# i will use a matrix 1000 rows x 6 columns to store my sample means.
-sample.mean <- matrix(1:6000, ncol=6, nrow=1000)
-
-# Two nested loops: One for the columns and one for the rows. 
-# Each sample size corresponds to a column in the matrix.
-
-# Outer loop goes through each sample size, one matrix column at a time.
-for (j in 1:length(sample.sizes)) {
-  
-  # Inner loop draws 1000 samples.
-  # Get the mean and put it in the matrix rows
-  for ( i in 1:1000 ) {
-    sample.mean[i,j] <- mean(rnorm(sample.sizes[j]))
-  }
-  # Obtain standard distribution of the sample mean.
-  # Place the sd into vector mean.sds[j]
-  mean.sds[j] <- sd(sample.mean[,j])
-}
-
-plot(sample.sizes,
-     mean.sds, 
-     main = "SEM vs Sample Size", 
-     xlab = "Sample Size", 
-     ylab =  "SEM",
-     pch=19)
-
-# Assuming sigma = 1
-lines(sample.sizes, 1/sqrt(sample.sizes), col='blue')
-```
-
-In `plot()` function: the first argument is the vector of $x$-coordinates, the second argument is the vector of corresponding $y$-coordinates, and the function adds each data point $(x_i, y_i)$ to the plot. 
-
-The function `lines()` is a wrapper for the same function `plot()`. It adds to the plot. It draws lines connecting the data points. The data points we specify for this function are calculated according to the theoretical prediction: it can be shown that when samples of size $N$ are repeatedly drawn from a distribution with standard deviation $\sigma$, the standard error of the mean (i.e. the standard deviation of the *distribution of the means* of such samples) is $SEM=\frac{\sigma}{\sqrt{N}}$. 
-
-
 # Central Limit Theorem (CLT)
 
 The distribution of a sum of $N$ independent, identically distributed (i.i.d.) random variables $X_i$ has normal distribution in the limit of large $N$, regardless of the distribution of the variables $X_i$. 
@@ -143,8 +96,8 @@ $$S=X_1+X_2+\ldots+X_N, \;\; X_i \;\; \text{i.i.d.}$$
 ```{r clt,eval=TRUE}
 # N is the number of i.i.d. variables X that I am going to sum.
 # I will repeat my analysis using different values of N.
-N <- c(1, 1000, 30)
-N.names <- c("Small", "Large", "Intermediate")
+N <- c(1, 30, 1000)
+N.names <- c("Small", "Intermediate", "Large")
 
 # The number of times we will repeat the experiment, number s values.
 n.repeats <- 1000
