@@ -1,0 +1,455 @@
+---
+title: 'R Intro'
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=TRUE}
+# library(ISLR)
+# library(RColorBrewer)
+# library(reshape2)
+# library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data types
+
+* Vector, 
+* Matrix, 
+* Array, 
+* List, 
+* Data Frame
+
+## Vector
+
+```{r}
+##
+#
+# Vector
+#
+# Atomic types:
+# logical, integer, numeric, complex, character
+#
+# All the values must have a consistent data type within a vector
+#
+##
+
+vtr_logical = c(TRUE, TRUE, FALSE, FALSE, TRUE)
+vtr_logical
+
+vtr_integer = c(256L, 1024L, 16L)
+vtr_integer
+
+vtr_numeric = c(2.718, 3.1416, 0.7071)
+vtr_numeric
+
+vtr_char = c("hello, world", "now i'm here", "now i'm there")
+vtr_char
+
+```
+
+## Operations on vectors
+
+```{r}
+##
+#
+# Let's play with vectors (it is like NumPy arrays)
+#
+##
+
+a <- c(1, 2, 3)
+
+a + 1
+
+a / 2
+
+a * 2
+
+b <- c(4,5,6)
+
+a + b
+
+a - b
+
+
+```
+## Plot vectors
+
+The plot function takes two vectors, one for X values and one for Y values, and draws a graph of them
+
+
+```{r}
+
+x <- seq(1, 20, 0.1)
+y <- sin(x)
+
+plot(x, y)
+
+```
+
+## Another plot example
+
+```{r}
+
+values <- -10:10
+absolutes <- abs(values)
+
+plot(values, absolutes)
+
+```
+
+## NA values
+
+```{r}
+
+a <- c(1, 3, NA, 7, 9)
+
+# Here we will get a NA
+sum(a)
+
+# Try calling sum again, with na.rm set to TRUE:
+sum(a, na.rm=TRUE)
+
+```
+# Matrix
+
+```{r}
+
+#
+# Matrix
+#
+
+mtx1 = matrix(c(1:25), 5, 5)
+mtx1
+
+mtx2 = matrix(c(1:6), 2, 3)
+mtx2
+
+```
+
+## Array
+
+```{r}
+#
+# Array
+#
+
+# This is an array of matrices
+
+# Six values (1:6), then 2 rows x 3 columns matrices, 
+# Then each matrix is identified by x, y (4x2), that is 8 of them
+arr1 = array(c(1:6), dim=c(2, 3, 4, 2))
+arr1
+
+```
+
+# Lists
+
+```{r}
+#
+# Lists
+#
+
+list1 = list(vtr_char, vtr_integer, vtr_logical, vtr_numeric)
+list1
+
+```
+
+## Data Frame
+
+```{r}
+#
+# Data Frame
+#
+
+vtr_char_names = c("Jay", "Julie", "John")
+
+data.frame(vtr_char_names, vtr_integer, vtr_numeric, vtr_char)
+
+# airquality is a table already built in. let's use it
+data.frame(airquality)
+
+
+
+```
+
+
+# Vectorization / time stamps
+
+```{r vectperf}
+##
+#
+# See how long it takes to do something
+#
+##
+
+# Create some data
+
+# Assign a matrix to variable x. Fill with normally distr random numbers
+# Make it 10 columns by 50000 rows
+x <- matrix(rnorm(50000*10), ncol=10)
+
+# Make y numeric (coerse)
+y <- numeric()
+
+# Time stamp
+pt1 <- proc.time()
+
+# Iterate
+for ( i in 1:dim(x)[1] ) y[i] <- mean(x[i,])
+
+# Time stamp and then calculate how long it tok between pt1 and pt2
+pt2 <- proc.time(); pt2-pt1; y[1:3]
+
+# apply() is like Python lambda. Here, calculate the mean
+y <- apply(x, 1, mean)
+
+# Stamp time again, and measure the difference
+pt3 <- proc.time(); pt3 - pt2; y[1:3]
+
+y <- rowMeans(x)
+proc.time() - pt3; y[1:3]
+```
+
+# Operators
+
+```{r}
+##
+#
+# Operators
+#
+# Arithmetic, Assignment, Relational, Logical
+#
+
+# Artithmetic
+#
+cat('3+5.5 = ', 3+5.5, '\n')
+print(15/3)
+print(2^7)
+print(22/7)
+
+# modular division
+print(22%%7)
+
+# flow division rounds up to previous whole number
+print(22%/%7)
+
+# Relational opertors
+# (compares)
+#
+
+var1 = 5
+var2 = 12
+print(var1 > var2) #the result is FALSE
+print(var1 == var2) #the result is FALSE
+print(var1 != var2) #the result is TRUE
+print(var1 < var2) #the result is TRUE
+
+# Assignment operators = or <- or -> left or right either way
+#
+# examples of assigning a value to x
+#
+
+x <- 15
+x
+x <- 4
+x
+x = 8
+x
+25 -> x
+x
+
+# Logical operators
+#
+# &, |, !
+
+vtr2_logical = c(TRUE, FALSE,TRUE, FALSE, TRUE)
+vtr3_logical = c(TRUE, TRUE, TRUE, TRUE, TRUE)
+vtr4_logical = c(FALSE, FALSE, FALSE, FALSE, FALSE)
+
+print(vtr2_logical & vtr3_logical)
+print(vtr2_logical | vtr3_logical)
+print(!vtr2_logical)
+print(vtr2_logical && vtr3_logical)
+print(vtr2_logical || vtr3_logical)
+
+
+```
+
+# Conditional statements
+
+```{r}
+##
+#
+# Conditional Statemets
+#
+##
+
+#
+# if, else if
+#
+
+x = 3
+if(x==5)
+{
+  print("x is equal to 5")
+} else if(x > 5)
+{
+  print("x is greater than 5")
+} else if(x<5)
+{
+  print("x is smaller than 5")  
+}
+
+
+#
+# Switch Case Statement
+#
+
+x = 4   # it will look for the xth item
+switch(x,
+'1' = print("It's one"),
+'2' = print("It's two"),
+'3' = print("It's three"),
+'4' = print("It's four"),
+'5' = print("It's five"),
+'6' = print("It's six"),
+'7' = print("It's seven"),
+'8' = print("It's eight"),
+'9' = print("It's nine"),
+'?' = print("I don't know, what is it?")
+)
+
+#
+# Repeat Loop
+#
+# repeat{}
+
+i = 0
+repeat
+{
+  print(i)
+  i = i + 1
+  if(i > 9)
+  {
+    break
+  }
+}
+
+#
+# While Loop
+#
+
+i = 0
+while(i < 10)
+{
+  print(i)
+  i = i + 1
+}
+
+#
+# For Loop
+# When you know how many time the loop will execute
+# 
+
+for (i in 0:9)
+{
+  print(i)
+}
+
+
+```
+
+# Strings
+
+```{r}
+##
+#
+# String
+#
+##
+
+str1 <- "How're you doing?"
+print(str1)
+nchar(str1)
+
+str2 <- "Doing fine."
+print(str2)
+nchar(str2)
+
+str3 = paste(str1, str2)
+print(str3)
+nchar(str3)
+
+
+```
+
+# Functions
+
+```{r}
+##
+#
+# Functions
+#
+# Predefined and User Define
+#
+##
+
+ftn1 <- function(x)
+{
+  x2 = x^2
+  print(x)
+  print(x2)
+}
+
+ftn1(3)
+
+
+```
+
+# Visualization
+
+```{r}
+
+##
+#
+# Visualization
+#
+# Pie Charts, Bar Chart, Boxplot, Histogram, Line Graph, Scatterplot
+#
+##
+
+pie(vtr_numeric, vtr_char_names)   # very plain piechart
+
+pie(vtr_numeric, vtr_char_names, col = rainbow(length(vtr_numeric)))
+
+barplot(vtr_numeric)
+
+# mtcars is a built in dataset
+
+boxplot(mpg ~ cyl, data = mtcars, xlab = "Number of Cylinders", 
+        ylab = "Miles per Galon", main = "Milage Data",
+        col=c("red", "yellow", "blue"))
+
+vtr5_numberic = c(1,3,5,2,8,8,5,6,6,5,2,9,2,9,8)
+
+hist(vtr5_numberic)
+
+length(vtr5_numberic)
+vtr6_numberic = c(1:length(vtr5_numberic))
+vtr6_numberic
+
+plot(vtr6_numberic, vtr5_numberic)
+
+```
+
+
+# Load data -- Read CSV
+
+```{r}
+
+df <- read.csv("../data/fifa_cleaned.csv")
+
+df
+```
