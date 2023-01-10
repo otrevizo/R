@@ -13,6 +13,28 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Basics
+
+Create chunck with Ctrl+Alt+I (Windows) Ctrl+Option+I (Mac)
+
+```{r}
+
+# Assign data to a variable
+
+a <- 8
+
+b <- 4
+
+a + b
+
+# Patterned data
+2:8
+1:7
+
+
+
+```
+
 # Data types
 
 * Vector, 
@@ -165,15 +187,40 @@ list1
 
 vtr_char_names = c("Jay", "Julie", "John")
 
+# Some vectors define in previos cells
 data.frame(vtr_char_names, vtr_integer, vtr_numeric, vtr_char)
 
-# airquality is a table already built in. let's use it
-data.frame(airquality)
+# Another dataframe
+grades <- c(90, 85, 92, 75, 88)
+students <- c('Joe', 'Mary', 'Gina', 'Vijay', 'Jay')
 
+st_data <- data.frame(students, grades)
+
+# To get the stucture of the data, the metadata
+str(st_data)
 
 
 ```
 
+# Built-in datasets
+
+```{r}
+
+data()
+head(iris)
+iris[2:4, 4:5]
+
+is = iris
+
+summary(is)
+
+# Standard deviation of a particular column
+sd(iris$Sepal.Length)
+
+# airquality is a table already built in. let's use it
+aq = data.frame(airquality)
+
+```
 
 # Vectorization / time stamps
 
@@ -444,6 +491,18 @@ plot(vtr6_numberic, vtr5_numberic)
 
 ```
 
+## pair plots
+
+```{r}
+
+is = data(iris)
+
+pairs(iris[,c(1:4)])
+```
+
+```{r}
+
+```
 
 # Load data -- Read CSV
 
@@ -453,3 +512,5 @@ df <- read.csv("../data/fifa_cleaned.csv")
 
 df
 ```
+
+
