@@ -358,28 +358,38 @@ display: none;
 <ul>
 <li><a href="#daag" id="toc-daag">DAAG</a>
 <ul>
+<li><a href="#datasets" id="toc-datasets">Datasets</a></li>
+<li><a href="#rainforest-example" id="toc-rainforest-example">Rainforest
+example</a>
+<ul>
 <li><a href="#looking-for-na-and-missing-data" id="toc-looking-for-na-and-missing-data">Looking for NA and missing
 data</a></li>
+<li><a href="#ignoring-na" id="toc-ignoring-na">Ignoring NA</a></li>
+</ul></li>
+<li><a href="#science-example" id="toc-science-example">Science
+example</a>
+<ul>
+<li><a href="#identify-rows-with-na" id="toc-identify-rows-with-na">Identify rows with NA</a></li>
+<li><a href="#save-dataset-without-na" id="toc-save-dataset-without-na">Save dataset without NA</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
 
 <div id="daag" class="section level1">
 <h1>DAAG</h1>
-<div id="looking-for-na-and-missing-data" class="section level2">
-<h2>Looking for NA and missing data</h2>
+<div id="datasets" class="section level2">
+<h2>Datasets</h2>
+<pre class="r"><code>data(package=&#39;DAAG&#39;)</code></pre>
+</div>
+<div id="rainforest-example" class="section level2">
+<h2>Rainforest example</h2>
+<div id="looking-for-na-and-missing-data" class="section level3">
+<h3>Looking for NA and missing data</h3>
 <p>Reference: Dr. Bharantendra <a href="https://www.youtube.com/watch?v=Q7gYkpSi8Nk&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=11" class="uri">https://www.youtube.com/watch?v=Q7gYkpSi8Nk&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=11</a></p>
 <pre class="r"><code>data(&#39;rainforest&#39;)
-str(rainforest)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    65 obs. of  7 variables:
-##  $ dbh    : num  6 23 20 23 24 5 5 8 10 8 ...
-##  $ wood   : num  NA 353 208 445 590 14 10 31 59 30 ...
-##  $ bark   : num  NA NA NA NA NA NA NA NA NA NA ...
-##  $ root   : num  6 135 NA NA NA 2 NA NA NA 6 ...
-##  $ rootsk : num  0.3 13 NA NA NA 2.4 NA NA NA 1 ...
-##  $ branch : num  NA 35 41 50 NA NA NA NA NA 4 ...
-##  $ species: Factor w/ 4 levels &quot;Acacia mabellae&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
-<pre class="r"><code>summary(rainforest)</code></pre>
+# str(rainforest)
+summary(rainforest)</code></pre>
 <pre><code>##       dbh             wood             bark             root       
 ##  Min.   : 4.00   Min.   :   3.0   Min.   :  8.00   Min.   :  2.00  
 ##  1st Qu.: 8.00   1st Qu.:  29.0   1st Qu.: 11.75   1st Qu.:  6.00  
@@ -396,6 +406,72 @@ str(rainforest)</code></pre>
 ##  3rd Qu.:13.000   3rd Qu.: 45.50                       
 ##  Max.   :24.000   Max.   :120.00                       
 ##  NA&#39;s   :52       NA&#39;s   :22</code></pre>
+<pre class="r"><code>dim(rainforest)</code></pre>
+<pre><code>## [1] 65  7</code></pre>
+<p>Notice the extra row with NA values. You will not be able to
+calculate the mean or the sd.</p>
+</div>
+<div id="ignoring-na" class="section level3">
+<h3>Ignoring NA</h3>
+<pre class="r"><code>mean(rainforest$wood, na.rm = TRUE)</code></pre>
+<pre><code>## [1] 265.3906</code></pre>
+</div>
+</div>
+<div id="science-example" class="section level2">
+<h2>Science example</h2>
+<pre class="r"><code># Load the data
+data(&#39;science&#39;)
+summary(science)</code></pre>
+<pre><code>##  State         PrivPub        school    class     sex           like      
+##  ACT:1336   private:452   36     :123   1:881   f   :691   Min.   :1.000  
+##  NSW:  49   public :933   16     : 94   2:347   m   :692   1st Qu.:4.000  
+##                           23     : 87   3: 88   NA&#39;s:  2   Median :5.000  
+##                           17     : 50   4: 69              Mean   :5.082  
+##                           31     : 50                      3rd Qu.:6.000  
+##                           3      : 49                      Max.   :8.000  
+##                           (Other):932                                     
+##      Class     
+##  17.1   :  50  
+##  36.2   :  44  
+##  21.1   :  42  
+##  36.1   :  37  
+##  32.1   :  34  
+##  25.1   :  31  
+##  (Other):1147</code></pre>
+<pre class="r"><code>dim(science)</code></pre>
+<pre><code>## [1] 1385    7</code></pre>
+<div id="identify-rows-with-na" class="section level3">
+<h3>Identify rows with NA</h3>
+<p>Use !complete.cases(dataset) which mean NOT complete cases, those
+with NA.</p>
+<pre class="r"><code>science[!complete.cases(science),]</code></pre>
+<pre><code>##     State PrivPub school class  sex like Class
+## 671   ACT  public     19     1 &lt;NA&gt;    5  19.1
+## 672   ACT  public     19     1 &lt;NA&gt;    5  19.1</code></pre>
+</div>
+<div id="save-dataset-without-na" class="section level3">
+<h3>Save dataset without NA</h3>
+<pre class="r"><code>science_wo_na &lt;- na.omit(science)
+summary(science_wo_na)</code></pre>
+<pre><code>##  State         PrivPub        school    class   sex          like      
+##  ACT:1334   private:452   36     :123   1:879   f:691   Min.   :1.000  
+##  NSW:  49   public :931   16     : 94   2:347   m:692   1st Qu.:4.000  
+##                           23     : 87   3: 88           Median :5.000  
+##                           17     : 50   4: 69           Mean   :5.082  
+##                           31     : 50                   3rd Qu.:6.000  
+##                           3      : 49                   Max.   :8.000  
+##                           (Other):930                                  
+##      Class     
+##  17.1   :  50  
+##  36.2   :  44  
+##  21.1   :  42  
+##  36.1   :  37  
+##  32.1   :  34  
+##  25.1   :  31  
+##  (Other):1145</code></pre>
+<pre class="r"><code>dim(science_wo_na)</code></pre>
+<pre><code>## [1] 1383    7</code></pre>
+</div>
 </div>
 </div>
 
