@@ -49,7 +49,7 @@ summary(possum)
 # > ?possum
 ```
 
-# dyplr
+# dplyr
 
 ## select
 
