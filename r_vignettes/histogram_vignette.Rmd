@@ -7,6 +7,8 @@ output:
 
 ```{r setup, include=FALSE}
 library(ggplot2)
+library(DAAG)
+library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -143,4 +145,37 @@ for (j in 1:length(N)) {
 }
 ```
 
+## Histogram of DAAG db possum
 
+```{r}
+
+# New variable TR
+# mytable <- possum %>% group_by(site) %>%
+#   summarise(TR = sum(taill) / sum(totlngth),
+#             count = n()) %>%
+#   arrange(desc(TR))
+
+# Histogram. Use the + sign
+possum %>% ggplot(aes(x=totlngth, fill=sex)) +
+  geom_histogram(alpha=0.5, color='black', bins=50) +
+  ggtitle('Total length for Male & Female Possums')
+
+```
+
+## Separate histograms with facet_grid()
+
+```{r}
+
+# New variable TR
+# mytable <- possum %>% group_by(site) %>%
+#   summarise(TR = sum(taill) / sum(totlngth),
+#             count = n()) %>%
+#   arrange(desc(TR))
+
+# Histogram. Use the + sign. Use sqrt number of values for number of bins
+possum %>% ggplot(aes(x=totlngth, fill=sex)) +
+  geom_histogram(alpha=0.5, color='black', bins=10) +
+  ggtitle('Total length for Male & Female Possums') +
+  facet_grid(vars(sex), vars(site))
+
+```
