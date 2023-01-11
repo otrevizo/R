@@ -1,0 +1,32 @@
+---
+title: "DAAG library vignette"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+library(DAAG)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# DAAG
+
+## Looking for NA and missing data
+
+Reference: Dr. Bharantendra https://www.youtube.com/watch?v=Q7gYkpSi8Nk&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=11
+
+```{r}
+
+data('rainforest')
+str(rainforest)
+summary(rainforest)
+```
+
+
+```{r}
+
+```
+
+
