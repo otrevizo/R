@@ -1,0 +1,109 @@
+---
+title: "Scatter plot vignette"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(DAAG)
+library(MASS)
+library(RColorBrewer)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Scatter plot vignette
+
+Reference Dr. Bharatendra https://www.youtube.com/watch?v=BPR_Dkll17Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=8 
+
+Done here for learning purposes.
+
+## Basic
+
+```{r}
+ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point()
+```
+
+
+## Trend line with default (LOESS and y ~ x)
+
+```{r}
+ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth()
+```
+
+
+## Trend line with 'lm' method
+
+
+```{r line_dot, eval=TRUE}
+ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+```
+
+
+## Two trend lines
+
+```{r}
+
+ggplot(possum, aes(x=taill, y=totlngth, col=sex)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+
+```
+
+## Two trend lines and bubble size
+
+```{r}
+ggplot(possum, aes(x=taill, y=totlngth, col=sex, size=eye)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+
+
+```
+
+## Add facet_wrap
+
+```{r}
+ggplot(possum, aes(x=taill, y=totlngth, col=sex, size=eye)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm') +
+  facet_wrap(~sex)
+
+```
+
+## With log scale
+
+Swtich to the Animals from the MASS dataset. It lends itself to demo the log feature.
+
+### First demo without log
+
+```{r}
+
+ggplot(Animals, aes(x=body, y=brain)) +
+  geom_point()
+
+```
+
+### Now with log
+
+```{r}
+ggplot(Animals, aes(x=body, y=brain)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10()
+
+
+```
+
