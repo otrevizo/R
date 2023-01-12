@@ -7,6 +7,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(ggplot2)
+library(ggExtra)                           # For ggMarginal
 library(DAAG)
 library(MASS)
 library(RColorBrewer)
@@ -107,3 +108,63 @@ ggplot(Animals, aes(x=body, y=brain)) +
 
 ```
 
+# Marginal
+
+## Density plots (default)
+
+```{r}
+
+# put the plot in p
+p <- ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+
+ggMarginal(p)
+
+```
+
+
+## Add fill
+
+```{r}
+
+# put the plot in p
+p <- ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+
+ggMarginal(p, fill='lightgreen')
+
+```
+
+
+## with histogram
+
+```{r}
+
+# put the plot in p
+p <- ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+
+ggMarginal(p, fill='lightgreen', type='histogram')
+
+```
+
+
+## Specify density
+
+```{r}
+
+# put the plot in p
+p <- ggplot(possum, aes(x=taill, y=totlngth)) +
+  geom_point(color='darkred', alpha=0.6) +
+  ggtitle('Tail length vs Total length') + 
+  geom_smooth(se=0, method='lm')
+
+ggMarginal(p, fill='lightgreen', type='density')
+
+```
