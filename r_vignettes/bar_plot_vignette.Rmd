@@ -1,0 +1,63 @@
+---
+title: "Scatter plot vignette"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(DAAG)
+library(MASS)
+library(RColorBrewer)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Bar plot vignette
+
+Reference Dr. Bharatendra https://www.youtube.com/watch?v=BPR_Dkll17Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=8 
+
+Done here for learning purposes.
+
+# Create new table
+
+## Create a new table (mutate)
+
+```{r}
+
+# New variable TR
+mytable <- possum %>% group_by(site) %>%
+  summarise(TR = sum(taill) / sum(totlngth),
+            count = n()) %>%
+  arrange(desc(TR))
+
+print(mytable)
+
+```
+# Basic
+
+## Vertical (default)
+
+```{r}
+ggplot(mytable, aes(x=factor(site), y=TR)) +
+  geom_col()
+```
+
+## Horizontal
+
+
+```{r}
+ggplot(mytable, aes(x=factor(site), y=TR)) +
+  geom_col() +
+  coord_flip()
+```
+
+
+
+```{r}
+ggplot(mytable, aes(x=factor(site), y=TR, fill=factor(site))) +
+  geom_col() +
+  coord_flip()
+```
