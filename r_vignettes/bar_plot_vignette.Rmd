@@ -17,31 +17,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Bar plot vignette
 
-Reference Dr. Bharatendra https://www.youtube.com/watch?v=BPR_Dkll17Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=8 
+Based on Dr. Bharatendra https://www.youtube.com/watch?v=BPR_Dkll17Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=8 
 
 Done here for learning purposes.
 
-# Create new table
-
-## Create a new table (mutate)
-
-```{r}
-
-# New variable TR
-mytable <- possum %>% group_by(site) %>%
-  summarise(TR = sum(taill) / sum(totlngth),
-            count = n()) %>%
-  arrange(desc(TR))
-
-print(mytable)
-
-```
 # Basic
 
 ## Vertical (default)
 
 ```{r}
-ggplot(mytable, aes(x=factor(site), y=TR)) +
+ggplot(possum, aes(x=factor(site), y=taill)) +
   geom_col()
 ```
 
@@ -49,7 +34,7 @@ ggplot(mytable, aes(x=factor(site), y=TR)) +
 
 
 ```{r}
-ggplot(mytable, aes(x=factor(site), y=TR)) +
+ggplot(possum, aes(x=factor(site), y=taill)) +
   geom_col() +
   coord_flip()
 ```
@@ -57,7 +42,7 @@ ggplot(mytable, aes(x=factor(site), y=TR)) +
 
 
 ```{r}
-ggplot(mytable, aes(x=factor(site), y=TR, fill=factor(site))) +
+ggplot(possum, aes(x=factor(site), y=taill, fill=factor(site))) +
   geom_col() +
   coord_flip()
 ```
