@@ -1,0 +1,128 @@
+---
+title: "Statistical distrivutions vignette"
+output:
+  html_document:
+    toc: yes
+---
+
+# Purpose
+
+This vignette aims to introduce you statistical distributions using R.
+
+# Reference
+
+Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=7 
+
+# Libraries
+
+```{r setup, include=FALSE}
+
+# Add DAAG to pull some data
+library(DAAG)
+
+# This is the library we will highlight here
+library(dplyr)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Normal distribution
+
+## Generate the data
+
+```{r}
+
+z <- pretty(c(-5, 5), 100)
+
+ht <- dnorm(z)
+
+# plot type line
+plot(z, ht, type='l')
+
+```
+
+## prob (z < a certain point)
+
+```{r}
+
+# P(z < -2)
+pnorm(-2)
+
+```
+
+## Get point where prob = 0.95
+
+At what point will I have 95%
+
+```{r}
+
+# P(z < ?) = 0.95
+qnorm(.95)
+```
+
+
+## Now for a diff mean
+
+```{r}
+
+# Where mean is 0.2 and sigma is 0.5
+qnorm(.95, 2, 0.5)
+
+```
+
+# t distribution
+
+## Generate data
+
+```{r}
+t <- pretty(c(-5, 5), 100)
+
+ht <- dt(t, 3)
+
+# plot type line
+plot(t, ht, type='l')
+
+
+```
+
+## prob (t < a certain point)
+
+With 3 degrees of freedom
+
+```{r}
+
+# P(z < -2)
+pt(-2, 3)
+
+```
+
+## Get point where prob = 0.95
+
+At what point will I have 95%, with 3 degrees of freedom
+
+```{r}
+
+# P(z < ?) = 0.95
+qt(.95, 3)
+```
+
+
+# Q-Q plot (Normal)
+
+## Default
+
+```{r}
+x <- rnorm(10)
+qqnorm(x)
+```
+
+
+## Add a line
+
+```{r}
+qqnorm(x)
+qqline(x)
+```
+
+
