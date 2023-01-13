@@ -368,9 +368,12 @@ switch(x,
 '?' = print("I don't know, what is it?")
 )
 
-#
+```
+
+
 # Repeat Loop
-#
+
+```{r}
 # repeat{}
 
 i = 0
@@ -384,9 +387,12 @@ repeat
   }
 }
 
-#
+```
+
+
 # While Loop
-#
+
+```{r}
 
 i = 0
 while(i < 10)
@@ -395,10 +401,16 @@ while(i < 10)
   i = i + 1
 }
 
-#
+```
+
+
 # For Loop
-# When you know how many time the loop will execute
-# 
+
+Run over an iterator
+
+## Example 1: Basic for loop
+
+```{r} 
 
 for (i in 0:9)
 {
@@ -407,6 +419,52 @@ for (i in 0:9)
 
 
 ```
+
+
+## Example 2: Loop a normal distribution
+
+Reference: Dr. Bharatendra https://www.youtube.com/watch?v=_hHQZP7_52Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42
+
+```{r}
+
+N <- 4
+
+# Plot control, 2 x 2
+par(mfrow=c(2, 2))
+
+for (i in 1:N){
+  x <- rnorm(10)
+  qqnorm(x)
+  qqline(x)
+}
+
+```
+## Example 3:
+
+Reference: Dr. Bharatendra https://www.youtube.com/watch?v=_hHQZP7_52Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42
+
+
+```{r}
+# Generate 50 means
+M <- 50
+# Coerce object M to type numeric
+AVG <- numeric()
+
+# Plot control, 1 x 1
+par(mfrow=c(1, 1))
+
+for (i in 1:M) {
+  AVG[i] <- mean(rnorm(30))
+}
+
+# Display it
+AVG
+
+# Show histogram
+hist(AVG)
+```
+
+
 
 # Strings
 
