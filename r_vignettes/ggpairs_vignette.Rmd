@@ -75,6 +75,12 @@ dim(frcDat)
 
 ```
 
+# Classic pairs()
+
+```{r, echo=FALSE, results='hide',fig.width=12,fig.height=12}
+pairs(frcDat)
+```
+
 # ggpairs()
 
 <p style="color:blue">The following charts and matrices indicate that the most robustly correlated variable with the target contributions (`contrib`) is the last contribution (`lastcontr`): I.e. **the "dollar amount of this donor most recent contribution**."</p>
