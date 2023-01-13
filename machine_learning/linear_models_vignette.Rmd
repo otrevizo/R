@@ -123,10 +123,72 @@ ggplot(roller, aes(x=weight, y=depression)) +
 
 ```
 
+# Diagnostics
 
 
 ```{r}
+par(mfrow=c(2, 2))
+
+plot(model)
+```
+
+# Predictions
+
+## One prediction
+
+```{r}
+
+# Here the independent variable is 'weight'
+
+predict(model, data.frame(weight=7))
 
 ```
+
+## Many predictions
+
+```{r}
+
+predict(model, data.frame(weight=c(7, 8, 9)))
+
+
+```
+
+### Confidence intervals
+
+```{r}
+
+# Confidence interval default is 95%
+predict(model, 
+        data.frame(weight=c(7, 8, 9)),
+        interval = 'confidence')
+
+
+
+```
+
+### Prediction intervals
+
+```{r}
+
+# Prediction interval is wider than confidence interval
+# That is because it is focused on individual values,
+# while confidence intervals are focused on averages.
+predict(model, 
+        data.frame(weight=c(7, 8, 9)),
+        interval = 'prediction')
+
+
+
+```
+
+Some time confidence intervals are called narrow intervals, 
+while prediction intervals are called wider intervals.
+
+You use it depending on the context.
+
+If the context is about a single value then use prediciton interval, and if the context
+is about a wider average then use confidence interval.
+
+
 
 
