@@ -190,5 +190,49 @@ If the context is about a single value then use prediciton interval, and if the 
 is about a wider average then use confidence interval.
 
 
+## Plots for confidence and prediction intervals
 
+### Plot for prediction interval
+
+#### make a data.frame
+
+```{r}
+
+# First make a dataset
+
+p <- predict(model, interval = 'prediction')
+
+# combine data
+data <- cbind(roller, p)
+
+str(data)
+
+```
+
+
+#### Plot it
+
+```{r}
+
+# Add the prediction intervals with geom_line()
+ggplot(data, aes(x=weight, y=depression)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  ggtitle('Depression vs Weight', 'Source: Roller data from DAAG') +
+  geom_line(aes(y=lwr), color='red', linetype='dashed', lwd=2) +
+  geom_line(aes(y=upr), color='red', linetype='dashed', lwd=2)
+
+```
+
+
+# Quadratic term
+
+A way to help the model
+
+```{r}
+
+model1 <- lm(depression ~ weight + I(weight^2), roller)
+summary(model1)
+
+```
 
