@@ -1,0 +1,132 @@
+---
+title: "Linear models vignette"
+output:
+  html_document:
+    toc: yes
+---
+
+# Purpose
+
+This vignette aims to introduce you liner models using R.
+
+# Reference
+
+Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=7 
+
+# Libraries
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(DAAG)
+
+# May need:
+library(dplyr)
+library(RColorBrewer)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+# Load some data
+
+Look at 'roller' dataset from DAAG library.
+
+```{r}
+# Example the roller dataset
+str(roller)
+```
+
+# Plot it (scatter plot)
+
+```{r}
+ggplot(roller, aes(x=weight, y=depression)) +
+  geom_point()
+
+```
+# Linear model lm{stats}
+
+Reference: Dr. Bharatendra https://youtube.com/watch?v=utjaosw7wi0&si=EnSIkaIECMiOmarE 
+
+```{r}
+
+# lm model, with formula y ~ x..., and dataset name
+# here dependent var will be depression, inde varialbe weight from dataset roller
+model <- lm(depression ~ weight, roller)
+
+# Get the summary
+summary(model)
+```
+## Explore the model
+
+### What the model has
+
+```{r}
+
+names(model)
+```
+### Look at coefficients only
+
+```{r}
+coef(model)
+```
+
+### look at the residuals
+
+Residuals = Observed - Predicted
+
+```{r}
+
+residuals(model)
+```
+
+### Look at predictions (i.e. the fitted model)
+
+In stats terms we say the 'fitted model' while in machine learning we say 'prediciton', same thing.
+
+```{r}
+f <- fitted.values(model)
+print(f)
+
+```
+
+
+
+### What that means
+
+Look at the prediction (fit) and calculate the residual by hand. Compare.
+
+```{r}
+
+# Residual from the first prediction
+r1 <- residuals(model)[1]
+
+# Actual number
+a1 <- roller[1,]
+
+# This result must be zero (or super close to zero)
+residual_test = (a1[2] - f[1]) - r1
+
+```
+
+
+# Linear Model in scatter plot
+
+Shows the 95% confidence intervals.
+
+```{r}
+ggplot(roller, aes(x=weight, y=depression)) +
+  geom_point() +
+  geom_smooth(method = 'lm') +
+  ggtitle('Depression vs Weight', 'Source: Roller data from DAAG')
+
+
+```
+
+
+
+```{r}
+
+```
+
+
