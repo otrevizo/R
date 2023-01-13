@@ -1,5 +1,5 @@
 ---
-title: "Statistical distrivutions vignette"
+title: "Statistical distributions vignette"
 output:
   html_document:
     toc: yes
@@ -125,4 +125,50 @@ qqnorm(x)
 qqline(x)
 ```
 
+# Simulations: Normal, Uniform, Exponential, t distributions
 
+Reference: Dr. Bharatendra https://www.youtube.com/watch?v=XyBfmm1pk8g&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=5
+
+```{r}
+
+n <- rnorm(1000)
+u <- runif(1000)
+e <- rexp(1000)
+t <- rt(1000, 3)
+
+# Plot 2 x 2 plots
+par(mfrow=c(2, 2))
+hist(n)
+hist(u)
+hist(e)
+hist(t)
+
+
+
+```
+
+# Normality tests
+
+## Q-Q plot
+
+```{r}
+par(mfrow=c(1, 1))
+x <- rnorm(10)
+qqnorm(x)
+qqline(x)
+```
+The result is subjective. This is a small dataset. So how do we know if this is Normal?
+
+## Shapiro test
+
+```{r}
+
+# Do a Null Hypothesis test with Shapiro tests.
+# Look at the p-value. If p-value > 0.05 then accept the NULL hypothesis.
+shapiro.test(x)
+
+```
+
+Now we can look at the p-value. 
+
+If p-value > 0.05, then the distribution is NOT significantly different from a Normal distribution. That is the null hypothesis is possible.
