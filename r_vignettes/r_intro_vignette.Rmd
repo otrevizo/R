@@ -1,8 +1,10 @@
 ---
-title: 'R Intro'
+title: "R Intro"
 output:
   html_document:
-    toc: true
+    toc: yes
+  word_document:
+    toc: yes
 ---
 
 ```{r setup, include=TRUE}
@@ -568,7 +570,6 @@ pairs(iris[,c(1:4)])
 
 df <- read.csv("../data/fifa_cleaned.csv")
 
-df
 ```
 
 

@@ -1,0 +1,31 @@
+This dataset is a cleaned-up subset of a database used for one of the data mining competitions 
+from the late 90's.  It is based on the results from a fund raising appeal by one of the US
+non-for-profit direct mail fund raising organizations (aka study sponsor).  The goal of this 
+modeling exercise was to predict donors' contributions in response to a particular direct 
+mailing campaign based on their demographics (age and gender) and available history of
+contributions they have made in the past.  The limitations associated with the use of this data
+for educational purposes preclude disclosure of more specific details about its source.
+
+For the purposes of this week problem set only the entries for the donors that have responded
+to that specific campaign have been selected, large number of less informative or highly 
+correlated variables have been removed and the resulting data has been further cleaned up
+by omitting entries with missing values for any of the predictors used.
+
+The final data file fund-raising.csv has one row per donor and includes the following
+comma-separated columns:
+
+* contrib     -- the outcome that the model is expected to predict: the donation  
+                 amount ($) associated with the response to the mailing campaign of interest
+* gapmos      -- number of months between first and second contributions from this donor
+* promocontr  -- total number of contributions to promotional mailing campaigns
+* mincontrib  -- dollar amount of this donor smallest contribution to date
+* ncontrib    -- total number of contributions by this donor
+* maxcontrib  -- dollar amount of this donor largest contribution to date
+* lastcontr   -- dollar amount of this donor most recent contribution
+* avecontr    -- average dollar amount of this donor contribution
+* mailord     -- total number of times the donor has responded to a mail order
+                 offer other than the study sponsor's
+* mindate     -- date (YYMM) of this donor smallest contribution
+* maxdate     -- date (YYMM) of this donor largest contribution
+* age         -- donor age
+* gender      -- donor gender

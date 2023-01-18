@@ -1,0 +1,711 @@
+---
+title: 'Correlation vignette'
+author: "Oscar A. Trevizo"
+output:
+  html_document:
+    toc: true
+---
+
+# Load the libraries
+
+```{r setup, include=TRUE, results='hide'}
+library(ggplot2)
+library(ISLR)
+library(GGally)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Get the data 
+
+Reference: Harvard CSCI E-63c Statistical Learning, 2021.
+
+
+```{r readData}
+####
+#
+#
+# Data:
+# 1. file "fund-raising.csv"
+# 2. file "fund-raising-notes.txt"
+#
+# contrib     -- the outcome that the model is expected to predict: the donation  
+#                  amount ($) associated with the response to the mailing campaign of interest
+#                  Type: num
+#                  Units: $USD
+# gapmos      -- number of months between first and second contributions from this donor
+#                  Type: int
+#                  Units: Months
+# promocontr  -- total number of contributions to promotional mailing campaigns
+#                  Type: int
+#                  Units: number of contributions
+# mincontrib  -- dollar amount of this donor smallest contribution to date
+#                  Type: num
+#                  Units: $USD
+# ncontrib    -- total number of contributions by this donor
+#                  Type: int
+#                  Units: Number of contributions
+# maxcontrib  -- dollar amount of this donor largest contribution to date
+#                  Type: num
+#                  Units: $USD
+# lastcontr   -- dollar amount of this donor most recent contribution
+#                  Type: num
+#                  Units: $USD
+# avecontr    -- average dollar amount of this donor contribution
+#                  Type: num
+#                  Units: $USD
+# mailord     -- total number of times the donor has responded to a mail order
+#                  offer other than the study sponsor's
+#                  Type: int
+#                  Units: Number of contributions
+# mindate     -- date (YYMM) of this donor smallest contribution
+#                  Type: int
+#                  Units: Number of contributions
+# maxdate     -- date (YYMM) of this donor largest contribution
+#                  Type: int
+#                  Units: Number of contributions
+# age         -- donor age
+#                  Type: int
+#                  Units: Number of years
+# gender      -- donor gender --> Categorical
+#                  Type: Factor
+#                  Units: Category Female "F", male "M", Unspecified "U"
+##
+
+frcDat <- read.table("../data/fund-raising.csv",sep=",",header=TRUE, as.is = FALSE)
+dim(frcDat)
+
+```
+
+
+# ggpairs()
+
+<p style="color:blue">The following charts and matrices indicate that the most robustly correlated variable with the target contributions (`contrib`) is the last contribution (`lastcontr`): I.e. **the "dollar amount of this donor most recent contribution**."</p>
+
+<p style="color:blue">To start this analysis, the following three sets of *ggpairs()* plots help us to explore patterns:</p> 
+
+<p style="color:blue">One *ggpairs()* plot shows *dollar* type of variables. </p>
+<p style="color:blue">A second *ggpairs()* plot shows variables that count (e.g. number of contributions) vs `contrib` </p>
+<p style="color:blue">And a third *ggpairs()* plot to show variables that involve time or dates vs `contrib`. </p>
+
+<p style="color:blue">The three sets of *ggpairs()* plots will distinguish gender and will include trend lines on a per-gender basis.</p>
+
+```{r}
+par(mfrow=c(3, 1))
+
+# Let ggpairs plot $USD continuous variables before analyzing
+ggpairs(frcDat, columns = c("contrib", "mincontrib", "maxcontrib", "lastcontr", "avecontr"), 
+        upper = list(continuous = wrap("cor", size = 4)),
+        lower = list(continuous = "smooth"),
+        aes(color = gender,  
+            alpha = 0.5)
+        )
+
+# Let ggpairs plot INT (number of) continuous variables vs "contrib" before analyzing
+ggpairs(frcDat, columns = c("contrib", "promocontr", "ncontrib", "mailord"), 
+        upper = list(continuous = wrap("cor", size = 4)),
+        lower = list(continuous = "smooth"),
+        aes(color = gender,  
+            alpha = 0.5)
+        )
+
+# Let ggpairs plot time, date or age related continuous variables vs "contrib" before analyzing
+ggpairs(frcDat, columns = c("contrib", "gapmos", "mindate", "maxdate", "age"), 
+        upper = list(continuous = wrap("cor", size = 4)),
+        lower = list(continuous = "smooth"),
+        aes(color = gender,  
+            alpha = 0.5)
+        )
+
+
+```
+
+<p style="color:blue">The first *ggpairs()* set of plots for *$USD dollar* variables shows a level of correlation with `contrib`. The second set of *ggpairs()* plots based on counts also shows a level of correlation with `contrib`. The third set shows little correlation. The plots also show outliers that may impact the following results. The plots also show some outliers that may impact the results.</p>
+
+<p style="color:blue">Next, I will run **correlations of all continuous variables into two matrices.**
+One matrix for for Pearson and another matrix for Spearman correlations. The first row (or column) provides the correlations of each continuous variable with the target contributions.</p>
+
+<p style="color:blue">Once I have the two matrix, I will be able to create bar plots and compare correlations.</p>
+
+
+# Correlations
+
+Correlations matrices for continuous variables.
+
+<p style="color:blue">The first row of each matrix gives me a list of correlations of all continuous variables vs `contrib`.
+It allows me to create bar plots to visualize those correlations.</p>
+
+## Pearson
+
+```{r}
+
+corPearson <- cor(frcDat[,1:12],
+                method = "pearson")
+
+print(corSpearman[1,2:12])
+
+```
+
+## Spearman
+
+```{r}
+corSpearman <- cor(frcDat[,1:12],
+                 method = "spearman")
+
+print(corPearson[1,2:12])
+
+
+```
+
+
+# Barplots
+
+<p style="color:blue">The following four bar plots display Pearson and Spearman correlations and correlations squared to easily compare them.</p>
+
+```{r}
+
+# Correlation charts
+#
+old.par <- par(mfrow=c(2,2),ps=10)
+
+barplot(corPearson[1,2:12], 
+        main = "Contrib Pearson Corr", 
+        ylab = "Pearson Correlation",
+        las = 3,
+        ylim = c(-0.4,.8),
+        col="skyblue")
+
+barplot(corSpearman[1,2:12], 
+        main = "Contrib Spearman Corr",  
+        ylab = "Spearman Correlation",
+        las = 3,
+        ylim = c(-0.4,.8),
+        col="skyblue")
+
+
+barplot(corPearson[1,2:12]^2, 
+        main = "Contrib Pearson Corr^2 (Squared)", 
+        ylab = "Pearson Correlation Square",
+        las = 3,
+        ylim = c(0,.7),
+        col="skyblue")
+
+barplot(corSpearman[1,2:12]^2, 
+        main = "Contrib Spearman Corr^2 (Squared)",  
+        ylab = "Spearman Correlation Square",
+        las = 3,
+        ylim = c(0,.7),
+        col="skyblue")
+
+par(old.par)
+
+```
+
+<p style="color:blue">Therefore, based on the above plots and matrices using *gpairs()*, correlations using *cor()* (for Pearson 0.7465 and for Spearman 0.7701), and *barplots()*, the results show that **the last contribution `lastcontr` is the variable most robustly correlated** with the target contributions (`contrib`).</p>
+
+
+2. Fit linear model for target campaign contribution as the outcome and the last contribution by this donor (`lastcontr` in `fund-raising.csv`) as the predictor, using R function `lm`; inspect the fitted model using `summary` function, and use the output to answer the following questions:
+
+<p style="color:blue">The R code to address the 2nd question follows:</p>
+
+
+```{r Problem1_Q2}
+
+lmModel <- lm(contrib~lastcontr,frcDat)
+
+model.summary <- summary(lmModel)
+# model.summary <- summary(lm(contrib~lastcontr,frcDat))
+
+mode(model.summary)
+
+print(model.summary)
+
+```
+
+
+   + Does this predictor explain significant amount of variability in response?  I.e. is there statistically (!) significant association between them?
+   
+<p style="color:blue">Based on linear regression model summary on this dataset, there is statistically significant association between `contrib` and `lastcontr`. For the following reasons.</p> 
+
+<p style="color:blue">The p-value is extremely low *<2e-16*. The null hypothesis is; *there is no association between the two variables.* The alternative hypothesis is; *there is association between the two variables.* A very low p-value indicates that the null hypotheses H0 is not plausible. </p>
+
+<p style="color:blue">Referring to the textbook ISLR, section 3.1.2, page 67, given the linear regression function:</p>
+
+<p style="color:blue">Y = B~0~ + B~1~X + e</p>
+
+<p style="color:blue">The coefficients are B~0~ and B~1~, and e is a residual error.</p>
+
+<p style="color:blue">H~0~: There is no relationship between X and Y (ISLR equation / statement (3.12))</p>
+<p style="color:blue">H~a~: There is some relationship between X and Y (ISLR equaiton / statement (3.13))</p>
+
+<p style="color:blue">The book re-states it as follows:</p>
+
+<p style="color:blue">H~0~: B~1~ = 0</p>
+
+<p style="color:blue">versus</p>
+
+<p style="color:blue">H~a~: B~1~ not equal to 0</p>
+
+<p style="color:blue">The very a small *p-value* indicates that we can *reject* the null hypothesis. That allows us to infer that *"there is an association between the predictor and the response* (ISLR p.68).</p>
+
+<p style="color:blue">And the results from *summary(lm(...))* shows *three asterisck* characters next to the *p-value* indicating that the relationship is statistically **significant.** One would need to do additional tests on an additional data samples if possible to make sure the conclusion is not tied to this specific dataset. Therefore, **there is statistically significant association between these two variables, `contrib` and `lastcontr`,** based on this summary.</p>
+
+
+   + What is the RSE and $R^2$ of this model?  Remember, you can find them in the `summary` output or use `sigma` and `r.sq` slots in the result returned by `summary` instead (the `summary()` command does return a *list*; if instead of just printing the result into the console you save it into a variable, as in `model.summary <- summary(...)`, then you can verify that the content of that variable *is* a list, you can see with `names(model.summary)` which elements this list contains, and you can extract, examine, and use them at will programmatically if you ever need to)
+
+<p style="color:blue">From the *summary(lm(...)))* function:</p>
+
+<p style="color:blue">RSE = 7.692</p>
+
+<p style="color:blue">Multiple R-squared:  0.5572</p>
+
+
+   + What are the model coefficients and what would be their interpretation? What is the meaning of the intercept of the model, for example?  What about the slope - how would you interpret its value?
+
+<p style="color:blue">Intercept B~0~ = 7.692 with std. error of 0.22092</p>
+
+<p style="color:blue">Slope B~1~:  0.79523 with std. error of 0.01204</p>
+
+
+3. Create scatterplot of target campaign contribution and the last contribution (the attributes used in the model above) and add to the plot the regression line from the model using `abline` function
+
+<p style="color:blue">Scatterplot for the model (namd `lmModel` here):</p>
+
+```{r Problem1_Q2(3)}
+plot(frcDat[,c("lastcontr", "contrib")])
+abline(lmModel,col=2,lwd=2)
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+```
+
+
+4. Create diagnostic plots of the model and comment on any irregularities that they present.  For instance, does the plot of residuals vs. fitted values suggest presence of non-linearity that remains unexplained by the model?  Does scale-location plot suggest non-uniformity of variance along the range of fitted values?  Are some standardized residuals far greater than theoretical quantiles?  What about residuals vs. leverage plot and Cook's distance contours therein?  How does your conclusions compare to what's shown in the plot of the predictor and outcome with regression line added to it -- i.e. the plot that was generated above?
+
+<p style="color:blue">The following charts provide diagnostic plots of the model. Answers to individual questions follow.</p>
+
+```{r Problem1_Q4}
+## / plot lm() -- 4 diagnostic plots created                                          ####
+# Using par to do 1x2 plots per row provide larger plots than using 2x2
+old.par <- par(mfrow=c(1,2))
+plot(lmModel)
+par(old.par)
+```
+
+Does the plot of residuals vs. fitted values suggest presence of non-linearity that remains unexplained by the model?
+
+<p style="color:blue">The plot of residuals vs. fitted values exhibits a nice horizontal red line that stays very close to 0 residuals, It is an indication of a good linear fit. There is also a small a cluster of points appearing below that red line, and between fitted values 50 and 100. </p>
+
+<p style="color:blue">On one hand, the plot exhibited linearity. The trend red line in the *residuals vs fitted* plot follows the middle line very closely, but it has a small bend upwards in the middle and data points concentrated on the right side of the chart.</p>
+
+Does scale-location plot suggest non-uniformity of variance along the range of fitted values? 
+
+<p style="color:blue">Yes, it suggest non-uniformity. The *scale-location* plot is a little more problematic exhibiting an upwards trend and concentration of data points on the lower-left side of the chart. Ideally, all the dots would be uniformly spread around a straight and horizontal red trend line. But that is not the case. This plot looks like a cluster.</p>
+
+Are some standardized residuals far greater than theoretical quantiles?  
+
+<p style="color:blue">Yes, the plot of normal Q-Q shows some standardized values that fall outside of the theoretical quantile trend line. That is the case for theoretical quantiles smaller than -2 and larger than 2. The *normal q-q* plot suggest potential non-linearity at the edges, and that should not be surprising.</p>
+
+What about residuals vs. leverage plot and Cook's distance contours therein?
+
+<p style="color:blue">The plot of residuals vs leverage further supports the need to do more analysis. The plot does not show a clean linearity.</p>
+
+How does your conclusions compare to what's shown in the plot of the predictor and outcome with regression line added to it -- i.e. the plot that was generated above?
+
+<p style="color:blue">The plots suggest that there is still a potential presence of non-linearity that remains unexplained by the model, and that needs to be further explored. We need to do more analysis. We cannot rely on the current results to do predictions. The current results may achieve a degree of success, depending on the intended accuracy or objectives.</p>
+
+5. Use function `confint` to obtain 95% confidence intervals on model parameters
+
+<p style="color:blue">The results shows two numbers. One at 2.5% and another one at 97.5%. That is, 2.5% on each side to make for the 5% from both side of the 95% confidence level. That is, 95% of the time, the interval shown below will contain the population mean.</p>
+
+
+```{r contribVSlastcontr}
+
+confint(lmModel)
+
+```
+
+
+6. Use this model and `predict` function to make predictions for the last contribution values of 10, 20 and 40. Remember that when you pass new data to `predict`, you have to make sure that the variable (column) names in those data match the predictor variable name(s) used in the model, otherwise `predict` will not know how to match the data to the model variables! Use `confidence` and `prediction` settings for parameter `interval` in the call to `predict` to obtain 90% confidence and prediction intervals on these model predictions (please double check what the default confidence level used by those functions is, and adjust if/as necessary).  Explain the differences between interpretation of:
+    + confidence intervals on model parameters and model predictions
+    + confidence and prediction intervals on model predictions
+    + comment on whether confidence or prediction intervals (on predictions) are wider and why
+
+<p style="color:blue">Function *predict()* estimate predictions with 90% confidence. The prediction is under column name `fit`. Both tables exhibit the same values for `fit`. The `lwr` and `upr` columns provide corresponding estimates of uncertainty associated with each prediction.</p>
+
+```{r Problem1_Q6}
+
+# Enter a set of inputs to predict:
+new.lastcontr = c(10,20,40)
+
+lmModel.conf <- predict(lmModel,
+        newdata=data.frame(lastcontr=new.lastcontr),
+        interval='confidence',
+        level = 0.90)
+
+lmModel.pred <- predict(lmModel,
+        newdata=data.frame(lastcontr=new.lastcontr),
+        interval='prediction',
+        level = 0.90)
+
+lmModel.conf
+lmModel.pred
+
+```
+
+# Problem 2: model using log-transformed attributes (20 points)
+
+1. Use `lm()` to fit a regression model of *log-transformed* outcome (`contrib`) as a linear function of *log-transformed* last contribution and use `summary` to evaluate its results.
+
+Exclude small number of observations where `lastcontr==0`, otherwise log-transformation will result in negative infinity values for those and error from the call to `lm`.
+
+<p style="color:blue">A new dataset excludes `lastcontr==0` as follows:</p>
+
+```{r Problem2_Q1(1)}
+####
+#
+## CSCI E63-C PSET 3 - Problem 2                                            ####
+#
+# Log Transformed Attributes
+#
+
+# Remove lastcontr == 0
+frcDatP2 <- frcDat[frcDat$lastcontr != 0,]
+
+print("Dimension of data frame before removing lastcontr==0:")
+dim(frcDat)
+print("Dimension of data frame after removing lastcontr==0:")
+dim(frcDatP2)
+print("Summary of variable lastcontr before removing lastcontr==0:")
+summary(frcDat$lastcontr)
+print("Summary of variable lastcontr after removing lastcontr==0:")
+summary(frcDatP2$lastcontr)
+```
+
+<p style="color:blue">Without observations where `lastcontr==0` the number of observations went down from 3470 to 3460. </p>
+
+<p style="color:blue">There were *10* observations excluded that had `lastcontr`==0'.</p>
+
+<p style="color:blue">Next, apply `lm()` to fit a regression model of *log-transformed* (`contrib`~`lastcontr`):</p>
+
+```{r Problem2_Q1(2)}
+
+logModel <- lm(log10(contrib)~log10(lastcontr), data = frcDatP2)
+
+log.trasformed.summary <- summary(logModel)
+
+print(log.trasformed.summary)
+```
+
+<p style="color:blue">The new *log-transformed* model creates pentameters for intercept (0.2), and for slope (0.82).</p>
+
+<p style="color:blue">$R^2$ is 0.5958. The original model's summary had R-squared equal to 0.5572.</p> 
+
+<p style="color:blue">In both cases, new *log-transformed* and original had *p-value* of 2.2e-16.</p>
+
+<p style="color:blue">The *log-transformed* model is slightly more rebustly correlated than the original model.</p> 
+
+<p style="color:blue">There is still need to do further analysis to better understand how well the model correlates.</p>
+
+<p style="color:blue"> The following code creates a matrix to compare attributes between the models.</p>
+
+
+```{r Problem2_Q1(3)}
+
+# Attributes summary from each model
+model.summary$coefficients
+log.trasformed.summary$coefficients
+
+# Next, a short matrix will summarize the comparison between original and transformed models.
+# Matrix compares attributes, R^2, and RSE
+
+mCompare <- matrix(c(model.summary$coefficients[1,1],
+                     model.summary$coefficients[1,2],
+                     model.summary$coefficients[2,1],
+                     model.summary$coefficients[2,2],
+                     model.summary$r.squared, 
+                     model.summary$sigma,
+                     log.trasformed.summary$coefficients[1,1],
+                     log.trasformed.summary$coefficients[1,2],
+                     log.trasformed.summary$coefficients[2,1],
+                     log.trasformed.summary$coefficients[2,2],
+                     log.trasformed.summary$r.squared, 
+                     log.trasformed.summary$sigma),
+                   nrow = 6, ncol = 2,
+                   dimnames = list(c("Intercept", "SE(Intx)", 
+                                     "slope", "SE(slope)", 
+                                     "R^2", "RSE"), 
+                                   c("orig-model", "log-xform")))
+
+mCompare
+
+
+```
+
+<p style="color:blue">"$R^2$ static that is close to 1 indicates that a large proportion of the variability in the response has been explained by the regression." (ISLR Ch 3.1.3)</p> 
+
+<p style="color:blue">In the *log-transformed model*, $R^2$ is slightly higher than in the *original model.*</p> 
+
+<p style="color:blue">The *log-transformed model* has $R^2$ of almost 0.6, not quite close to 1, but better than 0.5.</p> 
+
+<p style="color:blue">There is variably of the response explained by the regression (further analysis needed).</p>
+
+<p style="color:blue">The model intercept for the *log-transformed model* is 0.2. The model intercept for *untransformed model* is 3.5.</p> 
+
+<p style="color:blue">It  makes sense for the intercept of the *log-transformed model* to be 0.2. If we just took (simple test) the log10 of 3.5 we would get 0.5.</p> 
+
+<p style="color:blue">We have the log10 applied to both variables. We also removed the values where *lastcontr==0".* The *log-transformed model* will observe a much small range of numbers (min and max).</p>
+
+
+2. Create an XY-scatterplot of *log-transformed* predictor and response and add corresponding regression line to it.  Compare it to the plot in *untransformed* coordinates obtained in Problem 1.  What would you conclude from such comparison?
+
+<p style="color:blue">In addition to xy-scattered plots, I am including boxplots to show another view how the transformed set differs from the untransformed. This set of plots show how the data are spread across their space. The logarithmic transformation makes data spread more evenly. The boxplot provide a nice visual on how data spread. The *transformed dataset* exhibits an even spread. That even spread is supported in the xy-scattered plots.</p>
+
+
+```{r Problem2_Q2}
+
+summary(frcDatP2[,c("contrib")])
+summary(log10(frcDatP2[,c("contrib")]))
+
+#
+old.par <- par(mfrow=c(1,2), ps=10)
+
+boxplot(frcDatP2[,c("contrib")],
+        main="UnXformed ($)",
+        col="skyblue")
+
+boxplot(log10(frcDatP2[,c("contrib")]),
+        main="Xformed (log$)",
+        col="skyblue")
+
+# Original lm model
+plot(frcDatP2[,c("lastcontr", "contrib")], 
+     main = "UnXformed ($ x $)")
+abline(lmModel,col=2,lwd=2)
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+
+# Recall to use frcDatP2 w/o lastcontr == 0.
+plot(log10(frcDatP2[,c("lastcontr", "contrib")]),
+     main = "Xformed (log$ x log$")
+abline(logModel,col=2,lwd=2)
+abline(h=0,lty=2)
+abline(v=0,lty=2)
+
+par(old.par)
+```
+
+
+
+3. Make diagnostic plots for the model fit on log-transformed outcome and the last contribution.  Compare them to the diagnostic plots generated in Problem 1 for the model fitted using original scale of measurements (untransformed). What can you conclude from this comparison about the relative quality of these two models?
+
+<p style="color:blue">The *transformed dataset* fixes some of the issues observed in the *untranformed* diagnoistic set. The *residuals vs. fitted* chart shows the even distribution from left to right as noticed in the linear regression chart above. The *scale-location* chart also straightens the chart, where the original scale of measurements had exhibited a positive slope or positive trend.</p>
+
+```{r Problem2_Q3}
+## / plot lm() -- 4 diagnostic plots created                                          ####
+old.par <- par(mfrow=c(1,2))
+
+plot(logModel)
+
+par(old.par)
+```
+
+# Problem 3: Adding second variable to the model (10 points)
+
+To explore effects of adding another variable to the model, continue using log-transformed attributes and fit a model of log-transformed outcome (the same target campaign contribution, column `contrib` in `fund-raising.csv`) as a function of the last contribution and average contribution (both log-transformed).  Just an additive model -- no interaction term is necessary at this point. Please obtain and evaluate the summary of this model fit, confidence intervals on its parameters and its diagnostic plots. Where applicable, compare them to the model obtained above and reflect on pros and cons of including average contribution as another variable into the model.  You may find the discussion of *variance inflation factor* (VIF) in ISLR Ch.3.3.3 (Section 6) and its implementation `vif` in `car` library particularly useful in this context. 
+
+<p style="color:blue">To add a second variable and then apply a log-transformation, I will first test the new variable and avoid any 0 equalities (i.e. to prevent possible issues with log), and then will run the `lm()` to perform linear regression.</p>
+
+```{r Problem3_Q1}
+####
+#
+## CSCI E63-C PSET 3 - Problem 3                                            ####
+#
+#  Multi-Variable Model (mvlogModel)
+
+# Remove lastcontr == 0
+frcDat_test <- frcDatP2[frcDatP2$avecontr != 0,]
+
+print("Dimension of P2 data frame before removing avecontr==0:")
+dim(frcDatP2)
+print("Dimension of test data frame after removing avecontr==0:")
+dim(frcDat_test)
+
+#Since the dimension did not change, I will stick with frcDatP2 for the rest of this problem
+
+mvlogModel <- lm(log10(contrib)~log10(lastcontr + avecontr), data = frcDatP2)
+
+summary(mvlogModel)
+
+```
+
+
+
+<p style="color:blue">Function *confint()* provide confidence intervals with 95% confidence level, and predictions. The following R code provides results to compare the new two-variable (multi-variable) log model, with the previous single-variable log model, and with the original model, as follows:</p>.
+
+```{r Problem3_Q2}
+
+print("Confidence intervals for multi-variable log10 transformed model")
+confint(mvlogModel)
+
+print("Confidence intervals for log10 transformed model")
+confint(logModel)
+
+print("Confidence intervals for original untransformed model")
+confint(lmModel)
+
+# Predictions
+print("MV-Transformed model (log10, two variables), 95% confidence")
+10^predict(mvlogModel,
+        newdata=data.frame(lastcontr=c(10,20,40), avecontr=c(10,20,40)),
+        interval='confidence',
+        level = 0.95)
+
+10^predict(mvlogModel,
+        newdata=data.frame(lastcontr=c(10,20,40), avecontr=c(10,20,40)),
+        interval='prediction',
+        level = 0.95)
+
+print("Transformed model (log10, one variable), 95% confidence")
+10^predict(logModel,
+        newdata=data.frame(lastcontr=c(10,20,40)),
+        interval='confidence',
+        level = 0.95)
+
+10^predict(logModel,
+        newdata=data.frame(lastcontr=c(10,20,40)),
+        interval='prediction',
+        level = 0.95)
+
+print("Original untransformed model, 95% confidence")
+predict(lmModel,
+        newdata=data.frame(lastcontr=c(10,20,40)),
+        interval='confidence',
+        level = 0.95)
+
+predict(lmModel,
+        newdata=data.frame(lastcontr=c(10,20,40)),
+        interval='prediction',
+        level = 0.95)
+
+
+```
+
+<p style="color:blue">Those functions generated confidence intervals and predictions for all three cases: Original model, log10 model with one variable, and log10 model with two variables. I used prediction for `lastcont` and `avecontr` 10, 20, and 40. It is interesting to note that all three the models tend to agree on the middle values where `lastcontr` and `avecontr` equal to 20, but the models diverge when we enter a higher number 40. One explanation could be that the models works well for middle numbers, but not as well at the edges, where we could have outliers. The next analysis will help visualize that last point.</p>
+
+<p style="color:blue">Diagnostic plots printed below.</p>
+
+```{r Problem3_Q3}
+# 
+old.par <- par(mfrow=c(1,2))
+
+plot(mvlogModel)
+
+par(old.par)
+```
+
+<p style="color:blue">Comparing to the first log-transformed model:</p>
+
+
+```{r Problem4_Q4.1}
+
+old.par <- par(mfrow=c(1,2))
+
+# Reference: Code to plot individual quality plots (using the "which" argument)
+# came from Jose Pena in Week 3 TF Section: Linear Regression in R
+plot(logModel, which = 1)
+
+plot(mvlogModel, which = 1)
+
+par(old.par)
+
+```
+
+<p style="color:blue">The single-variable log10 model is on the left, and the two-variable log10 model is on the right, as labeled at the bottom.</p>
+
+<p style="color:blue">The two-variable log10 model tends to keep the trending line (red) closer to the middle as we approach higher values.</p>
+
+<p style="color:blue">In my previous observation I noted that the predictions diverged at higher numbers. The residuals vs fitted plot could explain it.</p>
+
+<p style="color:blue">Now let's do another comparison looking at scale-location.</p>
+
+```{r Problem4_Q4.2}
+old.par <- par(mfrow=c(1,2))
+
+# Reference: Code to plot individual quality plots (using the "which" argument)
+# came from Jose Pena in Week 3 TF Section: Linear Regression in R
+plot(logModel, which = 3)
+
+plot(mvlogModel, which = 3)
+
+par(old.par)
+```
+
+<p style="color:blue">In here too, the scale-location plot has a more straight trendline for the two-variable plot (right) than for the single-variable plot (left).</p>
+
+<p style="color:blue">Overall, the two-variable model offers better results by taking care of higher numbers, such as outliers.</p>
+
+<p style="color:blue">On the other hand, the two-variable model may result on more variability. Having more variables produces more influence on the predictions coming from more sources.</p>
+
+```{r frcDatP2vif}
+summary(lm(contrib~lastcontr+avecontr, data = frcDatP2))
+
+summary(lm(contrib~.
+           -gapmos
+           -promocontr
+           -mincontrib
+           -ncontrib
+           -maxcontrib
+           -mailord
+           -mindate
+           -maxdate
+           -age,
+           frcDatP2[,colnames(frcDatP2)!="gender"]))
+
+# Reference: VIF code came from file "wk3qa.RMD" provided in class.
+# and it is based on homework problems from chatper 3 of ISLR textbook.
+
+library(car)
+
+vif(lm(contrib~lastcontr+avecontr, data = frcDatP2))
+vif(lm(contrib~.
+           -gapmos
+           -promocontr
+           -mincontrib
+           -ncontrib
+           -maxcontrib
+           -mailord
+           -mindate
+           -maxdate
+           -age,
+           frcDatP2[,colnames(frcDatP2)!="gender"]))
+
+
+#test
+summary(frcDatP2)
+        
+summary(lm(contrib~.,frcDatP2[,colnames(frcDatP2)!="gender"]))
+vif(lm(contrib~.,frcDatP2[,colnames(frcDatP2)!="gender"]))
+vif(lm(contrib~.-lastcontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+vif(lm(contrib~.-lastcontr-avecontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+
+summary(lm(contrib~.-lastcontr-avecontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+# 
+# summary(lm(contrib~.,frcDatP2[,colnames(Auto)!="name"], data = frcDatP2))
+# vif(lm(mpg~.,Auto[,colnames(Auto)!="name"]))
+# vif(lm(mpg~.-displacement,Auto[,colnames(Auto)!="name"]))
+# vif(lm(mpg~.-displacement-weight,Auto[,colnames(Auto)!="name"]))
+# summary(lm(mpg~.-displacement-weight,Auto[,colnames(Auto)!="name"]))
+
+```
+<p style="color:blue">VIF tests collinearity</p>
+
+<p style="color:blue">Collinmarity causes an increase in coefficient estimates to increase. It is hard to detect by inspection. The Variance Correlation Factor (VIF) (ISLR p. 101). Small indicates absence of collinearity. Smallest VIF is 1. THe test for `lastcontr` and `avecontr` resulted in VIF of 2.45. That is a small number and therefore this test indecates that there is no colliearity between these two variables.</p>
+
+# References
+1. Book (ISLR) "An Introduction to Statistical Learning with Applications in R" by Gareth James et al
+2. Book "R for Data Science" by Hadley Wickham and Garrett Grolemund
+3. Book "R Graphics Cookbook" by Winston Chang
+4. Handout from CSCI E-63C "Week 3 TF Section: Linear Regression" by Jose Pena
+5. LinkedIn Learning "Wrangling and Visualizing Data" by Barton Poulson
+6. Stackoverflow reliable online coding tips: https://stackoverflow.com/
+7. R help() function: Use this one a lot!!
