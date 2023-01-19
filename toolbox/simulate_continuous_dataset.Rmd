@@ -14,6 +14,11 @@ This script shows how to simulate a dataset that can be used in regression probl
 In regression, the variables that we are measuring are continuous, 
 and the variable that we are predicting is continuous as well.
 
+```{r setup, include=FALSE}
+library(stats)    # Stats contains lm
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 # Dependent variables
 
 ## Simulate the data
@@ -80,7 +85,7 @@ Play with the number of samples and we move the means around.
 ```{r}
 # From Harvard data science class (see references at the end of this notebook)
 # simulate sampling of 10000 values for X and for Y.
-# We can play with the mean and sd. Shoud have same size to keep it balanced.
+# We can play with the mean and sd. Should have same size to keep it balanced.
 x <- rnorm(10000, mean=10, sd=3) 
 y <- rnorm(10000, mean=10, sd=3)
 
@@ -90,9 +95,9 @@ y <- rnorm(10000, mean=10, sd=3)
 
 
 ```{r}
-
-br<- -5:25 # set manually bins for histograms 
-# save histograms for X and Y , don’t plot yet:
+# Set manually bins for histograms 
+br<- -5:25 
+# Save histograms for X and Y , don’t plot yet
 hx <- hist(x, breaks=br, plot=F)
 hy <- hist(y, breaks=br, plot=F) 
 
@@ -115,10 +120,80 @@ plot(x,y,
      pch=19,
      cex=0.3) 
 
-# restore graphical attributes to previous values:
+# restore graphical attributes to previous values
 par(old.par)
 
 ```
+
+# Simulate known linear regression
+
+In this approach, we will simulate data where we know the linear regression parameters.
+
+## Simulate the data
+
+Here we simulate X to be Uniformly distributed across a set of values. 
+
+We simulate Y with a known intercept, pus a slope time X with a random variability.
+
+```{r}
+# X has a uniform distribution over a sequence over a range
+x <- seq(-3, 3, length=100)
+
+# Y is based on X with a slope, an intercept and normal randomness
+y <- 1 + 2*x+rnorm(100, sd=1)
+
+```
+
+
+## Scatter plots
+
+```{r}
+plot(x, y, pch=19, cex=0.7)
+
+```
+
+## Apply linear regression model
+
+```{r}
+ m <- lm(y~x)
+ summary(m)
+```
+Notice the intercept is 1.01, while our empirical value was 1.
+
+And the slope is 1.96, while our empirical value was 2.
+
+## Predict
+
+```{r}
+yp <- predict(m)
+
+# Plot the prediction. Replot and add prediction points:
+plot(x, y, pch=19, cex=0.7)
+points(x,yp,col="red",pch=19,cex=0.7)
+
+```
+## Prediction metrix
+
+```{r}
+rss <- sum((y - yp)^2)                # Sum of Squares Estimated (aka SSE)
+rse <- sqrt(rss/98)
+tss <- sum((y - mean(y))^2)           # Sum of Squares Total (aka SST)
+ssr <- sum((yp - mean(y))^2)        # Sum of Squares Regression
+se <- rse/sqrt(sum((x-mean(x))^2))  # Standard Error
+roh_squared <- ssr / tss
+
+cat(' RSS aka SSE = ', rss)
+cat('\n RSE aka ?? = ', rse)
+cat('\n TSS aka SST = ', tss)
+cat('\n SSR = ', ssr)
+cat('\n Coefficient of determination (roh squared) = ', roh_squared)
+cat('\n roh = ', sqrt(roh_squared))
+#
+# cat('\n SE = ', se)
+# (tss-rss)/tss
+
+```
+
 
 # References
 
