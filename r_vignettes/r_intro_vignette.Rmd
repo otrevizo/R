@@ -1,9 +1,11 @@
 ---
 title: "R Intro"
 output:
-  html_document:
+  pdf_document:
     toc: yes
   word_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
