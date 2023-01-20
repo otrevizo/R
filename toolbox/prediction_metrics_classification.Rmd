@@ -120,7 +120,24 @@ prediction.metrics = function(truth, predicted) {
     return(output)
 }
 
+print.the.metrics = function(metrics){
+  cat(' OBS = ', metrics$OBS, '...................number of observations')
+  cat('\n ACC = ', metrics$ACC, '..................Accuracy')
+  cat('\n TPR = ', metrics$TPR, '..................True Positive Rate')
+  cat('\n TNR = ', metrics$TNR, '..................True Negative Rate')
+  cat('\n PPV = ', metrics$PPV, '..................Positive Predictive Value (Precision)')
+  cat('\n NPV = ', metrics$NPV, '..................Negative Predictive Value')
+  cat('\n FDR = ', metrics$FDR, '..................False Discover Rate')
+  cat('\n FPR = ', metrics$FPR, '..................False Positive Rate')
+  cat('\n TP  = ', metrics$FP, '..................True Positives')
+  cat('\n TN  = ', metrics$TN, '..................True Negatives')
+  cat('\n FP  = ', metrics$TN, '..................False Positives')
+  cat('\n FN  = ', metrics$FN, '..................False Negatives')
+  cat('\n P   = ', metrics$P, '..................Positives')
+  cat('\n N   = ', metrics$N, '..................Negatives')
 
+  
+}
 # Logistic regression
 lgr.pred.ftn = function(formula, df.train, df.test){
   glm.fit <- glm(formula, data = df.train, family = binomial)
@@ -160,13 +177,16 @@ We can change the number of samples and we can move the means around.
 
 set.seed(11)
 
+N = 30
+mu = 2
+
 # Our measuring variable is continuous, numeric...
 # ...it has two Normal distribution waves
-x <- c(rnorm(30), rnorm(30, mean=2))
+x <- c(rnorm(N), rnorm(N, mean=mu))
 
 # Our outcome is categorical, A and B xxxx times each
 # ...the idea is to match A and B to a number x
-y <- rep(c("A", "B"), each=30)
+y <- rep(c("A", "B"), each=N)
 
 ```
 
@@ -222,7 +242,9 @@ lda.m
 # Plot results
 
 ```{r}
-plot(x, ifelse(y=="A", 0,1), col=ifelse(y=="A", "lightblue","orange"), pch=19)
+
+# Good example of the ifelse function
+plot(x, ifelse(y=="A", 0, 1), col=ifelse(y=="A", "lightblue","orange"), pch=19)
 
 # theoretical probability of B, TRUTH (dashed line):
 # points(xx,exp(-(xx-2)^2/2)*0.75/(exp(-(xx-2)^2/2)*0.75+exp(-xx^2/2)*0.25),type='l',col='red',lwd=2,lty=2)
@@ -258,7 +280,9 @@ mean(lda.class == y)
 ```{r}
 
 lda.metrics <- prediction.metrics(ifelse(y=="A",0,1), ifelse(lda.class=="A",0,1))
-lda.metrics
+
+print.the.metrics(lda.metrics)
+
 
 ```
 
