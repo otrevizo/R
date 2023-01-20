@@ -3,76 +3,65 @@ title: "Predictions Metrics: Classification"
 author: "Oscar A. Trevizo"
 date: "January 2023"
 output:
-  html_document:
-    toc: yes
   pdf_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
 # Purpose
 
-A set of function that assess predictions by providing various atrix such as accuracy, errors, sensitivity, specificity, precision, etc.
+A function that assesses predictions by providing accuracy metrics.
 
-There are two sets of metrix: One set for regression and one set for classification.
+There are two sets of metrics: One set for regression and one set for classification.
+
+This notebook focuses on *classification metrics*.
 
 Use this terminology:
 
 * Prediction accuracy: Refers to regression
 * Prediction metrics: Refers to classification
 
+In this notebook, we fit a logistic regression model and evaluate performance of LDA, QDA and KNN classifiers.
+
+There are various acronyms in the literature describing the same metrics. I am following the nomenclature from ISLR (see references below):
+
+Formulas:
+
+* OBS = Observations or truth cases
+* Accuracy. ACC = sum(truth == predicted) * 100/length(truth)
+* Sensitivity. TPR True Positive Rate = TP/(TP + FN) = TP/P
+* Specificity. TNR True Negative Rate = TN/(FP + TN) = TN/N
+* Precision. Positive Predictive Value. PPV = TP/(TP + FP)
+* Negative Predictive Value. NPV = TN/(TN + FN)
+* False Discovery Rate. FDR = FP/(TP + FP)
+* False Positive Rate. FPR = FP/(FP + TN) = FP/N
+* True Positives. TP = sum(truth == 1 & predicted == 1)
+* True Negatives. TN = sum(truth == 0 & predicted == 0)
+* False Positives. FP = sum(truth == 0 & predicted == 1)
+* False Negatives. FN = sum(truth == 1 & predicted == 0)
+* Positives. P = TP + FN  # total number positives in the truth data
+* Negatives. N = FP + TN  # total number of negatives
+
+
 ```{r setup, include=FALSE}
-library(stats)    # Stats contains lm
+library(stats)                # Stats contains lm
+library(MASS)                 # LDA and QDA
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Functions
 
+Adapted from R functions shared by faculty in Harvard data science class (2021). See references at the bottom of this notebook.
+
 ```{r}
 
 ###
 #
-# regression.accuracy function -- to return a list with all the regression error values
-#
-# Input: truth (y) and predicted (yp) lists.
-#
-# Return as list with:
-# [1] RSS <- sum((y - yp)^2)                # Sum of Squares Estimated (aka SSE) (ISLR p.62)
-# [2] RSE <- sqrt(RSS/(N-2))                # Residual Standard Error (ISLR p.66)
-# [3] TSS <- sum((y - mean(y))^2)           # Sum of Squares Total (aka SST) (ISLR p.70)
-# [4] SSR <- sum((yp - mean(y))^2)          # Sum of Squares Regression (= TSS - RSS)
-# [5] R_squared <- (TSS-RSS)/TSS            # R^2 Static (= SSR/TSS) (ISLR p.69)
-# [6] SE <- RSE/sqrt(sum((x-mean(x))^2))    # Standard Error
-
-prediction.accuracy = function(truth, predicted) {
-    # same length:
-    if (length(truth) != length(predicted)) {
-        stop("truth and predicted must be same length!")
-    }
-    # check for missing values (we are going to compute metrics on non-missing
-    # values only)
-    bKeep = !is.na(truth) & !is.na(predicted)
-    predicted = predicted[bKeep]
-    truth = truth[bKeep]
-    
-    # Switch to notation y and yp (y predicted)
-    y = truth
-    yp = predicted
-    
-    RSS <- sum((y - yp)^2)                # Sum of Squares Estimated (aka SSE) (ISLR p.62)
-    RSE <- sqrt(RSS/(N-2))                # Residual Standard Error (ISLR p.66)
-    TSS <- sum((y - mean(y))^2)           # Sum of Squares Total (aka SST) (ISLR p.70)
-    SSR <- sum((yp - mean(y))^2)          # Sum of Squares Regression
-    R_squared <- (TSS-RSS)/TSS            # R^2 Static (ISLR p.69)
-    SE <- RSE/sqrt(sum((x-mean(x))^2))    # Standard Error
-
-    output <- list(RSS=RSS, RSE=RSE, TSS=TSS, SSR=SSR, R_squared=R_squared, SE=SE)
-    return(output)
-}
-###
-#
 # prediction.metrics function -- to return a list with all the metrics values
 #
-# Based on R function from Harvard data science class (2021). See references.
+# Based on R functions shared by faculty in Harvard data science class (2021). See references.
 #
 # Input: truth and predicted lists.
 #
@@ -123,82 +112,153 @@ prediction.metrics = function(truth, predicted) {
     NPV = TN/(TN + FN)
     FDR = FP/(TP + FP)
     FPR = FP/N
-    output <- list(OBS, ACC, TPR, TNR, PPV, NPV, FDR, FPR, TP, TN, FP, FN, P, N)
+    
+    # Returned a named list
+    output <- list(OBS=OBS, ACC=ACC, TPR=TPR, TNR=TNR, PPV=PPV, 
+                   NPV=NPV, FDR=FDR, FPR=FPR, TP=TP, 
+                   TN=TN, FP=FP, FN=FN, P=P, N=N)
     return(output)
+}
+
+
+# Logistic regression
+lgr.pred.ftn = function(formula, df.train, df.test){
+  glm.fit <- glm(formula, data = df.train, family = binomial)
+  glm.probs <- predict(glm.fit, newdata = df.test, type = "response")
+  glm.pred <- rep(0, dim(df.test)[1])
+  glm.pred[glm.probs>0.5]=1
+  return(glm.pred)
+}
+
+# Linear Discriminant Analysis (LDA)
+lda.pred.ftn = function(formula, df.train, df.test){
+  lda.fit <- lda(formula, data = r3df.train)
+  lda.pred <- predict(lda.fit, df.test)
+  lda.class <- lda.pred$class
+  return(lda.class)
+}
+
+# Quadratic Discriminant Analysis (QDA)
+qda.pred.ftn = function(formula, df.train, df.test){
+  qda.fit <- qda(formula, data = r3df.train)
+  qda.pred <- predict(qda.fit, df.test)
+  qda.class <- qda.pred$class
+  return(qda.class)
 }
 
 ```
 
 
-# Regression
+# Simulate the data
 
-In this approach, we will simulate data where we know the linear regression parameters.
-
-## Simulate the data
-
-Here we simulate X to be Uniformly distributed across a set of values. 
-
-We simulate Y with a known intercept, pus a slope time X with a random variability.
+Play with two sets of Normally distributed sets of data with different means.
+We can change the number of samples and we can move the means around.
 
 ```{r}
 
-N = 100
-sd_delta = 1
-slope = 2
-intersection = 1
+# From Harvard data science class (see references at the end of this notebook)
 
-# X has a uniform distribution over a sequence over a range
-x <- seq(-3, 3, length=N)
+set.seed(11)
 
-# Y is based on X with a slope, an intercept and normal randomness
-y <- intersection + slope*x+rnorm(100, sd=sd_delta)
+# Our measuring variable is continuous, numeric...
+# ...it has two Normal distribution waves
+x <- c(rnorm(30), rnorm(30, mean=2))
+
+# Our outcome is categorical, A and B xxxx times each
+# ...the idea is to match A and B to a number x
+y <- rep(c("A", "B"), each=30)
+
+```
+
+# Boxplot and histogram
+
+In a boxplot, we want to have the categorical variable in the horizontal axis. 
+
+That is why we see a formula x~y below.
+
+The chart gives us more information if we plot it horizontally in this case.
+
+The histogram adds information to visualize the behavior relationship 
+between the outcome, categorical valuable, and predictor, numeric variable.
+
+
+```{r}
+# From Harvard data science class (see references)
+boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
+
+# Now place a histogram on top of another histogram
+
+oldpar <- par(mfrow=c(3, 1), mar=c(2,2,1,1))
+
+breaks <- seq(-2, 4, by=0.25)
+
+# Histogram for 'B'
+hist(x[y=="B"], breaks=breaks, col='orange', main="B", xaxt='n')
+
+# Histogram for 'A'
+hist(x[y=="A"], breaks=breaks, col='lightblue', main="A")
+
+plot(x, ifelse(y=="A", 0,1), breaks=breaks, col=ifelse(y=="A", "lightblue","orange"), pch=19)
+
+par(oldpar)
+```
+
+
+# Linear Discriminant Analysis (LDA)
+
+Needs library{MASS}
+
+```{r}
+##
+#
+# LDA from library{MASS}
+#
+##
+lda.m <- lda(y~x, data=data.frame(y=y, x=x))
+lda.m
+# summary(m)
+```
+
+# Plot results
+
+```{r}
+plot(x, ifelse(y=="A", 0,1), col=ifelse(y=="A", "lightblue","orange"), pch=19)
+
+# theoretical probability of B, TRUTH (dashed line):
+# points(xx,exp(-(xx-2)^2/2)*0.75/(exp(-(xx-2)^2/2)*0.75+exp(-xx^2/2)*0.25),type='l',col='red',lwd=2,lty=2)
+
+# from estimated distributions, LDA-style (from slide 16):
+# points(xx,exp(-(xx-m.b)^2/(2*s^2))*p.b/
+# (exp(-(xx-m.b)^2/(2*s^2))*p.b+
+# exp(-(xx-m.a)^2/(2*s^2))*p.a),
+# type='l',col='red',lwd=2)
+
+```
+
+# Predict
+
+```{r}
+lda.p <- predict(lda.m)
 
 ```
 
 
-## Linear regression model
+## Confusion matrix
 
 ```{r}
- m <- lm(y~x)
- summary(m)
-```
-Notice the intercept is 1.01, while our empirical value was 1.
-
-And the slope is 1.96, while our empirical value was 2.
-
-## Predict
-
-```{r}
-yp <- predict(m)
-
-# Plot the prediction. Replot and add prediction points:
-plot(x, y, pch=19, cex=0.7)
-points(x,yp,col="red",pch=19,cex=0.7)
+lda.class = lda.p$class
+table(lda.class, y)
+mean(lda.class == y)
 
 ```
-## Accuracy
+
+
+# Prediction metrics
 
 ```{r}
 
-lm.accuracy <- prediction.accuracy(y, yp)
-
-# output <- list(RSS=RSS, RSE=RSE, TSS=TSS, SSR=SSR, R_squared=R_squared, SE=SE)
-# We can pull the list elements one by one like this with [[]]
-# RSS <- lm.accuracy[[1]]
-# Since it is a named list, we can use the $ notation as follows
-RSS <- lm.accuracy$RSS                # Sum of Squares Estimated (aka SSE) (ISLR p.62)
-RSE <- lm.accuracy$RSE                # Residual Standard Error (ISLR p.66)
-TSS <- lm.accuracy$TSS           # Sum of Squares Total (aka SST) (ISLR p.70)
-SSR <- lm.accuracy$SSR          # Sum of Squares Regression
-R_squared <- lm.accuracy$R_squared            # R^2 Static (ISLR p.69)
-SE <- lm.accuracy$SE    # Standard Error
-
-cat(' RSS = ', RSS, '..............Sum of Squares Estimated (aka SSE) (ISLR p.62)')
-cat('\n RSE = ', RSE, '.............Residual Standard Error (ISLR p.66)')
-cat('\n TSS = ', TSS, '..............Sum of Squares Total (aka SST) (ISLR p.70)')
-cat('\n SSR = ', SSR, '..............Sum of Squares Regression (TSS-RSS)')
-cat('\n R^2 = ', R_squared, '.............R^2 Static (TSS-RSS)/TSS (ISLR p.69)')
-cat('\n SE = ', SE, '.............Standard Error')
+lda.metrics <- prediction.metrics(ifelse(y=="A",0,1), ifelse(lda.class=="A",0,1))
+lda.metrics
 
 ```
 
