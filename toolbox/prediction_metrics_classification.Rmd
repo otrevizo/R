@@ -1,0 +1,209 @@
+---
+title: "Predictions Metrics: Classification"
+author: "Oscar A. Trevizo"
+date: "January 2023"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+# Purpose
+
+A set of function that assess predictions by providing various atrix such as accuracy, errors, sensitivity, specificity, precision, etc.
+
+There are two sets of metrix: One set for regression and one set for classification.
+
+Use this terminology:
+
+* Prediction accuracy: Refers to regression
+* Prediction metrics: Refers to classification
+
+```{r setup, include=FALSE}
+library(stats)    # Stats contains lm
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Functions
+
+```{r}
+
+###
+#
+# regression.accuracy function -- to return a list with all the regression error values
+#
+# Input: truth (y) and predicted (yp) lists.
+#
+# Return as list with:
+# [1] RSS <- sum((y - yp)^2)                # Sum of Squares Estimated (aka SSE) (ISLR p.62)
+# [2] RSE <- sqrt(RSS/(N-2))                # Residual Standard Error (ISLR p.66)
+# [3] TSS <- sum((y - mean(y))^2)           # Sum of Squares Total (aka SST) (ISLR p.70)
+# [4] SSR <- sum((yp - mean(y))^2)          # Sum of Squares Regression (= TSS - RSS)
+# [5] R_squared <- (TSS-RSS)/TSS            # R^2 Static (= SSR/TSS) (ISLR p.69)
+# [6] SE <- RSE/sqrt(sum((x-mean(x))^2))    # Standard Error
+
+prediction.accuracy = function(truth, predicted) {
+    # same length:
+    if (length(truth) != length(predicted)) {
+        stop("truth and predicted must be same length!")
+    }
+    # check for missing values (we are going to compute metrics on non-missing
+    # values only)
+    bKeep = !is.na(truth) & !is.na(predicted)
+    predicted = predicted[bKeep]
+    truth = truth[bKeep]
+    
+    # Switch to notation y and yp (y predicted)
+    y = truth
+    yp = predicted
+    
+    RSS <- sum((y - yp)^2)                # Sum of Squares Estimated (aka SSE) (ISLR p.62)
+    RSE <- sqrt(RSS/(N-2))                # Residual Standard Error (ISLR p.66)
+    TSS <- sum((y - mean(y))^2)           # Sum of Squares Total (aka SST) (ISLR p.70)
+    SSR <- sum((yp - mean(y))^2)          # Sum of Squares Regression
+    R_squared <- (TSS-RSS)/TSS            # R^2 Static (ISLR p.69)
+    SE <- RSE/sqrt(sum((x-mean(x))^2))    # Standard Error
+
+    output <- list(RSS=RSS, RSE=RSE, TSS=TSS, SSR=SSR, R_squared=R_squared, SE=SE)
+    return(output)
+}
+###
+#
+# prediction.metrics function -- to return a list with all the metrics values
+#
+# Based on R function from Harvard data science class (2021). See references.
+#
+# Input: truth and predicted lists.
+#
+# Returns a list with:
+# [1] OBS = Observations or truth cases
+# [2] Accuracy. ACC = sum(truth == predicted) * 100/length(truth)
+# [3] Sensitivity. TPR True Positive Rate = TP/(TP + FN) = TP/P
+# [4] Specificity. TNR True Negative Rate = TN/(FP + TN) = TN/N
+# [5] Precision. Positive Predictive Value. PPV = TP/(TP + FP)
+# [6] Negative Predictive Value. NPV = TN/(TN + FN)
+# [7] False Discovery Rate. FDR = FP/(TP + FP)
+# [8] False Positive Rate. FPR = FP/(FP + TN) = FP/N
+# [9] True Positives. TP = sum(truth == 1 & predicted == 1)
+# [10] True Negatives. TN = sum(truth == 0 & predicted == 0)
+# [11] False Positives. FP = sum(truth == 0 & predicted == 1)
+# [12] False Negatives. FN = sum(truth == 1 & predicted == 0)
+# [13] Positives. P = TP + FN  # total number positives in the truth data
+# [14] Negatives. N = FP + TN  # total number of negatives
+#
+prediction.metrics = function(truth, predicted) {
+    # same length:
+    if (length(truth) != length(predicted)) {
+        stop("truth and predicted must be same length!")
+    }
+    # check for missing values (we are going to compute metrics on non-missing
+    # values only)
+    bKeep = !is.na(truth) & !is.na(predicted)
+    predicted = predicted[bKeep]
+    truth = truth[bKeep]
+    # only 0 and 1:
+    if (sum(truth %in% c(0, 1)) + sum(predicted %in% c(0, 1)) != 2 * length(truth)) {
+        stop("only zeroes and ones are allowed!")
+    }
+    # how predictions align against known training/testing outcomes: TP/FP=
+    # true/false positives, TN/FN=true/false negatives
+    TP = sum(truth == 1 & predicted == 1)
+    TN = sum(truth == 0 & predicted == 0)
+    FP = sum(truth == 0 & predicted == 1)
+    FN = sum(truth == 1 & predicted == 0)
+    P = TP + FN  # total number of positives in the truth data
+    N = FP + TN  # total number of negatives
+    # Add the following output to return (OAT 11/9/2021)
+    OBS = length(truth)
+    ACC = sum(truth == predicted)/length(truth)
+    TPR = TP/P
+    TNR = TN/N
+    PPV = TP/(TP + FP)
+    NPV = TN/(TN + FN)
+    FDR = FP/(TP + FP)
+    FPR = FP/N
+    output <- list(OBS, ACC, TPR, TNR, PPV, NPV, FDR, FPR, TP, TN, FP, FN, P, N)
+    return(output)
+}
+
+```
+
+
+# Regression
+
+In this approach, we will simulate data where we know the linear regression parameters.
+
+## Simulate the data
+
+Here we simulate X to be Uniformly distributed across a set of values. 
+
+We simulate Y with a known intercept, pus a slope time X with a random variability.
+
+```{r}
+
+N = 100
+sd_delta = 1
+slope = 2
+intersection = 1
+
+# X has a uniform distribution over a sequence over a range
+x <- seq(-3, 3, length=N)
+
+# Y is based on X with a slope, an intercept and normal randomness
+y <- intersection + slope*x+rnorm(100, sd=sd_delta)
+
+```
+
+
+## Linear regression model
+
+```{r}
+ m <- lm(y~x)
+ summary(m)
+```
+Notice the intercept is 1.01, while our empirical value was 1.
+
+And the slope is 1.96, while our empirical value was 2.
+
+## Predict
+
+```{r}
+yp <- predict(m)
+
+# Plot the prediction. Replot and add prediction points:
+plot(x, y, pch=19, cex=0.7)
+points(x,yp,col="red",pch=19,cex=0.7)
+
+```
+## Accuracy
+
+```{r}
+
+lm.accuracy <- prediction.accuracy(y, yp)
+
+# output <- list(RSS=RSS, RSE=RSE, TSS=TSS, SSR=SSR, R_squared=R_squared, SE=SE)
+# We can pull the list elements one by one like this with [[]]
+# RSS <- lm.accuracy[[1]]
+# Since it is a named list, we can use the $ notation as follows
+RSS <- lm.accuracy$RSS                # Sum of Squares Estimated (aka SSE) (ISLR p.62)
+RSE <- lm.accuracy$RSE                # Residual Standard Error (ISLR p.66)
+TSS <- lm.accuracy$TSS           # Sum of Squares Total (aka SST) (ISLR p.70)
+SSR <- lm.accuracy$SSR          # Sum of Squares Regression
+R_squared <- lm.accuracy$R_squared            # R^2 Static (ISLR p.69)
+SE <- lm.accuracy$SE    # Standard Error
+
+cat(' RSS = ', RSS, '..............Sum of Squares Estimated (aka SSE) (ISLR p.62)')
+cat('\n RSE = ', RSE, '.............Residual Standard Error (ISLR p.66)')
+cat('\n TSS = ', TSS, '..............Sum of Squares Total (aka SST) (ISLR p.70)')
+cat('\n SSR = ', SSR, '..............Sum of Squares Regression (TSS-RSS)')
+cat('\n R^2 = ', R_squared, '.............R^2 Static (TSS-RSS)/TSS (ISLR p.69)')
+cat('\n SE = ', SE, '.............Standard Error')
+
+```
+
+
+# References
+
+* Harvard "Elements of Statistical Learning" (2021) taught by professors Dr. Sivachenko, Dr. Farutin
+* Book “An Introduction to Statistical Learning with Applications in R” (ISLR) by Gareth James et al
