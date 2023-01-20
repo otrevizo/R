@@ -1,6 +1,6 @@
 ---
 title: "Predictions Metrics: Classification"
-author: "Oscar A. Trevizo"
+author: "Oscar Trevizo"
 date: "January 2023"
 output:
   pdf_document:
@@ -43,9 +43,9 @@ Formulas:
 * Positives. P = TP + FN  # total number positives in the truth data
 * Negatives. N = FP + TN  # total number of negatives
 
+# Libraries
 
 ```{r setup, include=FALSE}
-library(stats)                # Stats contains lm
 library(MASS)                 # LDA and QDA
 
 knitr::opts_chunk$set(echo = TRUE)
@@ -138,30 +138,6 @@ print.the.metrics = function(metrics){
 
   
 }
-# Logistic regression
-lgr.pred.ftn = function(formula, df.train, df.test){
-  glm.fit <- glm(formula, data = df.train, family = binomial)
-  glm.probs <- predict(glm.fit, newdata = df.test, type = "response")
-  glm.pred <- rep(0, dim(df.test)[1])
-  glm.pred[glm.probs>0.5]=1
-  return(glm.pred)
-}
-
-# Linear Discriminant Analysis (LDA)
-lda.pred.ftn = function(formula, df.train, df.test){
-  lda.fit <- lda(formula, data = r3df.train)
-  lda.pred <- predict(lda.fit, df.test)
-  lda.class <- lda.pred$class
-  return(lda.class)
-}
-
-# Quadratic Discriminant Analysis (QDA)
-qda.pred.ftn = function(formula, df.train, df.test){
-  qda.fit <- qda(formula, data = r3df.train)
-  qda.pred <- predict(qda.fit, df.test)
-  qda.class <- qda.pred$class
-  return(qda.class)
-}
 
 ```
 
@@ -177,8 +153,8 @@ We can change the number of samples and we can move the means around.
 
 set.seed(11)
 
-N = 30
-mu = 2
+N = 1000
+mu = 4
 
 # Our measuring variable is continuous, numeric...
 # ...it has two Normal distribution waves
@@ -188,7 +164,11 @@ x <- c(rnorm(N), rnorm(N, mean=mu))
 # ...the idea is to match A and B to a number x
 y <- rep(c("A", "B"), each=N)
 
+# Make a data.frame with 1 and 0 values for Y
+df <- data.frame(Y=ifelse(y=="A",0, 1), X=x)
+
 ```
+
 
 # Boxplot and histogram
 
@@ -210,7 +190,7 @@ boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
 
 oldpar <- par(mfrow=c(3, 1), mar=c(2,2,1,1))
 
-breaks <- seq(-2, 4, by=0.25)
+breaks <- seq(-10, 20, by=0.25)
 
 # Histogram for 'B'
 hist(x[y=="B"], breaks=breaks, col='orange', main="B", xaxt='n')
@@ -228,36 +208,19 @@ par(oldpar)
 
 Needs library{MASS}
 
+## Fit the model
+
 ```{r}
 ##
 #
 # LDA from library{MASS}
 #
 ##
-lda.m <- lda(y~x, data=data.frame(y=y, x=x))
-lda.m
-# summary(m)
+lda.m <- lda(Y~X, data = df)
+summary(lda.m)
 ```
 
-# Plot results
-
-```{r}
-
-# Good example of the ifelse function
-plot(x, ifelse(y=="A", 0, 1), col=ifelse(y=="A", "lightblue","orange"), pch=19)
-
-# theoretical probability of B, TRUTH (dashed line):
-# points(xx,exp(-(xx-2)^2/2)*0.75/(exp(-(xx-2)^2/2)*0.75+exp(-xx^2/2)*0.25),type='l',col='red',lwd=2,lty=2)
-
-# from estimated distributions, LDA-style (from slide 16):
-# points(xx,exp(-(xx-m.b)^2/(2*s^2))*p.b/
-# (exp(-(xx-m.b)^2/(2*s^2))*p.b+
-# exp(-(xx-m.a)^2/(2*s^2))*p.a),
-# type='l',col='red',lwd=2)
-
-```
-
-# Predict
+## Predict
 
 ```{r}
 lda.p <- predict(lda.m)
@@ -275,12 +238,11 @@ mean(lda.class == y)
 ```
 
 
-# Prediction metrics
+## Prediction metrics
 
 ```{r}
 
-lda.metrics <- prediction.metrics(ifelse(y=="A",0,1), ifelse(lda.class=="A",0,1))
-
+lda.metrics <- prediction.metrics(df$Y, lda.class)
 print.the.metrics(lda.metrics)
 
 
