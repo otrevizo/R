@@ -1,5 +1,5 @@
 ---
-title: "Classification Vignette"
+title: "Logistic regression classification Vignette"
 author: "Oscar Trevizo"
 date: "January 2023"
 output:
@@ -11,11 +11,13 @@ output:
 
 # Purpose
 
-Various classification techniques.
+To demonstrate the LDA approach to solving classification problems. There are Various classification techniques.
 
 * Linear Discriminant Analysis (LDA)
 * Quadratic Discriminant Analysis (QDA)
 * Logistic Regression / Generalized Linear Models (GLM)
+
+This vignette focuses on logistic regression based on the Generalized Linear Models funcitons in the "stats" library.
 
 
 
@@ -216,78 +218,6 @@ par(oldpar)
 ```
 
 
-# Linear Discriminant Analysis (LDA)
-
-Needs library{MASS}
-
-## Fit the model
-
-```{r}
-##
-#
-# LDA from library{MASS}
-#
-##
-lda.fit <- lda(Y~X, data = df.train)
-summary(lda.fit)
-```
-
-## Predict
-
-```{r}
-lda.pred <- predict(lda.fit, df.test)
-
-names(lda.pred)
-
-```
-
-
-## Confusion matrix
-
-```{r}
-##
-#
-# Continued based on ISLR 4.6.3 p.161-162
-#
-#
-
-lda.class <- lda.pred$class
-
-table(lda.class, df.test$Y)
-
-mean(lda.class == df.test$Y)
-
-```
-* The confusion matrix is based on the test set.
-
-* The confusion matrix indicates the number of observations correctly predicted not to be in Y.
-
-* And it indicated the number of observations correctly predicted to be in Y.
-
-* The `mean()` function calculates the diagonals over the total.
-
-* These results parallel those from linear regression in Problem 1.
-
-
-## LDS prediction metrics
-
-* Now I will use the function from from above
-
-```{r}
-##
-#
-# Based on functions from above
-#
-
-lda.pred <- lda.pred.ftn(Y~X, df.train, df.test)
-
-lda.metrics <- prediction.metrics(df.test$Y, lda.pred)
-
-print.the.metrics(lda.metrics)
-
-```
-
-
 
 # Logistic regression (Generalized Linear Models GLM)
 
@@ -304,7 +234,8 @@ Needs library{stats}
 glm.fit <- glm(Y~X, data=df.train, family = binomial)
 summary(glm.fit)
 ```
-## Logistic regression predicti
+
+## Predicit
 
 * Make predictions using the test dataset.
 
@@ -330,7 +261,7 @@ glm.pred[glm.probs>0.5]=1
 
 ```
 
-## Logistic regression confusion matrix
+## Confusion matrix
 
 
 ```{r}
@@ -346,7 +277,8 @@ table(glm.pred, df.test$Y)
 mean(glm.pred == df.test$Y)
 
 ```
-## Logistic regression prediction metrics
+
+## Prediction metrics
 
 * Now I will use the function calculate accuracy, sensitivity, and specificity
 
