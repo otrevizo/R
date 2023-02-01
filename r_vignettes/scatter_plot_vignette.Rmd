@@ -1,8 +1,13 @@
 ---
-title: "Scatter plot vignette"
+title: "R Vignettes"
+subtitle: "Scatterplots"
+author: "Oscar A. Trevizo"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+toc: yes
 output:
   html_document:
     toc: true
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -32,6 +37,8 @@ ggplot(possum, aes(x=taill, y=totlngth)) +
 
 ## Trend line with default (LOESS and y ~ x)
 
+- With geom_smooth() we get a trendline with confidence levels
+
 ```{r}
 ggplot(possum, aes(x=taill, y=totlngth)) +
   geom_point(color='darkred', alpha=0.6) +
@@ -42,12 +49,15 @@ ggplot(possum, aes(x=taill, y=totlngth)) +
 
 ## Trend line with 'lm' method
 
+- Here the trendline uses linear regression.
+- The command includes confidence levels
+- The 'se' argument in geom_smooth() controls the trendline
 
 ```{r line_dot, eval=TRUE}
 ggplot(possum, aes(x=taill, y=totlngth)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', fill="lightblue", se=TRUE)
 ```
 
 
@@ -58,17 +68,19 @@ ggplot(possum, aes(x=taill, y=totlngth)) +
 ggplot(possum, aes(x=taill, y=totlngth, col=sex)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', fill="lightblue", se=TRUE)
 
 ```
 
 ## Two trend lines and bubble size
 
+- Here I changed geom_smooth(... se=FALSE)
+
 ```{r}
 ggplot(possum, aes(x=taill, y=totlngth, col=sex, size=eye)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', se=FALSE)
 
 
 ```
@@ -79,7 +91,7 @@ ggplot(possum, aes(x=taill, y=totlngth, col=sex, size=eye)) +
 ggplot(possum, aes(x=taill, y=totlngth, col=sex, size=eye)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm') +
+  geom_smooth(method='lm', fill="lightblue", se=TRUE) +
   facet_wrap(~sex)
 
 ```
@@ -108,6 +120,63 @@ ggplot(Animals, aes(x=body, y=brain)) +
 
 ```
 
+# Scatterplot for large file
+
+- Here we will use a very large data.frame.
+- If you knit to PDF, it will tend to create a very large PDF file as well with all the points.
+- Therefore, we need to force it to create a png file instead and manage its size.
+
+
+## Load nycflights13
+
+- Enter commands as indicated in the instructions above.
+
+```{r}
+library(nycflights13)
+data('flights')
+str(flights)
+
+```
+
+## Plot arr_delay vs distance
+
+
+- To reduce the size of the image, I am forcing the Rmd chunk to create a _png_ image with specific resolution of $200$ _dpi_. That is done by specifying $dev='png'$, $dpi=200'$ in the chunk command. I chose $200$ for _dpi_ after experimenting with _Knit_ and and _PDF_ file that it rendered.
+
+```{r, dev='png', dpi=200}
+# Apply the ggplot() approach.
+#
+# There are many NA point. Remove them when plotting geom_point() using na.rm=TRUE.
+#
+ggplot(flights, aes(x=distance, y=arr_delay)) +
+  geom_point(color='blue', alpha=0.1, na.rm=TRUE) +
+  ggtitle('Scatterplot of flights data.frame, arr_delay vs. distance') +
+  labs(y='arr_delay: arrivals delay (minutes)',
+       x='distance: between airports (miles)')
+
+```
+
+## Plot arr_delay vs log(distance)
+
+- For this exercise, I will apply the natural log to _flights$distance_.
+- I will apply the _log()_ command directly within the _ggplot()_ and _hist()_ commands, for simplicity.
+- Again, I will force Knit to render a _png_ image as described previously to reduce the size of the _PDF_ at the end.
+
+```{r, dev='png', dpi=200}
+# I will use thee natural log, base e, the default base.
+#
+ggplot(flights, aes(x=log(distance), y=arr_delay)) +
+  geom_point(color='blue', alpha=0.1, na.rm=TRUE) +
+  ggtitle('Scatterplot of flights data.frame, array_delay vs. log_distance') +
+  labs(y='arr_delay: arrivals delay (minutes)',
+       x='log of distance: between airports (log of miles)')
+
+
+
+```
+
+
+
 # Marginal
 
 ## Density plots (default)
@@ -118,14 +187,14 @@ ggplot(Animals, aes(x=body, y=brain)) +
 p <- ggplot(possum, aes(x=taill, y=totlngth)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', fill="lightblue", se=TRUE)
 
 ggMarginal(p)
 
 ```
 
 
-## Add fill
+## Add fill with ggmarginal()
 
 ```{r}
 
@@ -133,14 +202,14 @@ ggMarginal(p)
 p <- ggplot(possum, aes(x=taill, y=totlngth)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', fill="lightblue", se=TRUE)
 
 ggMarginal(p, fill='lightgreen')
 
 ```
 
 
-## with histogram
+## with histogram in ggMarginal
 
 ```{r}
 
@@ -148,7 +217,7 @@ ggMarginal(p, fill='lightgreen')
 p <- ggplot(possum, aes(x=taill, y=totlngth)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', fill="lightblue", se=TRUE)
 
 ggMarginal(p, fill='lightgreen', type='histogram')
 
@@ -163,8 +232,108 @@ ggMarginal(p, fill='lightgreen', type='histogram')
 p <- ggplot(possum, aes(x=taill, y=totlngth)) +
   geom_point(color='darkred', alpha=0.6) +
   ggtitle('Tail length vs Total length') + 
-  geom_smooth(se=0, method='lm')
+  geom_smooth(method='lm', fill="lightblue", se=TRUE)
 
 ggMarginal(p, fill='lightgreen', type='density')
 
 ```
+
+
+# Boston Example from MASS library
+
+\> library (MASS) 
+
+\> dataset Boston
+
+Get documentation for this library:
+
+\> ?Boston
+
+## Load MASS
+
+- Firstly, _?Boston_ gave us a complete documentation of the dataset, describing each variable.
+
+```{r}
+# Load library MASS
+#
+# including warn.conflicts = FALSE to suppress a known warning.
+# There was a conflict in a function name, but it does not impact this assignment.
+library(MASS, warn.conflicts = FALSE)
+
+```
+
+## Boston example set 1. Scatterplots with trendline and 95% confidence levels
+
+- This time I will run _ggplot_ with _geom_point()_ to create the two meaningful scatterplots for this problem quesiton.
+- As stated above, two meaningful scatterplots to me, for this exercise, are:
+- _medv_ vs _rm_
+- _medv_ vs _lstat_
+
+
+```{r}
+# Apply ggplot to create a scatterplot for medv ~ rm
+#
+ggplot(Boston, aes(x=rm, y=medv)) +
+  geom_point(color='blue', alpha=0.5, na.rm=TRUE) +
+  geom_smooth(method='lm', fill="lightblue", se=TRUE) +
+  ggtitle('Boston medv (median value) vs. rm (no. of rooms)') +
+  labs(y='medv: median value owner-occupied homes ($1000s)',
+       x='rm: average number of rooms per dwelling')
+
+# Apply ggplot to create a scatterplot for medv ~ lstat
+#
+ggplot(Boston, aes(x=lstat, y=medv)) +
+  geom_point(color='blue', alpha=0.5, na.rm=TRUE) +
+  geom_smooth(method='lm', fill="lightblue", se=TRUE) +
+  ggtitle('Boston medv (median value) vs. lstat (lower status %)') +
+  labs(y='medv: median value owner-occupied homes ($1000s)',
+       x='lstat: lower status of the population (%)')
+
+```
+
+
+- _medv_ vs _rm_ exhibit a strong positive relationship: The median value of the home increases as the number of rooms per dwelling increases.
+- _medv_ vs _lstat_ exhit a strong negative relationship: The median value of the home decreases as the percentage of lower status of the population increases.
+- The charts include a linear regression line and 95% confidence levels.
+- In the case of _lstat_ the relation shows a tail. The visual from tail from _medv_ vs _lstat_ could be improved with a log transformation. It may straighten the line a bit more.
+- Variable _lstat_ deserves more research. The documentation does not describe exactly what determines _lower status of population_, nor how the percentage is calculated. These demographics are also very dynamic and change over timer. As far as this exercise goes, the chart is certainly meaningful.
+
+
+## Boston example set 2. Scatterplots with log() trendline and 95% confidence levels
+
+- Focus on _crim_ vs _lstat_ and _crim_ vs _medv_.
+- _crim_ is very skewed left. This chart would improve greatly by transforming its values, for example with a _log()_ scale.
+- _medv_ and _lstat_ are also skewed left and will benefit from a log transformation.
+- _medv_ shows some significant relationships, and that would be more obvious if we were to apply _log()_ transformations.
+- _lstat_ may also benefit from log transformation. Its values may be a bit noisy, jumpy, more scattered. Those jumps could be tested with additional analysis (error rates for example). Nevertheless, the variable may offer value to predict _crim_.
+- Therefore, apply a _log transformations to crim, lstat and mdev_ in the following charts.
+
+
+```{r}
+# Apply ggplot to create a scatterplot for log(crim) ~ log(lstat)
+#
+ggplot(Boston, aes(x=log(lstat), y=log(crim))) +
+  geom_point(color='blue', alpha=0.5, na.rm=TRUE) +
+  geom_smooth(method='lm', fill="lightblue", se=TRUE) +
+  ggtitle('Boston log(crim) (per capita crime rate) vs. log(lstat) (lower status of pop. %)') +
+  labs(y='log(crim): log of per capita crime rate by town',
+       x='log(lstat): log of lower status of the population (%)')
+
+# Apply ggplot to create a scatterplot for log(crim) ~ log(medv)
+#
+ggplot(Boston, aes(x=log(medv), y=log(crim))) +
+  geom_point(color='blue', alpha=0.5, na.rm=TRUE) +
+  geom_smooth(method='lm', fill="lightblue", se=TRUE) +
+  ggtitle('Boston log(crim) (per capita crime rate) vs. log(medv) (median value of homes)') +
+  labs(y='log(crim): log of per capita crime rate by town',
+       x='log(medv): log of median value owner-occupied homes ($1000s)')
+
+
+```
+
+- For outcome _log_crim_, both predictors _lstat_ and _medv_ offer a good amount of information.
+- The charts include a linear regression line and 95% confidence levels.
+- Of the two predictors chosen here, _lstat_ offers the nicest relationship, meaning, from the chart alone, the scatterplot.
+- In the case of _log_lstat_, there is an interesting set of datapoints lined up vertically towards the higher end of the horizontal scale that will require further study.
+- These two predictors of _log_crim_ (i.e., _log_lstat_ and _log_medv_) are not the only significant predictors from the dataset; other predictors may be very helpful to predict _crim_. Those are the two predictors that caught my attention from a regression perspective.
+
