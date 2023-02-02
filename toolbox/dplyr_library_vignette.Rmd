@@ -1,26 +1,32 @@
 ---
 title: "dyplr library vignette"
+author: "Oscar A. Trevizo"
 output:
-  html_document:
-    toc: yes
   pdf_document:
+    toc: yes
+  html_document:
     toc: yes
 ---
 
 # Purpose
 
-This vignette aims to introduce you dyplr library. It is here for learning purposes.
+This vignette aims to introduce you dplyr library. It is here for learning purposes.
 
-# Reference
-
-Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
+- \{dplyr\} (pronounced d - plier dataset plier... pliers to trim data) 
 
 # Libraries
 
-```{r setup, include=FALSE}
+- Load dpylr
 
-# Add DAAG to pull some data
-library(DAAG)
+Tip: Shortcut select a word and click quotations to automate.
+
+It has several functions or methods
+
+- Pipes %>% to chain commands
+
+
+
+```{r setup, include=FALSE}
 
 # This is the library we will highlight here
 library(dplyr)
@@ -28,19 +34,21 @@ library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Datasets
+
+# Load possum dataset from DAAG
+
 ```{r}
-data()
+
+# Add DAAG to pull some data
+library(DAAG)
+
+
+# For example DAAG has 'possum'
+
+# data()
 
 # From the console, you can do:
 # > ?datasetname
-```
-
-# DAAG
-
-```{r}
-
-# For example DAAG has 'possum'
 
 data('possum')
 str(possum)
@@ -49,55 +57,65 @@ summary(possum)
 # > ?possum
 ```
 
-# dplyr
+## Pipes
 
-## select
+- Mac shortcut shift-command-m for %>% (that is from {dyplr})
+- To be demosntrated throughout this vignette
 
-And example of a pipe function 
+## SELECT
+
+- To specific column, by column number or column 'name'
+
 
 ```{r}
-# Select
-
-# The shortcut for %>% is command + shift + m
+# Select specific columns.
+#
 possum %>% select(2:3, 4:7)
 ```
 
-## filter()
+## FILTER
 
 ```{r}
-
+# This example shows a filter with multiple conditions.
+#
 possum %>% filter(sex == 'f', Pop == 'Vic', age < 4)
 ```
 
-## arrange()
+## ARRANGE
 
-
+- A type of sort
 
 ```{r}
-
-possum %>% filter(sex == 'f', Pop == 'Vic', age < 4) %>% arrange(desc(belly))
+# Arrange, or sort
+# Here we start to pipe using multiple lines.
+#
+possum %>% filter(sex == 'f', Pop == 'Vic', age < 4) %>% 
+  arrange(desc(belly))
 
 ```
 
-## summarise()
+## SUMMARISE
 
-
+- You can introduce functions or equations and summarise.
 
 ```{r}
-
-possum %>% filter(sex == 'f', Pop == 'Vic', age < 4) %>% arrange(desc(belly)) %>% 
+# summarise() with multple functions... Avg, SD...
+#
+possum %>% filter(sex == 'f', Pop == 'Vic', age < 4) %>% 
+  arrange(desc(belly)) %>% 
   summarise(Avg = mean(belly),
             SD = sd(belly),
             count = n())
 
 ```
 
-## group_by()
+## GROUP BY
 
-It creates a table.
+- It creates a table.
 
 ```{r}
-
+# group_by() before summarising.
+#
 possum %>% filter(sex == 'm') %>% 
   group_by(site) %>%
   summarise(Avg = mean(belly),
@@ -106,7 +124,8 @@ possum %>% filter(sex == 'm') %>%
 
 
 ```
-## arrange() on that table created by group_by()
+
+## Example: arrange() on that table created by group_by()
 
 ```{r}
 # Add another function, descending order
@@ -124,9 +143,9 @@ possum %>% filter(sex == 'm') %>%
 ## Create a new table (mutate)
 
 ```{r}
-
 # New variable TR
-mytable <- possum %>% group_by(site) %>%
+mytable <- possum %>% 
+  group_by(site) %>%
   summarise(TR = sum(taill) / sum(totlngth),
             count = n()) %>%
   arrange(desc(TR))
@@ -134,4 +153,12 @@ mytable <- possum %>% group_by(site) %>%
 print(mytable)
 
 ```
+
+
+# Load flights dataset from nycflights13 library 
+
+
+# References
+
+Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
 
