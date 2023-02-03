@@ -9,6 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Oscar A. Trevizo" />
 
 
 <title>dyplr library vignette</title>
@@ -254,6 +255,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
 max-width: 940px;
@@ -275,6 +277,9 @@ outline: none;
 summary {
 display: list-item;
 }
+details > summary > p:only-child {
+display: inline;
+}
 pre code {
 padding: 0;
 }
@@ -293,23 +298,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -351,52 +350,62 @@ display: none;
 
 
 <h1 class="title toc-ignore">dyplr library vignette</h1>
+<h4 class="author">Oscar A. Trevizo</h4>
 
 </div>
 
 <div id="TOC">
 <ul>
 <li><a href="#purpose" id="toc-purpose">Purpose</a></li>
-<li><a href="#reference" id="toc-reference">Reference</a></li>
 <li><a href="#libraries" id="toc-libraries">Libraries</a></li>
-<li><a href="#datasets" id="toc-datasets">Datasets</a></li>
-<li><a href="#daag" id="toc-daag">DAAG</a></li>
-<li><a href="#dplyr" id="toc-dplyr">dplyr</a>
+<li><a href="#load-possum-dataset-from-daag" id="toc-load-possum-dataset-from-daag">Load possum dataset from DAAG</a>
 <ul>
-<li><a href="#select" id="toc-select">select</a></li>
-<li><a href="#filter" id="toc-filter">filter()</a></li>
-<li><a href="#arrange" id="toc-arrange">arrange()</a></li>
-<li><a href="#summarise" id="toc-summarise">summarise()</a></li>
-<li><a href="#group_by" id="toc-group_by">group_by()</a></li>
-<li><a href="#arrange-on-that-table-created-by-group_by" id="toc-arrange-on-that-table-created-by-group_by">arrange() on that
-table created by group_by()</a></li>
+<li><a href="#pipes" id="toc-pipes">Pipes</a></li>
+<li><a href="#select" id="toc-select">SELECT</a></li>
+<li><a href="#filter" id="toc-filter">FILTER</a></li>
+<li><a href="#arrange" id="toc-arrange">ARRANGE</a></li>
+<li><a href="#summarise" id="toc-summarise">SUMMARISE</a></li>
+<li><a href="#group-by" id="toc-group-by">GROUP BY</a></li>
+<li><a href="#example-arrange-on-that-table-created-by-group_by" id="toc-example-arrange-on-that-table-created-by-group_by">Example:
+arrange() on that table created by group_by()</a></li>
 <li><a href="#create-a-new-table-mutate" id="toc-create-a-new-table-mutate">Create a new table (mutate)</a></li>
 </ul></li>
+<li><a href="#references" id="toc-references">References</a></li>
 </ul>
 </div>
 
 <div id="purpose" class="section level1">
 <h1>Purpose</h1>
-<p>This vignette aims to introduce you dyplr library. It is here for
+<p>This vignette aims to introduce you dplyr library. It is here for
 learning purposes.</p>
-</div>
-<div id="reference" class="section level1">
-<h1>Reference</h1>
-<p>Dr. Bharatendra <a href="https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10" class="uri">https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10</a></p>
+<ul>
+<li>{dplyr} (pronounced d - plier dataset plier… pliers to trim
+data)</li>
+</ul>
 </div>
 <div id="libraries" class="section level1">
 <h1>Libraries</h1>
+<ul>
+<li>Load dpylr</li>
+</ul>
+<p>Tip: Shortcut select a word and click quotations to automate.</p>
+<p>It has several functions or methods</p>
+<ul>
+<li>Pipes %&gt;% to chain commands</li>
+</ul>
 </div>
-<div id="datasets" class="section level1">
-<h1>Datasets</h1>
-<pre class="r"><code>data()
+<div id="load-possum-dataset-from-daag" class="section level1">
+<h1>Load possum dataset from DAAG</h1>
+<pre class="r"><code># Add DAAG to pull some data
+library(DAAG)
+
+
+# For example DAAG has &#39;possum&#39;
+
+# data()
 
 # From the console, you can do:
-# &gt; ?datasetname</code></pre>
-</div>
-<div id="daag" class="section level1">
-<h1>DAAG</h1>
-<pre class="r"><code># For example DAAG has &#39;possum&#39;
+# &gt; ?datasetname
 
 data(&#39;possum&#39;)
 str(possum)</code></pre>
@@ -442,15 +451,20 @@ str(possum)</code></pre>
 ##  NA&#39;s   :1</code></pre>
 <pre class="r"><code># Try from the console:
 # &gt; ?possum</code></pre>
+<div id="pipes" class="section level2">
+<h2>Pipes</h2>
+<ul>
+<li>Mac shortcut shift-command-m for %&gt;% (that is from {dyplr})</li>
+<li>To be demosntrated throughout this vignette</li>
+</ul>
 </div>
-<div id="dplyr" class="section level1">
-<h1>dplyr</h1>
 <div id="select" class="section level2">
-<h2>select</h2>
-<p>And example of a pipe function</p>
-<pre class="r"><code># Select
-
-# The shortcut for %&gt;% is command + shift + m
+<h2>SELECT</h2>
+<ul>
+<li>To specific column, by column number or column ‘name’</li>
+</ul>
+<pre class="r"><code># Select specific columns.
+#
 possum %&gt;% select(2:3, 4:7)</code></pre>
 <pre><code>##       site   Pop sex age hdlngth skullw
 ## C3       1   Vic   m   8    94.1   60.4
@@ -559,8 +573,10 @@ possum %&gt;% select(2:3, 4:7)</code></pre>
 ## BTP21    7 other   f   3    93.6   59.9</code></pre>
 </div>
 <div id="filter" class="section level2">
-<h2>filter()</h2>
-<pre class="r"><code>possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4)</code></pre>
+<h2>FILTER</h2>
+<pre class="r"><code># This example shows a filter with multiple conditions.
+#
+possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4)</code></pre>
 <pre><code>##      case site Pop sex age hdlngth skullw totlngth taill footlgth earconch  eye
 ## C23     5    1 Vic   f   2    91.5   56.3     85.5  36.0     71.0     53.2 15.1
 ## C24     6    1 Vic   f   1    93.1   54.8     90.5  35.5     73.2     53.6 14.2
@@ -587,8 +603,15 @@ possum %&gt;% select(2:3, 4:7)</code></pre>
 ## BB40  29.0  31.0</code></pre>
 </div>
 <div id="arrange" class="section level2">
-<h2>arrange()</h2>
-<pre class="r"><code>possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4) %&gt;% arrange(desc(belly))</code></pre>
+<h2>ARRANGE</h2>
+<ul>
+<li>A type of sort</li>
+</ul>
+<pre class="r"><code># Arrange, or sort
+# Here we start to pipe using multiple lines.
+#
+possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4) %&gt;% 
+  arrange(desc(belly))</code></pre>
 <pre><code>##      case site Pop sex age hdlngth skullw totlngth taill footlgth earconch  eye
 ## C54    21    1 Vic   f   3    95.9   58.1     96.5  39.5     77.9     52.9 14.2
 ## C23     5    1 Vic   f   2    91.5   56.3     85.5  36.0     71.0     53.2 15.1
@@ -615,23 +638,33 @@ possum %&gt;% select(2:3, 4:7)</code></pre>
 ## BB31  25.0  25.0</code></pre>
 </div>
 <div id="summarise" class="section level2">
-<h2>summarise()</h2>
-<pre class="r"><code>possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4) %&gt;% arrange(desc(belly)) %&gt;% 
+<h2>SUMMARISE</h2>
+<ul>
+<li>You can introduce functions or equations and summarise.</li>
+</ul>
+<pre class="r"><code># summarise() with multple functions... Avg, SD...
+#
+possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4) %&gt;% 
+  arrange(desc(belly)) %&gt;% 
   summarise(Avg = mean(belly),
             SD = sd(belly),
             count = n())</code></pre>
 <pre><code>##    Avg       SD count
 ## 1 31.5 3.667424    11</code></pre>
 </div>
-<div id="group_by" class="section level2">
-<h2>group_by()</h2>
-<p>It creates a table.</p>
-<pre class="r"><code>possum %&gt;% filter(sex == &#39;m&#39;) %&gt;% 
+<div id="group-by" class="section level2">
+<h2>GROUP BY</h2>
+<ul>
+<li>It creates a table.</li>
+</ul>
+<pre class="r"><code># group_by() before summarising.
+#
+possum %&gt;% filter(sex == &#39;m&#39;) %&gt;% 
   group_by(site) %&gt;%
   summarise(Avg = mean(belly),
             SD = sd(belly),
             count = n())</code></pre>
-<pre><code>## # A tibble: 7 x 4
+<pre><code>## # A tibble: 7 × 4
 ##    site   Avg    SD count
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
 ## 1     1  33.2  2.49    14
@@ -642,8 +675,8 @@ possum %&gt;% select(2:3, 4:7)</code></pre>
 ## 6     6  31.5  2.78     9
 ## 7     7  31.8  2.25    14</code></pre>
 </div>
-<div id="arrange-on-that-table-created-by-group_by" class="section level2">
-<h2>arrange() on that table created by group_by()</h2>
+<div id="example-arrange-on-that-table-created-by-group_by" class="section level2">
+<h2>Example: arrange() on that table created by group_by()</h2>
 <pre class="r"><code># Add another function, descending order
 possum %&gt;% filter(sex == &#39;m&#39;) %&gt;% 
   group_by(site) %&gt;%
@@ -651,7 +684,7 @@ possum %&gt;% filter(sex == &#39;m&#39;) %&gt;%
             SD = sd(belly),
             count = n()) %&gt;%
   arrange(desc(Avg))</code></pre>
-<pre><code>## # A tibble: 7 x 4
+<pre><code>## # A tibble: 7 × 4
 ##    site   Avg    SD count
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
 ## 1     4  34.6  2.22     5
@@ -665,13 +698,14 @@ possum %&gt;% filter(sex == &#39;m&#39;) %&gt;%
 <div id="create-a-new-table-mutate" class="section level2">
 <h2>Create a new table (mutate)</h2>
 <pre class="r"><code># New variable TR
-mytable &lt;- possum %&gt;% group_by(site) %&gt;%
+mytable &lt;- possum %&gt;% 
+  group_by(site) %&gt;%
   summarise(TR = sum(taill) / sum(totlngth),
             count = n()) %&gt;%
   arrange(desc(TR))
 
 print(mytable)</code></pre>
-<pre><code>## # A tibble: 7 x 3
+<pre><code>## # A tibble: 7 × 3
 ##    site    TR count
 ##   &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
 ## 1     6 0.445    13
@@ -682,6 +716,10 @@ print(mytable)</code></pre>
 ## 6     3 0.423     7
 ## 7     1 0.406    33</code></pre>
 </div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<p>Dr. Bharatendra <a href="https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10" class="uri">https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10</a></p>
 </div>
 
 

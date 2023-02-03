@@ -155,9 +155,6 @@ print(mytable)
 ```
 
 
-# Load flights dataset from nycflights13 library 
-
-
 # References
 
 Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
