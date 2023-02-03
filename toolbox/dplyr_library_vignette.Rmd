@@ -1,6 +1,6 @@
 ---
-title: "dyplr library vignette"
-author: "Oscar A. Trevizo"
+title: "DPLYR Library Vignette"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
 output:
   pdf_document:
     toc: yes
