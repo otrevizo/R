@@ -1,0 +1,21 @@
+---
+title: "Stocks - Quantmod vignette"
+author: "Oscar A. Trevizo"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Stocks
+
+```{r}
+library(quantmod)
+getSymbols('AAPL',
+           from = '2019-01-01',
+           to = '2020-12-31')
+chartSeries(AAPL['2020-12'])
+```
