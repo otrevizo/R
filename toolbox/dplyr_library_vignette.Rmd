@@ -155,6 +155,77 @@ print(mytable)
 ```
 
 
+## Join
+
+From _dplyr_ documentation:
+
+mutate-joins {dplyr}	R Documentation
+
+Mutating joins
+
+Description
+
+Mutating joins add columns from y to x, matching observations based on the keys. There are four mutating joins: the inner join, and the three outer joins.
+
+Inner join: An inner_join() only keeps observations from x that have a matching key in y.
+
+The most important property of an inner join is that unmatched rows in either input are not included in the result. This means that generally inner joins are not appropriate in most analyses, because it is too easy to lose observations.
+
+Outer joins: The three outer joins keep observations that appear in at least one of the data frames:
+
+A left_join() keeps all observations in x.
+
+A right_join() keeps all observations in y.
+
+A full_join() keeps all observations in x and y.
+
+### Example 1
+
+```{r}
+# Let's do an example
+students_math <- c('mary', 'john', 'paul', 'jane', 'peter')
+math <- c('A', 'A', 'B', 'C', 'B')
+
+students_english <- c('tom', 'mary', 'john', 'paul')
+english <- c('C', 'B', 'C', 'A')
+
+dfa <- data.frame(students_math, math)
+dfb <- data.frame(students_english, english)
+
+colnames(dfa) <- c('students', 'math')
+colnames(dfb) <- c('students', 'english')
+
+left <- dfa %>% left_join(dfb)
+right <- dfa %>% right_join(dfb)
+inner <- dfa %>% inner_join(dfb)
+```
+
+
+### Example 2
+
+Joining based on two columns
+
+```{r}
+# Let's do an example
+semester_math <- c('fall', 'fall', 'fall', 'fall', 'fall', 'spring', 'spring', 'spring', 'spring', 'spring')
+students_math <- c('mary', 'john', 'paul', 'jane', 'peter', 'mary', 'john', 'paul', 'jane', 'peter')
+math <- c('A', 'A', 'B', 'C', 'A', 'B', 'B', 'A', 'B', 'B')
+
+semester_english <- c('fall', 'fall', 'fall', 'fall', 'spring', 'spring', 'spring', 'spring')
+students_english <- c('tom', 'mary', 'john', 'paul', 'tom', 'mary', 'john', 'paul')
+english <- c('C', 'B', 'C', 'A', 'B', 'B', 'B', 'A')
+
+dfa <- data.frame(semester_math, students_math, math)
+dfb <- data.frame(semester_english, students_english, english)
+
+colnames(dfa) <- c('semester', 'students', 'math')
+colnames(dfb) <- c('semester', 'students', 'english')
+
+left <- dfa %>% left_join(dfb)
+right <- dfa %>% right_join(dfb)
+inner <- dfa %>% inner_join(dfb)
+```
+
 # References
 
 Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
