@@ -1,0 +1,192 @@
+---
+title: "Maps"
+author: "Oscar A. Trevizo"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    toc: yes
+  pdf_document: 
+    toc: yes
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Reference: Dr. Rai
+
+# https://www.youtube.com/watch?v=SW5o8B_xtH8&list=PL34t5iLfZddug6PqUszo1u8d9ndME_ub9&index=2
+
+# Load the libraries
+
+```{r}
+# Libraries
+library(leaflet)
+library(tidyverse)
+library(ggmap)
+library(leaflet.extras)
+library(htmltools)
+library(ggplot2)
+library(maps)
+library(mapproj)
+library(mapdata)
+
+```
+
+
+# World map
+
+
+```{r}
+w <- map_data('world')
+icj <- map_data('world',
+                region = c('India', 'China', 'Japan'))
+ggplot(icj, aes(x = long, y = lat, group = group)) +
+  geom_polygon(color = 'black') 
+
+```
+
+# Covid
+
+## Prepare the data
+
+```{r}
+c <- read.csv('../data/covid.csv', header = TRUE)
+usa <- c %>% filter(country == 'United States')
+usa <- usa %>% group_by(province) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+
+```
+
+
+## Merge the data
+
+```{r}
+# usa$province <- tolower(usa$province)
+# c$province <- tolower(c$province)
+data <- merge(c, usa,
+              by.x = 'province',
+              by.y = 'province')
+
+ggplot(data, aes(x = longitude, y = latitude, 
+                 group = province,
+                 fill = count)) +
+  geom_polygon(color = 'gray') 
+
+```
+
+
+# Leaflet
+
+```{r}
+# Leaflet
+leaflet() %>% addTiles()
+# Allahabad, India
+# leaflet() %>% addProviderTiles('CartoDB') %>% 
+#   setView(lng = 81.878357, lat = 25.473034,
+#           zoom = 10) 
+
+# Harvard
+leaflet() %>% addProviderTiles('CartoDB') %>% 
+  setView(lng = -71.116943, lat = 42.374443,
+          zoom = 15) 
+
+```
+
+# COVID data - leaflet map of US
+
+```{r}
+usa <- c %>% filter(country == 'United States')
+usa <- usa %>% group_by(city, province, longitude, latitude) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+
+# US map for each county
+mycolor <- colorNumeric(palette = 'RdBu',
+                        domain = c(1:4000))
+
+usa %>% 
+  leaflet() %>% 
+  addProviderTiles('CartoDB') %>% 
+  addCircleMarkers(radius = 2,
+                   color = ~mycolor(count),
+                   popup = ~paste0(city)) 
+
+```
+
+
+# Map for MA & NY
+
+```{r}
+# USA or United States?
+# Be careful with the upper case and lower case in the data too.
+usa <- c %>% filter(country == 'United States',
+                    province == 'Massachusetts' | province == 'New York')
+usa <- usa %>% group_by(city, province, longitude, latitude) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+
+map <- usa  %>% leaflet()  %>% 
+  addProviderTiles('OpenStreetMap') %>% 
+  addCircleMarkers(radius = 2,
+                   color = 'red',
+                   popup = ~city)
+map %>% addMarkers()  
+
+```
+
+
+```{r}
+# Color factor variable
+mycolor <- colorFactor(palette = c('red', 'blue'),
+                       levels = c('Massachusetts', 'New York'))
+map %>% 
+  addCircleMarkers(data = usa,
+                   radius = 2,
+                   color = ~mycolor(province),
+                   label = ~paste0(city, "(", province, ")"))
+
+```
+
+
+
+# Toggle between states
+```{r}
+MA <- filter(usa, province == 'Massachusetts')
+m <- leaflet() %>% 
+  addProviderTiles('CartoDB') %>% 
+  addCircleMarkers(data = MA,
+                   radius = 5,
+                   label = ~htmlEscape(city),
+                   color = 'blue',
+                   group = 'Massachusetts')
+NY <- filter(usa, province == 'New York')
+m <- m %>% 
+  addCircleMarkers(data = NY,
+                   radius = 5,
+                   label = ~htmlEscape(city),
+                   color = 'red',
+                   group = 'New York') %>% 
+  addLayersControl(overlayGroups = 
+                     c('Massachusetts', 'New York'))
+m
+
+```
+
+# Cluster counties
+
+
+```{r}
+usa %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircleMarkers(radius = 10,
+                   label = ~htmlEscape(city),
+                   color = 'red',
+                   clusterOptions = markerClusterOptions())
+
+```
+
+
