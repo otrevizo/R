@@ -226,6 +226,14 @@ right <- dfa %>% right_join(dfb)
 inner <- dfa %>% inner_join(dfb)
 ```
 
+## Relocate: Move columns around
+
+```{r}
+# # https://dplyr.tidyverse.org/reference/relocate.html
+# df <- df %>% dplyr::relocate(column_x, column_y, vector_of_columns)
+
+```
+
 # References
 
 Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
