@@ -1,0 +1,1814 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Correlation vignette},
+  pdfauthor={Oscar A. Trevizo},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Correlation vignette}
+\author{Oscar A. Trevizo}
+\date{}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\hypertarget{load-the-libraries}{%
+\section{Load the libraries}\label{load-the-libraries}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(ISLR)}
+\FunctionTok{library}\NormalTok{(GGally)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\NormalTok{opts\_chunk}\SpecialCharTok{$}\FunctionTok{set}\NormalTok{(}\AttributeTok{echo =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# https://stackoverflow.com/questions/39814916/how{-}can{-}i{-}see{-}output{-}of{-}rmd{-}in{-}github}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{get-the-data}{%
+\section{Get the data}\label{get-the-data}}
+
+Reference: Harvard CSCI E-63c Statistical Learning, 2021.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#\#}
+\CommentTok{\#}
+\CommentTok{\#}
+\CommentTok{\# Data:}
+\CommentTok{\# 1. file "fund{-}raising.csv"}
+\CommentTok{\# 2. file "fund{-}raising{-}notes.txt"}
+\CommentTok{\#}
+\CommentTok{\# contrib     {-}{-} the outcome that the model is expected to predict: the donation  }
+\CommentTok{\#                  amount ($) associated with the response to the mailing campaign of interest}
+\CommentTok{\#                  Type: num}
+\CommentTok{\#                  Units: $USD}
+\CommentTok{\# gapmos      {-}{-} number of months between first and second contributions from this donor}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: Months}
+\CommentTok{\# promocontr  {-}{-} total number of contributions to promotional mailing campaigns}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: number of contributions}
+\CommentTok{\# mincontrib  {-}{-} dollar amount of this donor smallest contribution to date}
+\CommentTok{\#                  Type: num}
+\CommentTok{\#                  Units: $USD}
+\CommentTok{\# ncontrib    {-}{-} total number of contributions by this donor}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: Number of contributions}
+\CommentTok{\# maxcontrib  {-}{-} dollar amount of this donor largest contribution to date}
+\CommentTok{\#                  Type: num}
+\CommentTok{\#                  Units: $USD}
+\CommentTok{\# lastcontr   {-}{-} dollar amount of this donor most recent contribution}
+\CommentTok{\#                  Type: num}
+\CommentTok{\#                  Units: $USD}
+\CommentTok{\# avecontr    {-}{-} average dollar amount of this donor contribution}
+\CommentTok{\#                  Type: num}
+\CommentTok{\#                  Units: $USD}
+\CommentTok{\# mailord     {-}{-} total number of times the donor has responded to a mail order}
+\CommentTok{\#                  offer other than the study sponsor\textquotesingle{}s}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: Number of contributions}
+\CommentTok{\# mindate     {-}{-} date (YYMM) of this donor smallest contribution}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: Number of contributions}
+\CommentTok{\# maxdate     {-}{-} date (YYMM) of this donor largest contribution}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: Number of contributions}
+\CommentTok{\# age         {-}{-} donor age}
+\CommentTok{\#                  Type: int}
+\CommentTok{\#                  Units: Number of years}
+\CommentTok{\# gender      {-}{-} donor gender {-}{-}\textgreater{} Categorical}
+\CommentTok{\#                  Type: Factor}
+\CommentTok{\#                  Units: Category Female "F", male "M", Unspecified "U"}
+\DocumentationTok{\#\#}
+
+\NormalTok{frcDat }\OtherTok{\textless{}{-}} \FunctionTok{read.table}\NormalTok{(}\StringTok{"../data/fund{-}raising.csv"}\NormalTok{,}\AttributeTok{sep=}\StringTok{","}\NormalTok{,}\AttributeTok{header=}\ConstantTok{TRUE}\NormalTok{, }\AttributeTok{as.is =} \ConstantTok{FALSE}\NormalTok{)}
+\FunctionTok{dim}\NormalTok{(frcDat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3470   13
+\end{verbatim}
+
+\hypertarget{ggpairs}{%
+\section{ggpairs()}\label{ggpairs}}
+
+The following charts and matrices indicate that the most robustly
+correlated variable with the target contributions (\texttt{contrib}) is
+the last contribution (\texttt{lastcontr}): I.e. \textbf{the ``dollar
+amount of this donor most recent contribution}.''
+
+To start this analysis, the following three sets of \emph{ggpairs()}
+plots help us to explore patterns:
+
+One \emph{ggpairs()} plot shows \emph{dollar} type of variables.
+
+A second \emph{ggpairs()} plot shows variables that count (e.g.~number
+of contributions) vs \texttt{contrib}
+
+And a third \emph{ggpairs()} plot to show variables that involve time or
+dates vs \texttt{contrib}.
+
+The three sets of \emph{ggpairs()} plots will distinguish gender and
+will include trend lines on a per-gender basis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{, }\DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# Let ggpairs plot $USD continuous variables before analyzing}
+\FunctionTok{ggpairs}\NormalTok{(frcDat, }\AttributeTok{columns =} \FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{, }\StringTok{"mincontrib"}\NormalTok{, }\StringTok{"maxcontrib"}\NormalTok{, }\StringTok{"lastcontr"}\NormalTok{, }\StringTok{"avecontr"}\NormalTok{), }
+        \AttributeTok{upper =} \FunctionTok{list}\NormalTok{(}\AttributeTok{continuous =} \FunctionTok{wrap}\NormalTok{(}\StringTok{"cor"}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{)),}
+        \AttributeTok{lower =} \FunctionTok{list}\NormalTok{(}\AttributeTok{continuous =} \StringTok{"smooth"}\NormalTok{),}
+        \FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ gender,  }
+            \AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{        )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/unnamed-chunk-1-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Let ggpairs plot INT (number of) continuous variables vs "contrib" before analyzing}
+\FunctionTok{ggpairs}\NormalTok{(frcDat, }\AttributeTok{columns =} \FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{, }\StringTok{"promocontr"}\NormalTok{, }\StringTok{"ncontrib"}\NormalTok{, }\StringTok{"mailord"}\NormalTok{), }
+        \AttributeTok{upper =} \FunctionTok{list}\NormalTok{(}\AttributeTok{continuous =} \FunctionTok{wrap}\NormalTok{(}\StringTok{"cor"}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{)),}
+        \AttributeTok{lower =} \FunctionTok{list}\NormalTok{(}\AttributeTok{continuous =} \StringTok{"smooth"}\NormalTok{),}
+        \FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ gender,  }
+            \AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{        )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/unnamed-chunk-1-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Let ggpairs plot time, date or age related continuous variables vs "contrib" before analyzing}
+\FunctionTok{ggpairs}\NormalTok{(frcDat, }\AttributeTok{columns =} \FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{, }\StringTok{"gapmos"}\NormalTok{, }\StringTok{"mindate"}\NormalTok{, }\StringTok{"maxdate"}\NormalTok{, }\StringTok{"age"}\NormalTok{), }
+        \AttributeTok{upper =} \FunctionTok{list}\NormalTok{(}\AttributeTok{continuous =} \FunctionTok{wrap}\NormalTok{(}\StringTok{"cor"}\NormalTok{, }\AttributeTok{size =} \DecValTok{4}\NormalTok{)),}
+        \AttributeTok{lower =} \FunctionTok{list}\NormalTok{(}\AttributeTok{continuous =} \StringTok{"smooth"}\NormalTok{),}
+        \FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ gender,  }
+            \AttributeTok{alpha =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{        )}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/unnamed-chunk-1-3.pdf}
+
+The first \emph{ggpairs()} set of plots for \emph{\$USD dollar}
+variables shows a level of correlation with \texttt{contrib}. The second
+set of \emph{ggpairs()} plots based on counts also shows a level of
+correlation with \texttt{contrib}. The third set shows little
+correlation. The plots also show outliers that may impact the following
+results. The plots also show some outliers that may impact the results.
+
+Next, I will run \textbf{correlations of all continuous variables into
+two matrices.} One matrix for for Pearson and another matrix for
+Spearman correlations. The first row (or column) provides the
+correlations of each continuous variable with the target contributions.
+
+Once I have the two matrix, I will be able to create bar plots and
+compare correlations.
+
+\hypertarget{correlation-matrices}{%
+\section{Correlation matrices}\label{correlation-matrices}}
+
+Correlation matrices for continuous variable.
+
+\hypertarget{pearson}{%
+\subsection{Pearson}\label{pearson}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Correlations matrix for continuous variables.}
+\NormalTok{corPearson }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(frcDat[,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{12}\NormalTok{],}
+                \AttributeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+
+
+\FunctionTok{print}\NormalTok{(corPearson[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{12}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      gapmos  promocontr  mincontrib    ncontrib  maxcontrib   lastcontr 
+##  0.11219211 -0.21458645  0.40717536 -0.21162953  0.41447598  0.74645102 
+##    avecontr     mailord     mindate     maxdate         age 
+##  0.66309190  0.01859687 -0.06540943  0.13115985 -0.02582929
+\end{verbatim}
+
+\hypertarget{spearman}{%
+\subsection{Spearman}\label{spearman}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{corSpearman }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(frcDat[,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{12}\NormalTok{],}
+                 \AttributeTok{method =} \StringTok{"spearman"}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(corSpearman[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{12}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      gapmos  promocontr  mincontrib    ncontrib  maxcontrib   lastcontr 
+##  0.15667400 -0.34303277  0.50770483 -0.36794468  0.73568485  0.77011108 
+##    avecontr     mailord     mindate     maxdate         age 
+##  0.74700987 -0.02334201 -0.10425397  0.19773321 -0.09726779
+\end{verbatim}
+
+The first row of each matrix gives me a list of correlations of all
+continuous variables vs \texttt{contrib}. It allows me to create bar
+plots to visualize those correlations.
+
+The following four bar plots display Pearson and Spearman correlations
+and correlations squared to easily compare them.
+
+\hypertarget{bar-plots}{%
+\section{Bar plots}\label{bar-plots}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Problem 1 {-} Question 1 {-} bar plots                                   \#\#\#\#}
+
+\CommentTok{\# Correlation charts}
+\CommentTok{\#}
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{),}\AttributeTok{ps=}\DecValTok{10}\NormalTok{)}
+
+\FunctionTok{barplot}\NormalTok{(corPearson[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{12}\NormalTok{], }
+        \AttributeTok{main =} \StringTok{"Contrib Pearson Corr"}\NormalTok{, }
+        \AttributeTok{ylab =} \StringTok{"Pearson Correlation"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{3}\NormalTok{,}
+        \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.4}\NormalTok{,.}\DecValTok{8}\NormalTok{),}
+        \AttributeTok{col=}\StringTok{"skyblue"}\NormalTok{)}
+
+\FunctionTok{barplot}\NormalTok{(corSpearman[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{12}\NormalTok{], }
+        \AttributeTok{main =} \StringTok{"Contrib Spearman Corr"}\NormalTok{,  }
+        \AttributeTok{ylab =} \StringTok{"Spearman Correlation"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{3}\NormalTok{,}
+        \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.4}\NormalTok{,.}\DecValTok{8}\NormalTok{),}
+        \AttributeTok{col=}\StringTok{"skyblue"}\NormalTok{)}
+
+
+\FunctionTok{barplot}\NormalTok{(corPearson[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{12}\NormalTok{]}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }
+        \AttributeTok{main =} \StringTok{"Contrib Pearson Corr\^{}2 (Squared)"}\NormalTok{, }
+        \AttributeTok{ylab =} \StringTok{"Pearson Correlation Square"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{3}\NormalTok{,}
+        \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{7}\NormalTok{),}
+        \AttributeTok{col=}\StringTok{"skyblue"}\NormalTok{)}
+
+\FunctionTok{barplot}\NormalTok{(corSpearman[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{12}\NormalTok{]}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }
+        \AttributeTok{main =} \StringTok{"Contrib Spearman Corr\^{}2 (Squared)"}\NormalTok{,  }
+        \AttributeTok{ylab =} \StringTok{"Spearman Correlation Square"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{3}\NormalTok{,}
+        \AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,.}\DecValTok{7}\NormalTok{),}
+        \AttributeTok{col=}\StringTok{"skyblue"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem1_Q1_barplots-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+Therefore, based on the above plots and matrices using \emph{gpairs()},
+correlations using \emph{cor()} (for Pearson 0.7465 and for Spearman
+0.7701), and \emph{barplots()}, the results show that \textbf{the last
+contribution \texttt{lastcontr} is the variable most robustly
+correlated} with the target contributions (\texttt{contrib}).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Fit linear model for target campaign contribution as the outcome and
+  the last contribution by this donor (\texttt{lastcontr} in
+  \texttt{fund-raising.csv}) as the predictor, using R function
+  \texttt{lm}; inspect the fitted model using \texttt{summary} function,
+  and use the output to answer the following questions:
+\end{enumerate}
+
+The R code to address the 2nd question follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmModel }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{lastcontr,frcDat)}
+
+\NormalTok{model.summary }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(lmModel)}
+\CommentTok{\# model.summary \textless{}{-} summary(lm(contrib\textasciitilde{}lastcontr,frcDat))}
+
+\FunctionTok{mode}\NormalTok{(model.summary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "list"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(model.summary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = contrib ~ lastcontr, data = frcDat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -77.046  -2.499  -0.475   1.706 156.716 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.52300    0.22092   15.95   <2e-16 ***
+## lastcontr    0.79523    0.01204   66.06   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.692 on 3468 degrees of freedom
+## Multiple R-squared:  0.5572, Adjusted R-squared:  0.5571 
+## F-statistic:  4364 on 1 and 3468 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Does this predictor explain significant amount of variability in
+  response? I.e. is there statistically (!) significant association
+  between them?
+\end{itemize}
+
+Based on linear regression model summary on this dataset, there is
+statistically significant association between \texttt{contrib} and
+\texttt{lastcontr}. For the following reasons.
+
+The p-value is extremely low \emph{\textless2e-16}. The null hypothesis
+is; \emph{there is no association between the two variables.} The
+alternative hypothesis is; \emph{there is association between the two
+variables.} A very low p-value indicates that the null hypotheses H0 is
+not plausible.
+
+Referring to the textbook ISLR, section 3.1.2, page 67, given the linear
+regression function:
+
+Y = B\textsubscript{0} + B\textsubscript{1}X + e
+
+The coefficients are B\textsubscript{0} and B\textsubscript{1}, and e is
+a residual error.
+
+H\textsubscript{0}: There is no relationship between X and Y (ISLR
+equation / statement (3.12))
+
+H\textsubscript{a}: There is some relationship between X and Y (ISLR
+equaiton / statement (3.13))
+
+The book re-states it as follows:
+
+H\textsubscript{0}: B\textsubscript{1} = 0
+
+versus
+
+H\textsubscript{a}: B\textsubscript{1} not equal to 0
+
+The very a small \emph{p-value} indicates that we can \emph{reject} the
+null hypothesis. That allows us to infer that \emph{``there is an
+association between the predictor and the response} (ISLR p.68).
+
+And the results from \emph{summary(lm(\ldots))} shows \emph{three
+asterisck} characters next to the \emph{p-value} indicating that the
+relationship is statistically \textbf{significant.} One would need to do
+additional tests on an additional data samples if possible to make sure
+the conclusion is not tied to this specific dataset. Therefore,
+\textbf{there is statistically significant association between these two
+variables, \texttt{contrib} and \texttt{lastcontr},} based on this
+summary.
+
+\begin{itemize}
+\tightlist
+\item
+  What is the RSE and \(R^2\) of this model? Remember, you can find them
+  in the \texttt{summary} output or use \texttt{sigma} and \texttt{r.sq}
+  slots in the result returned by \texttt{summary} instead (the
+  \texttt{summary()} command does return a \emph{list}; if instead of
+  just printing the result into the console you save it into a variable,
+  as in \texttt{model.summary\ \textless{}-\ summary(...)}, then you can
+  verify that the content of that variable \emph{is} a list, you can see
+  with \texttt{names(model.summary)} which elements this list contains,
+  and you can extract, examine, and use them at will programmatically if
+  you ever need to)
+\end{itemize}
+
+From the \emph{summary(lm(\ldots)))} function:
+
+RSE = 7.692
+
+Multiple R-squared: 0.5572
+
+\begin{itemize}
+\tightlist
+\item
+  What are the model coefficients and what would be their
+  interpretation? What is the meaning of the intercept of the model, for
+  example? What about the slope - how would you interpret its value?
+\end{itemize}
+
+Intercept B\textsubscript{0} = 7.692 with std. error of 0.22092
+
+Slope B\textsubscript{1}: 0.79523 with std. error of 0.01204
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Create scatterplot of target campaign contribution and the last
+  contribution (the attributes used in the model above) and add to the
+  plot the regression line from the model using \texttt{abline} function
+\end{enumerate}
+
+Scatterplot for the model (namd \texttt{lmModel} here):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(frcDat[,}\FunctionTok{c}\NormalTok{(}\StringTok{"lastcontr"}\NormalTok{, }\StringTok{"contrib"}\NormalTok{)])}
+\FunctionTok{abline}\NormalTok{(lmModel,}\AttributeTok{col=}\DecValTok{2}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{h=}\DecValTok{0}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\DecValTok{0}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem1_Q2(3)-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Create diagnostic plots of the model and comment on any irregularities
+  that they present. For instance, does the plot of residuals vs.~fitted
+  values suggest presence of non-linearity that remains unexplained by
+  the model? Does scale-location plot suggest non-uniformity of variance
+  along the range of fitted values? Are some standardized residuals far
+  greater than theoretical quantiles? What about residuals vs.~leverage
+  plot and Cook's distance contours therein? How does your conclusions
+  compare to what's shown in the plot of the predictor and outcome with
+  regression line added to it -- i.e.~the plot that was generated above?
+\end{enumerate}
+
+The following charts provide diagnostic plots of the model. Answers to
+individual questions follow.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# / plot lm() {-}{-} 4 diagnostic plots created                                          \#\#\#\#}
+\CommentTok{\# Using par to do 1x2 plots per row provide larger plots than using 2x2}
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(lmModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem1_Q4-1.pdf}
+\includegraphics{linear_regression__uc_files/figure-latex/Problem1_Q4-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+Does the plot of residuals vs.~fitted values suggest presence of
+non-linearity that remains unexplained by the model?
+
+The plot of residuals vs.~fitted values exhibits a nice horizontal red
+line that stays very close to 0 residuals, It is an indication of a good
+linear fit. There is also a small a cluster of points appearing below
+that red line, and between fitted values 50 and 100.
+
+On one hand, the plot exhibited linearity. The trend red line in the
+\emph{residuals vs fitted} plot follows the middle line very closely,
+but it has a small bend upwards in the middle and data points
+concentrated on the right side of the chart.
+
+Does scale-location plot suggest non-uniformity of variance along the
+range of fitted values?
+
+Yes, it suggest non-uniformity. The \emph{scale-location} plot is a
+little more problematic exhibiting an upwards trend and concentration of
+data points on the lower-left side of the chart. Ideally, all the dots
+would be uniformly spread around a straight and horizontal red trend
+line. But that is not the case. This plot looks like a cluster.
+
+Are some standardized residuals far greater than theoretical quantiles?
+
+Yes, the plot of normal Q-Q shows some standardized values that fall
+outside of the theoretical quantile trend line. That is the case for
+theoretical quantiles smaller than -2 and larger than 2. The
+\emph{normal q-q} plot suggest potential non-linearity at the edges, and
+that should not be surprising.
+
+What about residuals vs.~leverage plot and Cook's distance contours
+therein?
+
+The plot of residuals vs leverage further supports the need to do more
+analysis. The plot does not show a clean linearity.
+
+How does your conclusions compare to what's shown in the plot of the
+predictor and outcome with regression line added to it -- i.e.~the plot
+that was generated above?
+
+The plots suggest that there is still a potential presence of
+non-linearity that remains unexplained by the model, and that needs to
+be further explored. We need to do more analysis. We cannot rely on the
+current results to do predictions. The current results may achieve a
+degree of success, depending on the intended accuracy or objectives.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  Use function \texttt{confint} to obtain 95\% confidence intervals on
+  model parameters
+\end{enumerate}
+
+The results shows two numbers. One at 2.5\% and another one at 97.5\%.
+That is, 2.5\% on each side to make for the 5\% from both side of the
+95\% confidence level. That is, 95\% of the time, the interval shown
+below will contain the population mean.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(lmModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 2.5 %    97.5 %
+## (Intercept) 3.0898532 3.9561516
+## lastcontr   0.7716243 0.8188294
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Use this model and \texttt{predict} function to make predictions for
+  the last contribution values of 10, 20 and 40. Remember that when you
+  pass new data to \texttt{predict}, you have to make sure that the
+  variable (column) names in those data match the predictor variable
+  name(s) used in the model, otherwise \texttt{predict} will not know
+  how to match the data to the model variables! Use \texttt{confidence}
+  and \texttt{prediction} settings for parameter \texttt{interval} in
+  the call to \texttt{predict} to obtain 90\% confidence and prediction
+  intervals on these model predictions (please double check what the
+  default confidence level used by those functions is, and adjust if/as
+  necessary). Explain the differences between interpretation of:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    confidence intervals on model parameters and model predictions
+  \item
+    confidence and prediction intervals on model predictions
+  \item
+    comment on whether confidence or prediction intervals (on
+    predictions) are wider and why
+  \end{itemize}
+\end{enumerate}
+
+Function \emph{predict()} estimate predictions with 90\% confidence. The
+prediction is under column name \texttt{fit}. Both tables exhibit the
+same values for \texttt{fit}. The \texttt{lwr} and \texttt{upr} columns
+provide corresponding estimates of uncertainty associated with each
+prediction.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Enter a set of inputs to predict:}
+\NormalTok{new.lastcontr }\OtherTok{=} \FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)}
+
+\NormalTok{lmModel.conf }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lmModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\NormalTok{new.lastcontr),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}confidence\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.90}\NormalTok{)}
+
+\NormalTok{lmModel.pred }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lmModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\NormalTok{new.lastcontr),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}prediction\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.90}\NormalTok{)}
+
+\NormalTok{lmModel.conf}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit      lwr      upr
+## 1 11.47527 11.24031 11.71023
+## 2 19.42754 19.18931 19.66577
+## 3 35.33207 34.78873 35.87542
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lmModel.pred}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit       lwr      upr
+## 1 11.47527 -1.182759 24.13330
+## 2 19.42754  6.769448 32.08563
+## 3 35.33207 22.664568 47.99958
+\end{verbatim}
+
+\hypertarget{problem-2-model-using-log-transformed-attributes-20-points}{%
+\section{Problem 2: model using log-transformed attributes (20
+points)}\label{problem-2-model-using-log-transformed-attributes-20-points}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Use \texttt{lm()} to fit a regression model of \emph{log-transformed}
+  outcome (\texttt{contrib}) as a linear function of
+  \emph{log-transformed} last contribution and use \texttt{summary} to
+  evaluate its results.
+\end{enumerate}
+
+Exclude small number of observations where \texttt{lastcontr==0},
+otherwise log-transformation will result in negative infinity values for
+those and error from the call to \texttt{lm}.
+
+A new dataset excludes \texttt{lastcontr==0} as follows:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#\#}
+\CommentTok{\#}
+\DocumentationTok{\#\# CSCI E63{-}C PSET 3 {-} Problem 2                                            \#\#\#\#}
+\CommentTok{\#}
+\CommentTok{\# Log Transformed Attributes}
+\CommentTok{\#}
+
+\CommentTok{\# Remove lastcontr == 0}
+\NormalTok{frcDatP2 }\OtherTok{\textless{}{-}}\NormalTok{ frcDat[frcDat}\SpecialCharTok{$}\NormalTok{lastcontr }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{,]}
+
+\FunctionTok{print}\NormalTok{(}\StringTok{"Dimension of data frame before removing lastcontr==0:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Dimension of data frame before removing lastcontr==0:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dim}\NormalTok{(frcDat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3470   13
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Dimension of data frame after removing lastcontr==0:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Dimension of data frame after removing lastcontr==0:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dim}\NormalTok{(frcDatP2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3460   13
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Summary of variable lastcontr before removing lastcontr==0:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Summary of variable lastcontr before removing lastcontr==0:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(frcDat}\SpecialCharTok{$}\NormalTok{lastcontr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0    10.0    14.0    14.8    20.0   250.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Summary of variable lastcontr after removing lastcontr==0:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Summary of variable lastcontr after removing lastcontr==0:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(frcDatP2}\SpecialCharTok{$}\NormalTok{lastcontr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00   10.00   14.00   14.85   20.00  250.00
+\end{verbatim}
+
+Without observations where \texttt{lastcontr==0} the number of
+observations went down from 3470 to 3460.
+
+There were \emph{10} observations excluded that had
+\texttt{lastcontr}==0'.
+
+Next, apply \texttt{lm()} to fit a regression model of
+\emph{log-transformed}
+(\texttt{contrib}\textasciitilde{}\texttt{lastcontr}):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{logModel }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log10}\NormalTok{(contrib)}\SpecialCharTok{\textasciitilde{}}\FunctionTok{log10}\NormalTok{(lastcontr), }\AttributeTok{data =}\NormalTok{ frcDatP2)}
+
+\NormalTok{log.trasformed.summary }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(logModel)}
+
+\FunctionTok{print}\NormalTok{(log.trasformed.summary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log10(contrib) ~ log10(lastcontr), data = frcDatP2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.59373 -0.07460  0.01121  0.09069  0.97954 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.20030    0.01293    15.5   <2e-16 ***
+## log10(lastcontr)  0.82016    0.01149    71.4   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1736 on 3458 degrees of freedom
+## Multiple R-squared:  0.5958, Adjusted R-squared:  0.5957 
+## F-statistic:  5098 on 1 and 3458 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+The new \emph{log-transformed} model creates pentameters for intercept
+(0.2), and for slope (0.82).
+
+\(R^2\) is 0.5958. The original model's summary had R-squared equal to
+0.5572.
+
+In both cases, new \emph{log-transformed} and original had
+\emph{p-value} of 2.2e-16.
+
+The \emph{log-transformed} model is slightly more rebustly correlated
+than the original model.
+
+There is still need to do further analysis to better understand how well
+the model correlates.
+
+The following code creates a matrix to compare attributes between the
+models.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Attributes summary from each model}
+\NormalTok{model.summary}\SpecialCharTok{$}\NormalTok{coefficients}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##              Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept) 3.5230024 0.22092142 15.94686 2.646504e-55
+## lastcontr   0.7952268 0.01203814 66.05896 0.000000e+00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{log.trasformed.summary}\SpecialCharTok{$}\NormalTok{coefficients}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                   Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept)      0.2003049 0.01292504 15.49743 2.011276e-52
+## log10(lastcontr) 0.8201579 0.01148730 71.39691 0.000000e+00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Next, a short matrix will summarize the comparison between original and transformed models.}
+\CommentTok{\# Matrix compares attributes, R\^{}2, and RSE}
+
+\NormalTok{mCompare }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(model.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{],}
+\NormalTok{                     model.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{],}
+\NormalTok{                     model.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{],}
+\NormalTok{                     model.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{],}
+\NormalTok{                     model.summary}\SpecialCharTok{$}\NormalTok{r.squared, }
+\NormalTok{                     model.summary}\SpecialCharTok{$}\NormalTok{sigma,}
+\NormalTok{                     log.trasformed.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{],}
+\NormalTok{                     log.trasformed.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{],}
+\NormalTok{                     log.trasformed.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{,}\DecValTok{1}\NormalTok{],}
+\NormalTok{                     log.trasformed.summary}\SpecialCharTok{$}\NormalTok{coefficients[}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{],}
+\NormalTok{                     log.trasformed.summary}\SpecialCharTok{$}\NormalTok{r.squared, }
+\NormalTok{                     log.trasformed.summary}\SpecialCharTok{$}\NormalTok{sigma),}
+                   \AttributeTok{nrow =} \DecValTok{6}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{,}
+                   \AttributeTok{dimnames =} \FunctionTok{list}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"Intercept"}\NormalTok{, }\StringTok{"SE(Intx)"}\NormalTok{, }
+                                     \StringTok{"slope"}\NormalTok{, }\StringTok{"SE(slope)"}\NormalTok{, }
+                                     \StringTok{"R\^{}2"}\NormalTok{, }\StringTok{"RSE"}\NormalTok{), }
+                                   \FunctionTok{c}\NormalTok{(}\StringTok{"orig{-}model"}\NormalTok{, }\StringTok{"log{-}xform"}\NormalTok{)))}
+
+\NormalTok{mCompare}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           orig-model  log-xform
+## Intercept 3.52300237 0.20030486
+## SE(Intx)  0.22092142 0.01292504
+## slope     0.79522682 0.82015794
+## SE(slope) 0.01203814 0.01148730
+## R^2       0.55718912 0.59581646
+## RSE       7.69215443 0.17355234
+\end{verbatim}
+
+``\(R^2\) static that is close to 1 indicates that a large proportion of
+the variability in the response has been explained by the regression.''
+(ISLR Ch 3.1.3)
+
+In the \emph{log-transformed model}, \(R^2\) is slightly higher than in
+the \emph{original model.}
+
+The \emph{log-transformed model} has \(R^2\) of almost 0.6, not quite
+close to 1, but better than 0.5.
+
+There is variably of the response explained by the regression (further
+analysis needed).
+
+The model intercept for the \emph{log-transformed model} is 0.2. The
+model intercept for \emph{untransformed model} is 3.5.
+
+It makes sense for the intercept of the \emph{log-transformed model} to
+be 0.2. If we just took (simple test) the log10 of 3.5 we would get 0.5.
+
+We have the log10 applied to both variables. We also removed the values
+where \emph{lastcontr==0''.} The \emph{log-transformed model} will
+observe a much small range of numbers (min and max).
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Create an XY-scatterplot of \emph{log-transformed} predictor and
+  response and add corresponding regression line to it. Compare it to
+  the plot in \emph{untransformed} coordinates obtained in Problem 1.
+  What would you conclude from such comparison?
+\end{enumerate}
+
+In addition to xy-scattered plots, I am including boxplots to show
+another view how the transformed set differs from the untransformed.
+This set of plots show how the data are spread across their space. The
+logarithmic transformation makes data spread more evenly. The boxplot
+provide a nice visual on how data spread. The \emph{transformed dataset}
+exhibits an even spread. That even spread is supported in the
+xy-scattered plots.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(frcDatP2[,}\FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{)])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     1.0    10.0    13.0    15.3    20.0   200.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(}\FunctionTok{log10}\NormalTok{(frcDatP2[,}\FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{)]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   1.000   1.114   1.099   1.301   2.301
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#}
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), }\AttributeTok{ps=}\DecValTok{10}\NormalTok{)}
+
+\FunctionTok{boxplot}\NormalTok{(frcDatP2[,}\FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{)],}
+        \AttributeTok{main=}\StringTok{"UnXformed ($)"}\NormalTok{,}
+        \AttributeTok{col=}\StringTok{"skyblue"}\NormalTok{)}
+
+\FunctionTok{boxplot}\NormalTok{(}\FunctionTok{log10}\NormalTok{(frcDatP2[,}\FunctionTok{c}\NormalTok{(}\StringTok{"contrib"}\NormalTok{)]),}
+        \AttributeTok{main=}\StringTok{"Xformed (log$)"}\NormalTok{,}
+        \AttributeTok{col=}\StringTok{"skyblue"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem2_Q2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Original lm model}
+\FunctionTok{plot}\NormalTok{(frcDatP2[,}\FunctionTok{c}\NormalTok{(}\StringTok{"lastcontr"}\NormalTok{, }\StringTok{"contrib"}\NormalTok{)], }
+     \AttributeTok{main =} \StringTok{"UnXformed ($ x $)"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(lmModel,}\AttributeTok{col=}\DecValTok{2}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{h=}\DecValTok{0}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\DecValTok{0}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+
+\CommentTok{\# Recall to use frcDatP2 w/o lastcontr == 0.}
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{log10}\NormalTok{(frcDatP2[,}\FunctionTok{c}\NormalTok{(}\StringTok{"lastcontr"}\NormalTok{, }\StringTok{"contrib"}\NormalTok{)]),}
+     \AttributeTok{main =} \StringTok{"Xformed (log$ x log$"}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(logModel,}\AttributeTok{col=}\DecValTok{2}\NormalTok{,}\AttributeTok{lwd=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{h=}\DecValTok{0}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\FunctionTok{abline}\NormalTok{(}\AttributeTok{v=}\DecValTok{0}\NormalTok{,}\AttributeTok{lty=}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem2_Q2-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Make diagnostic plots for the model fit on log-transformed outcome and
+  the last contribution. Compare them to the diagnostic plots generated
+  in Problem 1 for the model fitted using original scale of measurements
+  (untransformed). What can you conclude from this comparison about the
+  relative quality of these two models?
+\end{enumerate}
+
+The \emph{transformed dataset} fixes some of the issues observed in the
+\emph{untranformed} diagnoistic set. The \emph{residuals vs.~fitted}
+chart shows the even distribution from left to right as noticed in the
+linear regression chart above. The \emph{scale-location} chart also
+straightens the chart, where the original scale of measurements had
+exhibited a positive slope or positive trend.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# / plot lm() {-}{-} 4 diagnostic plots created                                          \#\#\#\#}
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{plot}\NormalTok{(logModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem2_Q3-1.pdf}
+\includegraphics{linear_regression__uc_files/figure-latex/Problem2_Q3-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{problem-3-adding-second-variable-to-the-model-10-points}{%
+\section{Problem 3: Adding second variable to the model (10
+points)}\label{problem-3-adding-second-variable-to-the-model-10-points}}
+
+To explore effects of adding another variable to the model, continue
+using log-transformed attributes and fit a model of log-transformed
+outcome (the same target campaign contribution, column \texttt{contrib}
+in \texttt{fund-raising.csv}) as a function of the last contribution and
+average contribution (both log-transformed). Just an additive model --
+no interaction term is necessary at this point. Please obtain and
+evaluate the summary of this model fit, confidence intervals on its
+parameters and its diagnostic plots. Where applicable, compare them to
+the model obtained above and reflect on pros and cons of including
+average contribution as another variable into the model. You may find
+the discussion of \emph{variance inflation factor} (VIF) in ISLR
+Ch.3.3.3 (Section 6) and its implementation \texttt{vif} in \texttt{car}
+library particularly useful in this context.
+
+To add a second variable and then apply a log-transformation, I will
+first test the new variable and avoid any 0 equalities (i.e.~to prevent
+possible issues with log), and then will run the \texttt{lm()} to
+perform linear regression.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#\#}
+\CommentTok{\#}
+\DocumentationTok{\#\# CSCI E63{-}C PSET 3 {-} Problem 3                                            \#\#\#\#}
+\CommentTok{\#}
+\CommentTok{\#  Multi{-}Variable Model (mvlogModel)}
+
+\CommentTok{\# Remove lastcontr == 0}
+\NormalTok{frcDat\_test }\OtherTok{\textless{}{-}}\NormalTok{ frcDatP2[frcDatP2}\SpecialCharTok{$}\NormalTok{avecontr }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{,]}
+
+\FunctionTok{print}\NormalTok{(}\StringTok{"Dimension of P2 data frame before removing avecontr==0:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Dimension of P2 data frame before removing avecontr==0:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dim}\NormalTok{(frcDatP2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3460   13
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Dimension of test data frame after removing avecontr==0:"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Dimension of test data frame after removing avecontr==0:"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{dim}\NormalTok{(frcDat\_test)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3460   13
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Since the dimension did not change, I will stick with frcDatP2 for the rest of this problem}
+
+\NormalTok{mvlogModel }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log10}\NormalTok{(contrib)}\SpecialCharTok{\textasciitilde{}}\FunctionTok{log10}\NormalTok{(lastcontr }\SpecialCharTok{+}\NormalTok{ avecontr), }\AttributeTok{data =}\NormalTok{ frcDatP2)}
+
+\FunctionTok{summary}\NormalTok{(mvlogModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log10(contrib) ~ log10(lastcontr + avecontr), data = frcDatP2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.57245 -0.06714  0.01032  0.08191  1.00079 
+## 
+## Coefficients:
+##                             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                 -0.19598    0.01668  -11.75   <2e-16 ***
+## log10(lastcontr + avecontr)  0.95707    0.01216   78.72   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1634 on 3458 degrees of freedom
+## Multiple R-squared:  0.6418, Adjusted R-squared:  0.6417 
+## F-statistic:  6196 on 1 and 3458 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+Function \emph{confint()} provide confidence intervals with 95\%
+confidence level, and predictions. The following R code provides results
+to compare the new two-variable (multi-variable) log model, with the
+previous single-variable log model, and with the original model, as
+follows:
+
+.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Confidence intervals for multi{-}variable log10 transformed model"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Confidence intervals for multi-variable log10 transformed model"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(mvlogModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                  2.5 %     97.5 %
+## (Intercept)                 -0.2286816 -0.1632706
+## log10(lastcontr + avecontr)  0.9332339  0.9809114
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Confidence intervals for log10 transformed model"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Confidence intervals for log10 transformed model"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(logModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                      2.5 %    97.5 %
+## (Intercept)      0.1749634 0.2256463
+## log10(lastcontr) 0.7976354 0.8426805
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Confidence intervals for original untransformed model"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Confidence intervals for original untransformed model"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{confint}\NormalTok{(lmModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 2.5 %    97.5 %
+## (Intercept) 3.0898532 3.9561516
+## lastcontr   0.7716243 0.8188294
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Predictions}
+\FunctionTok{print}\NormalTok{(}\StringTok{"MV{-}Transformed model (log10, two variables), 95\% confidence"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "MV-Transformed model (log10, two variables), 95% confidence"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{10}\SpecialCharTok{\^{}}\FunctionTok{predict}\NormalTok{(mvlogModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{), }\AttributeTok{avecontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}confidence\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit      lwr      upr
+## 1 11.19964 11.05657 11.34457
+## 2 21.74261 21.34281 22.14991
+## 3 42.21039 40.85221 43.61372
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{10}\SpecialCharTok{\^{}}\FunctionTok{predict}\NormalTok{(mvlogModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{), }\AttributeTok{avecontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}prediction\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit       lwr      upr
+## 1 11.19964  5.355826 23.41973
+## 2 21.74261 10.396360 45.47180
+## 3 42.21039 20.173235 88.32083
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Transformed model (log10, one variable), 95\% confidence"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Transformed model (log10, one variable), 95% confidence"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{10}\SpecialCharTok{\^{}}\FunctionTok{predict}\NormalTok{(logModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}confidence\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit      lwr      upr
+## 1 10.48245 10.33455 10.63247
+## 2 18.50781 18.19472 18.82628
+## 3 32.67737 31.72884 33.65425
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{10}\SpecialCharTok{\^{}}\FunctionTok{predict}\NormalTok{(logModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}prediction\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit       lwr      upr
+## 1 10.48245  4.787749 22.95061
+## 2 18.50781  8.452766 40.52388
+## 3 32.67737 14.918709 71.57525
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\StringTok{"Original untransformed model, 95\% confidence"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Original untransformed model, 95% confidence"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{predict}\NormalTok{(lmModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}confidence\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit      lwr      upr
+## 1 11.47527 11.19527 11.75527
+## 2 19.42754 19.14364 19.71143
+## 3 35.33207 34.68459 35.97956
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{predict}\NormalTok{(lmModel,}
+        \AttributeTok{newdata=}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{lastcontr=}\FunctionTok{c}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{40}\NormalTok{)),}
+        \AttributeTok{interval=}\StringTok{\textquotesingle{}prediction\textquotesingle{}}\NormalTok{,}
+        \AttributeTok{level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        fit       lwr      upr
+## 1 11.47527 -3.608938 26.55948
+## 2 19.42754  4.343258 34.51182
+## 3 35.33207 20.236573 50.42758
+\end{verbatim}
+
+Those functions generated confidence intervals and predictions for all
+three cases: Original model, log10 model with one variable, and log10
+model with two variables. I used prediction for \texttt{lastcont} and
+\texttt{avecontr} 10, 20, and 40. It is interesting to note that all
+three the models tend to agree on the middle values where
+\texttt{lastcontr} and \texttt{avecontr} equal to 20, but the models
+diverge when we enter a higher number 40. One explanation could be that
+the models works well for middle numbers, but not as well at the edges,
+where we could have outliers. The next analysis will help visualize that
+last point.
+
+Diagnostic plots printed below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# }
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\FunctionTok{plot}\NormalTok{(mvlogModel)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem3_Q3-1.pdf}
+\includegraphics{linear_regression__uc_files/figure-latex/Problem3_Q3-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+Comparing to the first log-transformed model:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# Reference: Code to plot individual quality plots (using the "which" argument)}
+\CommentTok{\# came from Jose Pena in Week 3 TF Section: Linear Regression in R}
+\FunctionTok{plot}\NormalTok{(logModel, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(mvlogModel, }\AttributeTok{which =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem4_Q4.1-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+The single-variable log10 model is on the left, and the two-variable
+log10 model is on the right, as labeled at the bottom.
+
+The two-variable log10 model tends to keep the trending line (red)
+closer to the middle as we approach higher values.
+
+In my previous observation I noted that the predictions diverged at
+higher numbers. The residuals vs fitted plot could explain it.
+
+Now let's do another comparison looking at scale-location.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{old.par }\OtherTok{\textless{}{-}} \FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# Reference: Code to plot individual quality plots (using the "which" argument)}
+\CommentTok{\# came from Jose Pena in Week 3 TF Section: Linear Regression in R}
+\FunctionTok{plot}\NormalTok{(logModel, }\AttributeTok{which =} \DecValTok{3}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(mvlogModel, }\AttributeTok{which =} \DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{linear_regression__uc_files/figure-latex/Problem4_Q4.2-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(old.par)}
+\end{Highlighting}
+\end{Shaded}
+
+In here too, the scale-location plot has a more straight trendline for
+the two-variable plot (right) than for the single-variable plot (left).
+
+Overall, the two-variable model offers better results by taking care of
+higher numbers, such as outliers.
+
+On the other hand, the two-variable model may result on more
+variability. Having more variables produces more influence on the
+predictions coming from more sources.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{lastcontr}\SpecialCharTok{+}\NormalTok{avecontr, }\AttributeTok{data =}\NormalTok{ frcDatP2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = contrib ~ lastcontr + avecontr, data = frcDatP2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -68.520  -2.315  -0.667   1.767 152.129 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.04311    0.24396   8.375   <2e-16 ***
+## lastcontr    0.62269    0.01845  33.744   <2e-16 ***
+## avecontr     0.35949    0.02897  12.410   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.507 on 3457 degrees of freedom
+## Multiple R-squared:  0.5789, Adjusted R-squared:  0.5787 
+## F-statistic:  2377 on 2 and 3457 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.}
+           \SpecialCharTok{{-}}\NormalTok{gapmos}
+           \SpecialCharTok{{-}}\NormalTok{promocontr}
+           \SpecialCharTok{{-}}\NormalTok{mincontrib}
+           \SpecialCharTok{{-}}\NormalTok{ncontrib}
+           \SpecialCharTok{{-}}\NormalTok{maxcontrib}
+           \SpecialCharTok{{-}}\NormalTok{mailord}
+           \SpecialCharTok{{-}}\NormalTok{mindate}
+           \SpecialCharTok{{-}}\NormalTok{maxdate}
+           \SpecialCharTok{{-}}\NormalTok{age,}
+\NormalTok{           frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = contrib ~ . - gapmos - promocontr - mincontrib - 
+##     ncontrib - maxcontrib - mailord - mindate - maxdate - age, 
+##     data = frcDatP2[, colnames(frcDatP2) != "gender"])
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -68.520  -2.315  -0.667   1.767 152.129 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.04311    0.24396   8.375   <2e-16 ***
+## lastcontr    0.62269    0.01845  33.744   <2e-16 ***
+## avecontr     0.35949    0.02897  12.410   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.507 on 3457 degrees of freedom
+## Multiple R-squared:  0.5789, Adjusted R-squared:  0.5787 
+## F-statistic:  2377 on 2 and 3457 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Reference: VIF code came from file "wk3qa.RMD" provided in class.}
+\CommentTok{\# and it is based on homework problems from chatper 3 of ISLR textbook.}
+
+\FunctionTok{library}\NormalTok{(car)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: carData
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vif}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{lastcontr}\SpecialCharTok{+}\NormalTok{avecontr, }\AttributeTok{data =}\NormalTok{ frcDatP2))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## lastcontr  avecontr 
+##  2.453577  2.453577
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vif}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.}
+           \SpecialCharTok{{-}}\NormalTok{gapmos}
+           \SpecialCharTok{{-}}\NormalTok{promocontr}
+           \SpecialCharTok{{-}}\NormalTok{mincontrib}
+           \SpecialCharTok{{-}}\NormalTok{ncontrib}
+           \SpecialCharTok{{-}}\NormalTok{maxcontrib}
+           \SpecialCharTok{{-}}\NormalTok{mailord}
+           \SpecialCharTok{{-}}\NormalTok{mindate}
+           \SpecialCharTok{{-}}\NormalTok{maxdate}
+           \SpecialCharTok{{-}}\NormalTok{age,}
+\NormalTok{           frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## lastcontr  avecontr 
+##  2.453577  2.453577
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#test}
+\FunctionTok{summary}\NormalTok{(frcDatP2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     contrib          gapmos         promocontr       mincontrib    
+##  Min.   :  1.0   Min.   : 0.000   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 10.0   1st Qu.: 4.000   1st Qu.: 3.000   1st Qu.: 3.000  
+##  Median : 13.0   Median : 6.000   Median : 6.000   Median : 5.000  
+##  Mean   : 15.3   Mean   : 7.823   Mean   : 6.576   Mean   : 5.623  
+##  3rd Qu.: 20.0   3rd Qu.:10.000   3rd Qu.: 9.000   3rd Qu.: 5.000  
+##  Max.   :200.0   Max.   :77.000   Max.   :29.000   Max.   :80.000  
+##     ncontrib       maxcontrib        lastcontr         avecontr      
+##  Min.   : 1.00   Min.   :   5.00   Min.   :  1.00   Min.   :  2.261  
+##  1st Qu.: 6.00   1st Qu.:  11.00   1st Qu.: 10.00   1st Qu.:  7.098  
+##  Median :10.00   Median :  15.00   Median : 14.00   Median :  9.894  
+##  Mean   :12.34   Mean   :  18.09   Mean   : 14.85   Mean   : 11.160  
+##  3rd Qu.:16.00   3rd Qu.:  20.00   3rd Qu.: 20.00   3rd Qu.: 13.191  
+##  Max.   :91.00   Max.   :1000.00   Max.   :250.00   Max.   :103.571  
+##     mailord           mindate        maxdate          age        gender  
+##  Min.   :  0.000   Min.   :8608   Min.   :8312   Min.   : 4.00   F:1868  
+##  1st Qu.:  0.000   1st Qu.:9006   1st Qu.:9401   1st Qu.:50.00   M:1468  
+##  Median :  1.000   Median :9210   Median :9504   Median :64.00   U: 124  
+##  Mean   :  4.436   Mean   :9207   Mean   :9409   Mean   :62.63           
+##  3rd Qu.:  5.000   3rd Qu.:9410   3rd Qu.:9511   3rd Qu.:75.00           
+##  Max.   :240.000   Max.   :9702   Max.   :9702   Max.   :98.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = contrib ~ ., data = frcDatP2[, colnames(frcDatP2) != 
+##     "gender"])
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -66.823  -2.237  -0.651   1.746 152.753 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.8552706  8.9233645   0.432   0.6657    
+## gapmos       0.0294980  0.0207031   1.425   0.1543    
+## promocontr  -0.0442674  0.0635951  -0.696   0.4864    
+## mincontrib  -0.0107045  0.0460743  -0.232   0.8163    
+## ncontrib    -0.0386822  0.0329822  -1.173   0.2409    
+## maxcontrib   0.0043328  0.0075044   0.577   0.5637    
+## lastcontr    0.6053627  0.0199387  30.361   <2e-16 ***
+## avecontr     0.3539121  0.0409038   8.652   <2e-16 ***
+## mailord     -0.0145348  0.0118326  -1.228   0.2194    
+## mindate     -0.0013286  0.0005647  -2.353   0.0187 *  
+## maxdate      0.0011660  0.0007521   1.550   0.1212    
+## age          0.0056309  0.0083481   0.675   0.5000    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.487 on 3448 degrees of freedom
+## Multiple R-squared:  0.5824, Adjusted R-squared:  0.581 
+## F-statistic: 437.1 on 11 and 3448 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vif}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.,frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     gapmos promocontr mincontrib   ncontrib maxcontrib  lastcontr   avecontr 
+##   1.050807   5.690033   2.560951   5.520969   1.587125   2.880492   4.919317 
+##    mailord    mindate    maxdate        age 
+##   1.017543   1.350942   1.282494   1.066863
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vif}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.}\SpecialCharTok{{-}}\NormalTok{lastcontr,frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     gapmos promocontr mincontrib   ncontrib maxcontrib   avecontr    mailord 
+##   1.050454   5.665194   2.496871   5.501488   1.547036   3.022373   1.016919 
+##    mindate    maxdate        age 
+##   1.331296   1.209896   1.066854
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{vif}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.}\SpecialCharTok{{-}}\NormalTok{lastcontr}\SpecialCharTok{{-}}\NormalTok{avecontr,frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     gapmos promocontr mincontrib   ncontrib maxcontrib    mailord    mindate 
+##   1.049984   5.656133   1.327124   5.491452   1.118333   1.015228   1.251838 
+##    maxdate        age 
+##   1.205271   1.066530
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(}\FunctionTok{lm}\NormalTok{(contrib}\SpecialCharTok{\textasciitilde{}}\NormalTok{.}\SpecialCharTok{{-}}\NormalTok{lastcontr}\SpecialCharTok{{-}}\NormalTok{avecontr,frcDatP2[,}\FunctionTok{colnames}\NormalTok{(frcDatP2)}\SpecialCharTok{!=}\StringTok{"gender"}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = contrib ~ . - lastcontr - avecontr, data = frcDatP2[, 
+##     colnames(frcDatP2) != "gender"])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -171.245   -4.533   -1.513    2.788  163.555 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 36.8695540 11.0485339   3.337 0.000856 ***
+## gapmos       0.0563781  0.0263692   2.138 0.032585 *  
+## promocontr  -0.0057477  0.0807901  -0.071 0.943287    
+## mincontrib   0.8607341  0.0422616  20.367  < 2e-16 ***
+## ncontrib    -0.1475108  0.0419128  -3.519 0.000438 ***
+## maxcontrib   0.1774098  0.0080266  22.103  < 2e-16 ***
+## mailord      0.0112875  0.0150597   0.750 0.453598    
+## mindate     -0.0082015  0.0006926 -11.842  < 2e-16 ***
+## maxdate      0.0050143  0.0009291   5.397 7.23e-08 ***
+## age          0.0012787  0.0106354   0.120 0.904309    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 9.539 on 3450 degrees of freedom
+## Multiple R-squared:  0.3216, Adjusted R-squared:  0.3198 
+## F-statistic: 181.7 on 9 and 3450 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# }
+\CommentTok{\# summary(lm(contrib\textasciitilde{}.,frcDatP2[,colnames(Auto)!="name"], data = frcDatP2))}
+\CommentTok{\# vif(lm(mpg\textasciitilde{}.,Auto[,colnames(Auto)!="name"]))}
+\CommentTok{\# vif(lm(mpg\textasciitilde{}.{-}displacement,Auto[,colnames(Auto)!="name"]))}
+\CommentTok{\# vif(lm(mpg\textasciitilde{}.{-}displacement{-}weight,Auto[,colnames(Auto)!="name"]))}
+\CommentTok{\# summary(lm(mpg\textasciitilde{}.{-}displacement{-}weight,Auto[,colnames(Auto)!="name"]))}
+\end{Highlighting}
+\end{Shaded}
+
+VIF tests collinearity
+
+Collinmarity causes an increase in coefficient estimates to increase. It
+is hard to detect by inspection. The Variance Correlation Factor (VIF)
+(ISLR p.~101). Small indicates absence of collinearity. Smallest VIF is
+1. THe test for \texttt{lastcontr} and \texttt{avecontr} resulted in VIF
+of 2.45. That is a small number and therefore this test indecates that
+there is no colliearity between these two variables.
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Book (ISLR) ``An Introduction to Statistical Learning with
+  Applications in R'' by Gareth James et al
+\item
+  Book ``R for Data Science'' by Hadley Wickham and Garrett Grolemund
+\item
+  Book ``R Graphics Cookbook'' by Winston Chang
+\item
+  LinkedIn Learning ``Wrangling and Visualizing Data'' by Barton Poulson
+\end{enumerate}
+
+\end{document}
