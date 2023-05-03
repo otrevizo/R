@@ -2,12 +2,13 @@
 title: "Correlation vignette"
 author: "Oscar A. Trevizo"
 output:
-  pdf_document: 
+  # pdf_document: 
+  #   toc: yes
+  # html_document:
+  #   toc: yes
+  #   keep_md: yes
+  github_document:
     toc: yes
-    keep_tex: yes
-  html_document:
-    toc: yes
-    keep_md: yes
 ---
 
 # Load the libraries
