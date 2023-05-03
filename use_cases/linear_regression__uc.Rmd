@@ -7,6 +7,7 @@ output:
   # html_document:
   #   toc: yes
   #   keep_md: yes
+  # The following parameter forces the creation of ONLY and md file.
   github_document:
     toc: yes
 ---
