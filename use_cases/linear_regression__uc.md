@@ -11,11 +11,20 @@ output:
 
 # Load the libraries
 
-```{r setup, include=TRUE, results='hide'}
+
+```r
 library(ggplot2)
 library(ISLR)
 library(GGally)
+```
 
+```
+## Registered S3 method overwritten by 'GGally':
+##   method from   
+##   +.gg   ggplot2
+```
+
+```r
 knitr::opts_chunk$set(echo = TRUE)
 
 # https://stackoverflow.com/questions/39814916/how-can-i-see-output-of-rmd-in-github
@@ -26,7 +35,8 @@ knitr::opts_chunk$set(echo = TRUE)
 Reference: Harvard CSCI E-63c Statistical Learning, 2021.
 
 
-```{r readData}
+
+```r
 ####
 #
 #
@@ -79,7 +89,10 @@ Reference: Harvard CSCI E-63c Statistical Learning, 2021.
 
 frcDat <- read.table("../data/fund-raising.csv",sep=",",header=TRUE, as.is = FALSE)
 dim(frcDat)
+```
 
+```
+## [1] 3470   13
 ```
 
 # ggpairs()
@@ -94,7 +107,8 @@ dim(frcDat)
 
 <p style="color:blue">The three sets of *ggpairs()* plots will distinguish gender and will include trend lines on a per-gender basis.</p>
 
-```{r}
+
+```r
 par(mfrow=c(3, 1))
 
 # Let ggpairs plot $USD continuous variables before analyzing
@@ -104,7 +118,11 @@ ggpairs(frcDat, columns = c("contrib", "mincontrib", "maxcontrib", "lastcontr", 
         aes(color = gender,  
             alpha = 0.5)
         )
+```
 
+![](linear_regression__uc_files/figure-html/unnamed-chunk-1-1.png)<!-- -->
+
+```r
 # Let ggpairs plot INT (number of) continuous variables vs "contrib" before analyzing
 ggpairs(frcDat, columns = c("contrib", "promocontr", "ncontrib", "mailord"), 
         upper = list(continuous = wrap("cor", size = 4)),
@@ -112,7 +130,11 @@ ggpairs(frcDat, columns = c("contrib", "promocontr", "ncontrib", "mailord"),
         aes(color = gender,  
             alpha = 0.5)
         )
+```
 
+![](linear_regression__uc_files/figure-html/unnamed-chunk-1-2.png)<!-- -->
+
+```r
 # Let ggpairs plot time, date or age related continuous variables vs "contrib" before analyzing
 ggpairs(frcDat, columns = c("contrib", "gapmos", "mindate", "maxdate", "age"), 
         upper = list(continuous = wrap("cor", size = 4)),
@@ -120,9 +142,9 @@ ggpairs(frcDat, columns = c("contrib", "gapmos", "mindate", "maxdate", "age"),
         aes(color = gender,  
             alpha = 0.5)
         )
-
-
 ```
+
+![](linear_regression__uc_files/figure-html/unnamed-chunk-1-3.png)<!-- -->
 
 <p style="color:blue">The first *ggpairs()* set of plots for *$USD dollar* variables shows a level of correlation with `contrib`. The second set of *ggpairs()* plots based on counts also shows a level of correlation with `contrib`. The third set shows little correlation. The plots also show outliers that may impact the following results. The plots also show some outliers that may impact the results.</p>
 
@@ -137,26 +159,38 @@ Correlation matrices for continuous variable.
 
 ## Pearson
 
-```{r}
+
+```r
 # Correlations matrix for continuous variables.
 corPearson <- cor(frcDat[,1:12],
                 method = "pearson")
 
 
 print(corPearson[1,2:12])
+```
 
+```
+##      gapmos  promocontr  mincontrib    ncontrib  maxcontrib   lastcontr 
+##  0.11219211 -0.21458645  0.40717536 -0.21162953  0.41447598  0.74645102 
+##    avecontr     mailord     mindate     maxdate         age 
+##  0.66309190  0.01859687 -0.06540943  0.13115985 -0.02582929
 ```
 
 ## Spearman
 
-```{r}
 
+```r
 corSpearman <- cor(frcDat[,1:12],
                  method = "spearman")
 
 print(corSpearman[1,2:12])
+```
 
-
+```
+##      gapmos  promocontr  mincontrib    ncontrib  maxcontrib   lastcontr 
+##  0.15667400 -0.34303277  0.50770483 -0.36794468  0.73568485  0.77011108 
+##    avecontr     mailord     mindate     maxdate         age 
+##  0.74700987 -0.02334201 -0.10425397  0.19773321 -0.09726779
 ```
 
 <p style="color:blue">The first row of each matrix gives me a list of correlations of all continuous variables vs `contrib`.
@@ -167,8 +201,8 @@ It allows me to create bar plots to visualize those correlations.</p>
 
 # Bar plots
 
-```{r Problem1_Q1_barplots}
 
+```r
 ## Problem 1 - Question 1 - bar plots                                   ####
 
 # Correlation charts
@@ -203,9 +237,12 @@ barplot(corSpearman[1,2:12]^2,
         las = 3,
         ylim = c(0,.7),
         col="skyblue")
+```
 
+![](linear_regression__uc_files/figure-html/Problem1_Q1_barplots-1.png)<!-- -->
+
+```r
 par(old.par)
-
 ```
 
 <p style="color:blue">Therefore, based on the above plots and matrices using *gpairs()*, correlations using *cor()* (for Pearson 0.7465 and for Spearman 0.7701), and *barplots()*, the results show that **the last contribution `lastcontr` is the variable most robustly correlated** with the target contributions (`contrib`).</p>
@@ -215,17 +252,43 @@ par(old.par)
 <p style="color:blue">The R code to address the 2nd question follows:</p>
 
 
-```{r Problem1_Q2}
 
+```r
 lmModel <- lm(contrib~lastcontr,frcDat)
 
 model.summary <- summary(lmModel)
 # model.summary <- summary(lm(contrib~lastcontr,frcDat))
 
 mode(model.summary)
+```
 
+```
+## [1] "list"
+```
+
+```r
 print(model.summary)
+```
 
+```
+## 
+## Call:
+## lm(formula = contrib ~ lastcontr, data = frcDat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -77.046  -2.499  -0.475   1.706 156.716 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.52300    0.22092   15.95   <2e-16 ***
+## lastcontr    0.79523    0.01204   66.06   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.692 on 3468 degrees of freedom
+## Multiple R-squared:  0.5572,	Adjusted R-squared:  0.5571 
+## F-statistic:  4364 on 1 and 3468 DF,  p-value: < 2.2e-16
 ```
 
 
@@ -277,23 +340,32 @@ print(model.summary)
 
 <p style="color:blue">Scatterplot for the model (namd `lmModel` here):</p>
 
-```{r Problem1_Q2(3)}
+
+```r
 plot(frcDat[,c("lastcontr", "contrib")])
 abline(lmModel,col=2,lwd=2)
 abline(h=0,lty=2)
 abline(v=0,lty=2)
 ```
 
+![](linear_regression__uc_files/figure-html/Problem1_Q2(3)-1.png)<!-- -->
+
 
 4. Create diagnostic plots of the model and comment on any irregularities that they present.  For instance, does the plot of residuals vs. fitted values suggest presence of non-linearity that remains unexplained by the model?  Does scale-location plot suggest non-uniformity of variance along the range of fitted values?  Are some standardized residuals far greater than theoretical quantiles?  What about residuals vs. leverage plot and Cook's distance contours therein?  How does your conclusions compare to what's shown in the plot of the predictor and outcome with regression line added to it -- i.e. the plot that was generated above?
 
 <p style="color:blue">The following charts provide diagnostic plots of the model. Answers to individual questions follow.</p>
 
-```{r Problem1_Q4}
+
+```r
 ## / plot lm() -- 4 diagnostic plots created                                          ####
 # Using par to do 1x2 plots per row provide larger plots than using 2x2
 old.par <- par(mfrow=c(1,2))
 plot(lmModel)
+```
+
+![](linear_regression__uc_files/figure-html/Problem1_Q4-1.png)<!-- -->![](linear_regression__uc_files/figure-html/Problem1_Q4-2.png)<!-- -->
+
+```r
 par(old.par)
 ```
 
@@ -324,10 +396,15 @@ How does your conclusions compare to what's shown in the plot of the predictor a
 <p style="color:blue">The results shows two numbers. One at 2.5% and another one at 97.5%. That is, 2.5% on each side to make for the 5% from both side of the 95% confidence level. That is, 95% of the time, the interval shown below will contain the population mean.</p>
 
 
-```{r contribVSlastcontr}
 
+```r
 confint(lmModel)
+```
 
+```
+##                 2.5 %    97.5 %
+## (Intercept) 3.0898532 3.9561516
+## lastcontr   0.7716243 0.8188294
 ```
 
 
@@ -338,8 +415,8 @@ confint(lmModel)
 
 <p style="color:blue">Function *predict()* estimate predictions with 90% confidence. The prediction is under column name `fit`. Both tables exhibit the same values for `fit`. The `lwr` and `upr` columns provide corresponding estimates of uncertainty associated with each prediction.</p>
 
-```{r Problem1_Q6}
 
+```r
 # Enter a set of inputs to predict:
 new.lastcontr = c(10,20,40)
 
@@ -354,8 +431,24 @@ lmModel.pred <- predict(lmModel,
         level = 0.90)
 
 lmModel.conf
-lmModel.pred
+```
 
+```
+##        fit      lwr      upr
+## 1 11.47527 11.24031 11.71023
+## 2 19.42754 19.18931 19.66577
+## 3 35.33207 34.78873 35.87542
+```
+
+```r
+lmModel.pred
+```
+
+```
+##        fit       lwr      upr
+## 1 11.47527 -1.182759 24.13330
+## 2 19.42754  6.769448 32.08563
+## 3 35.33207 22.664568 47.99958
 ```
 
 # Problem 2: model using log-transformed attributes (20 points)
@@ -366,7 +459,8 @@ Exclude small number of observations where `lastcontr==0`, otherwise log-transfo
 
 <p style="color:blue">A new dataset excludes `lastcontr==0` as follows:</p>
 
-```{r Problem2_Q1(1)}
+
+```r
 ####
 #
 ## CSCI E63-C PSET 3 - Problem 2                                            ####
@@ -378,13 +472,68 @@ Exclude small number of observations where `lastcontr==0`, otherwise log-transfo
 frcDatP2 <- frcDat[frcDat$lastcontr != 0,]
 
 print("Dimension of data frame before removing lastcontr==0:")
+```
+
+```
+## [1] "Dimension of data frame before removing lastcontr==0:"
+```
+
+```r
 dim(frcDat)
+```
+
+```
+## [1] 3470   13
+```
+
+```r
 print("Dimension of data frame after removing lastcontr==0:")
+```
+
+```
+## [1] "Dimension of data frame after removing lastcontr==0:"
+```
+
+```r
 dim(frcDatP2)
+```
+
+```
+## [1] 3460   13
+```
+
+```r
 print("Summary of variable lastcontr before removing lastcontr==0:")
+```
+
+```
+## [1] "Summary of variable lastcontr before removing lastcontr==0:"
+```
+
+```r
 summary(frcDat$lastcontr)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0    10.0    14.0    14.8    20.0   250.0
+```
+
+```r
 print("Summary of variable lastcontr after removing lastcontr==0:")
+```
+
+```
+## [1] "Summary of variable lastcontr after removing lastcontr==0:"
+```
+
+```r
 summary(frcDatP2$lastcontr)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00   10.00   14.00   14.85   20.00  250.00
 ```
 
 <p style="color:blue">Without observations where `lastcontr==0` the number of observations went down from 3470 to 3460. </p>
@@ -393,13 +542,34 @@ summary(frcDatP2$lastcontr)
 
 <p style="color:blue">Next, apply `lm()` to fit a regression model of *log-transformed* (`contrib`~`lastcontr`):</p>
 
-```{r Problem2_Q1(2)}
 
+```r
 logModel <- lm(log10(contrib)~log10(lastcontr), data = frcDatP2)
 
 log.trasformed.summary <- summary(logModel)
 
 print(log.trasformed.summary)
+```
+
+```
+## 
+## Call:
+## lm(formula = log10(contrib) ~ log10(lastcontr), data = frcDatP2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.59373 -0.07460  0.01121  0.09069  0.97954 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       0.20030    0.01293    15.5   <2e-16 ***
+## log10(lastcontr)  0.82016    0.01149    71.4   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1736 on 3458 degrees of freedom
+## Multiple R-squared:  0.5958,	Adjusted R-squared:  0.5957 
+## F-statistic:  5098 on 1 and 3458 DF,  p-value: < 2.2e-16
 ```
 
 <p style="color:blue">The new *log-transformed* model creates pentameters for intercept (0.2), and for slope (0.82).</p>
@@ -415,12 +585,29 @@ print(log.trasformed.summary)
 <p style="color:blue"> The following code creates a matrix to compare attributes between the models.</p>
 
 
-```{r Problem2_Q1(3)}
 
+```r
 # Attributes summary from each model
 model.summary$coefficients
-log.trasformed.summary$coefficients
+```
 
+```
+##              Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept) 3.5230024 0.22092142 15.94686 2.646504e-55
+## lastcontr   0.7952268 0.01203814 66.05896 0.000000e+00
+```
+
+```r
+log.trasformed.summary$coefficients
+```
+
+```
+##                   Estimate Std. Error  t value     Pr(>|t|)
+## (Intercept)      0.2003049 0.01292504 15.49743 2.011276e-52
+## log10(lastcontr) 0.8201579 0.01148730 71.39691 0.000000e+00
+```
+
+```r
 # Next, a short matrix will summarize the comparison between original and transformed models.
 # Matrix compares attributes, R^2, and RSE
 
@@ -443,8 +630,16 @@ mCompare <- matrix(c(model.summary$coefficients[1,1],
                                    c("orig-model", "log-xform")))
 
 mCompare
+```
 
-
+```
+##           orig-model  log-xform
+## Intercept 3.52300237 0.20030486
+## SE(Intx)  0.22092142 0.01292504
+## slope     0.79522682 0.82015794
+## SE(slope) 0.01203814 0.01148730
+## R^2       0.55718912 0.59581646
+## RSE       7.69215443 0.17355234
 ```
 
 <p style="color:blue">"$R^2$ static that is close to 1 indicates that a large proportion of the variability in the response has been explained by the regression." (ISLR Ch 3.1.3)</p> 
@@ -467,11 +662,26 @@ mCompare
 <p style="color:blue">In addition to xy-scattered plots, I am including boxplots to show another view how the transformed set differs from the untransformed. This set of plots show how the data are spread across their space. The logarithmic transformation makes data spread more evenly. The boxplot provide a nice visual on how data spread. The *transformed dataset* exhibits an even spread. That even spread is supported in the xy-scattered plots.</p>
 
 
-```{r Problem2_Q2}
 
+```r
 summary(frcDatP2[,c("contrib")])
-summary(log10(frcDatP2[,c("contrib")]))
+```
 
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     1.0    10.0    13.0    15.3    20.0   200.0
+```
+
+```r
+summary(log10(frcDatP2[,c("contrib")]))
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.000   1.000   1.114   1.099   1.301   2.301
+```
+
+```r
 #
 old.par <- par(mfrow=c(1,2), ps=10)
 
@@ -482,7 +692,11 @@ boxplot(frcDatP2[,c("contrib")],
 boxplot(log10(frcDatP2[,c("contrib")]),
         main="Xformed (log$)",
         col="skyblue")
+```
 
+![](linear_regression__uc_files/figure-html/Problem2_Q2-1.png)<!-- -->
+
+```r
 # Original lm model
 plot(frcDatP2[,c("lastcontr", "contrib")], 
      main = "UnXformed ($ x $)")
@@ -496,7 +710,11 @@ plot(log10(frcDatP2[,c("lastcontr", "contrib")]),
 abline(logModel,col=2,lwd=2)
 abline(h=0,lty=2)
 abline(v=0,lty=2)
+```
 
+![](linear_regression__uc_files/figure-html/Problem2_Q2-2.png)<!-- -->
+
+```r
 par(old.par)
 ```
 
@@ -506,12 +724,17 @@ par(old.par)
 
 <p style="color:blue">The *transformed dataset* fixes some of the issues observed in the *untranformed* diagnoistic set. The *residuals vs. fitted* chart shows the even distribution from left to right as noticed in the linear regression chart above. The *scale-location* chart also straightens the chart, where the original scale of measurements had exhibited a positive slope or positive trend.</p>
 
-```{r Problem2_Q3}
+
+```r
 ## / plot lm() -- 4 diagnostic plots created                                          ####
 old.par <- par(mfrow=c(1,2))
 
 plot(logModel)
+```
 
+![](linear_regression__uc_files/figure-html/Problem2_Q3-1.png)<!-- -->![](linear_regression__uc_files/figure-html/Problem2_Q3-2.png)<!-- -->
+
+```r
 par(old.par)
 ```
 
@@ -521,7 +744,8 @@ To explore effects of adding another variable to the model, continue using log-t
 
 <p style="color:blue">To add a second variable and then apply a log-transformation, I will first test the new variable and avoid any 0 equalities (i.e. to prevent possible issues with log), and then will run the `lm()` to perform linear regression.</p>
 
-```{r Problem3_Q1}
+
+```r
 ####
 #
 ## CSCI E63-C PSET 3 - Problem 3                                            ####
@@ -532,88 +756,256 @@ To explore effects of adding another variable to the model, continue using log-t
 frcDat_test <- frcDatP2[frcDatP2$avecontr != 0,]
 
 print("Dimension of P2 data frame before removing avecontr==0:")
-dim(frcDatP2)
-print("Dimension of test data frame after removing avecontr==0:")
-dim(frcDat_test)
+```
 
+```
+## [1] "Dimension of P2 data frame before removing avecontr==0:"
+```
+
+```r
+dim(frcDatP2)
+```
+
+```
+## [1] 3460   13
+```
+
+```r
+print("Dimension of test data frame after removing avecontr==0:")
+```
+
+```
+## [1] "Dimension of test data frame after removing avecontr==0:"
+```
+
+```r
+dim(frcDat_test)
+```
+
+```
+## [1] 3460   13
+```
+
+```r
 #Since the dimension did not change, I will stick with frcDatP2 for the rest of this problem
 
 mvlogModel <- lm(log10(contrib)~log10(lastcontr + avecontr), data = frcDatP2)
 
 summary(mvlogModel)
+```
 
+```
+## 
+## Call:
+## lm(formula = log10(contrib) ~ log10(lastcontr + avecontr), data = frcDatP2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.57245 -0.06714  0.01032  0.08191  1.00079 
+## 
+## Coefficients:
+##                             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                 -0.19598    0.01668  -11.75   <2e-16 ***
+## log10(lastcontr + avecontr)  0.95707    0.01216   78.72   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.1634 on 3458 degrees of freedom
+## Multiple R-squared:  0.6418,	Adjusted R-squared:  0.6417 
+## F-statistic:  6196 on 1 and 3458 DF,  p-value: < 2.2e-16
 ```
 
 
 
 <p style="color:blue">Function *confint()* provide confidence intervals with 95% confidence level, and predictions. The following R code provides results to compare the new two-variable (multi-variable) log model, with the previous single-variable log model, and with the original model, as follows:</p>.
 
-```{r Problem3_Q2}
 
+```r
 print("Confidence intervals for multi-variable log10 transformed model")
+```
+
+```
+## [1] "Confidence intervals for multi-variable log10 transformed model"
+```
+
+```r
 confint(mvlogModel)
+```
 
+```
+##                                  2.5 %     97.5 %
+## (Intercept)                 -0.2286816 -0.1632706
+## log10(lastcontr + avecontr)  0.9332339  0.9809114
+```
+
+```r
 print("Confidence intervals for log10 transformed model")
+```
+
+```
+## [1] "Confidence intervals for log10 transformed model"
+```
+
+```r
 confint(logModel)
+```
 
+```
+##                      2.5 %    97.5 %
+## (Intercept)      0.1749634 0.2256463
+## log10(lastcontr) 0.7976354 0.8426805
+```
+
+```r
 print("Confidence intervals for original untransformed model")
-confint(lmModel)
+```
 
+```
+## [1] "Confidence intervals for original untransformed model"
+```
+
+```r
+confint(lmModel)
+```
+
+```
+##                 2.5 %    97.5 %
+## (Intercept) 3.0898532 3.9561516
+## lastcontr   0.7716243 0.8188294
+```
+
+```r
 # Predictions
 print("MV-Transformed model (log10, two variables), 95% confidence")
+```
+
+```
+## [1] "MV-Transformed model (log10, two variables), 95% confidence"
+```
+
+```r
 10^predict(mvlogModel,
         newdata=data.frame(lastcontr=c(10,20,40), avecontr=c(10,20,40)),
         interval='confidence',
         level = 0.95)
+```
 
+```
+##        fit      lwr      upr
+## 1 11.19964 11.05657 11.34457
+## 2 21.74261 21.34281 22.14991
+## 3 42.21039 40.85221 43.61372
+```
+
+```r
 10^predict(mvlogModel,
         newdata=data.frame(lastcontr=c(10,20,40), avecontr=c(10,20,40)),
         interval='prediction',
         level = 0.95)
+```
 
+```
+##        fit       lwr      upr
+## 1 11.19964  5.355826 23.41973
+## 2 21.74261 10.396360 45.47180
+## 3 42.21039 20.173235 88.32083
+```
+
+```r
 print("Transformed model (log10, one variable), 95% confidence")
+```
+
+```
+## [1] "Transformed model (log10, one variable), 95% confidence"
+```
+
+```r
 10^predict(logModel,
         newdata=data.frame(lastcontr=c(10,20,40)),
         interval='confidence',
         level = 0.95)
+```
 
+```
+##        fit      lwr      upr
+## 1 10.48245 10.33455 10.63247
+## 2 18.50781 18.19472 18.82628
+## 3 32.67737 31.72884 33.65425
+```
+
+```r
 10^predict(logModel,
         newdata=data.frame(lastcontr=c(10,20,40)),
         interval='prediction',
         level = 0.95)
+```
 
+```
+##        fit       lwr      upr
+## 1 10.48245  4.787749 22.95061
+## 2 18.50781  8.452766 40.52388
+## 3 32.67737 14.918709 71.57525
+```
+
+```r
 print("Original untransformed model, 95% confidence")
+```
+
+```
+## [1] "Original untransformed model, 95% confidence"
+```
+
+```r
 predict(lmModel,
         newdata=data.frame(lastcontr=c(10,20,40)),
         interval='confidence',
         level = 0.95)
+```
 
+```
+##        fit      lwr      upr
+## 1 11.47527 11.19527 11.75527
+## 2 19.42754 19.14364 19.71143
+## 3 35.33207 34.68459 35.97956
+```
+
+```r
 predict(lmModel,
         newdata=data.frame(lastcontr=c(10,20,40)),
         interval='prediction',
         level = 0.95)
+```
 
-
+```
+##        fit       lwr      upr
+## 1 11.47527 -3.608938 26.55948
+## 2 19.42754  4.343258 34.51182
+## 3 35.33207 20.236573 50.42758
 ```
 
 <p style="color:blue">Those functions generated confidence intervals and predictions for all three cases: Original model, log10 model with one variable, and log10 model with two variables. I used prediction for `lastcont` and `avecontr` 10, 20, and 40. It is interesting to note that all three the models tend to agree on the middle values where `lastcontr` and `avecontr` equal to 20, but the models diverge when we enter a higher number 40. One explanation could be that the models works well for middle numbers, but not as well at the edges, where we could have outliers. The next analysis will help visualize that last point.</p>
 
 <p style="color:blue">Diagnostic plots printed below.</p>
 
-```{r Problem3_Q3}
+
+```r
 # 
 old.par <- par(mfrow=c(1,2))
 
 plot(mvlogModel)
+```
 
+![](linear_regression__uc_files/figure-html/Problem3_Q3-1.png)<!-- -->![](linear_regression__uc_files/figure-html/Problem3_Q3-2.png)<!-- -->
+
+```r
 par(old.par)
 ```
 
 <p style="color:blue">Comparing to the first log-transformed model:</p>
 
 
-```{r Problem4_Q4.1}
 
+```r
 old.par <- par(mfrow=c(1,2))
 
 # Reference: Code to plot individual quality plots (using the "which" argument)
@@ -621,9 +1013,12 @@ old.par <- par(mfrow=c(1,2))
 plot(logModel, which = 1)
 
 plot(mvlogModel, which = 1)
+```
 
+![](linear_regression__uc_files/figure-html/Problem4_Q4.1-1.png)<!-- -->
+
+```r
 par(old.par)
-
 ```
 
 <p style="color:blue">The single-variable log10 model is on the left, and the two-variable log10 model is on the right, as labeled at the bottom.</p>
@@ -634,7 +1029,8 @@ par(old.par)
 
 <p style="color:blue">Now let's do another comparison looking at scale-location.</p>
 
-```{r Problem4_Q4.2}
+
+```r
 old.par <- par(mfrow=c(1,2))
 
 # Reference: Code to plot individual quality plots (using the "which" argument)
@@ -642,7 +1038,11 @@ old.par <- par(mfrow=c(1,2))
 plot(logModel, which = 3)
 
 plot(mvlogModel, which = 3)
+```
 
+![](linear_regression__uc_files/figure-html/Problem4_Q4.2-1.png)<!-- -->
+
+```r
 par(old.par)
 ```
 
@@ -652,9 +1052,34 @@ par(old.par)
 
 <p style="color:blue">On the other hand, the two-variable model may result on more variability. Having more variables produces more influence on the predictions coming from more sources.</p>
 
-```{r frcDatP2vif}
-summary(lm(contrib~lastcontr+avecontr, data = frcDatP2))
 
+```r
+summary(lm(contrib~lastcontr+avecontr, data = frcDatP2))
+```
+
+```
+## 
+## Call:
+## lm(formula = contrib ~ lastcontr + avecontr, data = frcDatP2)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -68.520  -2.315  -0.667   1.767 152.129 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.04311    0.24396   8.375   <2e-16 ***
+## lastcontr    0.62269    0.01845  33.744   <2e-16 ***
+## avecontr     0.35949    0.02897  12.410   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.507 on 3457 degrees of freedom
+## Multiple R-squared:  0.5789,	Adjusted R-squared:  0.5787 
+## F-statistic:  2377 on 2 and 3457 DF,  p-value: < 2.2e-16
+```
+
+```r
 summary(lm(contrib~.
            -gapmos
            -promocontr
@@ -666,13 +1091,53 @@ summary(lm(contrib~.
            -maxdate
            -age,
            frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
 
+```
+## 
+## Call:
+## lm(formula = contrib ~ . - gapmos - promocontr - mincontrib - 
+##     ncontrib - maxcontrib - mailord - mindate - maxdate - age, 
+##     data = frcDatP2[, colnames(frcDatP2) != "gender"])
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -68.520  -2.315  -0.667   1.767 152.129 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.04311    0.24396   8.375   <2e-16 ***
+## lastcontr    0.62269    0.01845  33.744   <2e-16 ***
+## avecontr     0.35949    0.02897  12.410   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.507 on 3457 degrees of freedom
+## Multiple R-squared:  0.5789,	Adjusted R-squared:  0.5787 
+## F-statistic:  2377 on 2 and 3457 DF,  p-value: < 2.2e-16
+```
+
+```r
 # Reference: VIF code came from file "wk3qa.RMD" provided in class.
 # and it is based on homework problems from chatper 3 of ISLR textbook.
 
 library(car)
+```
 
+```
+## Loading required package: carData
+```
+
+```r
 vif(lm(contrib~lastcontr+avecontr, data = frcDatP2))
+```
+
+```
+## lastcontr  avecontr 
+##  2.453577  2.453577
+```
+
+```r
 vif(lm(contrib~.
            -gapmos
            -promocontr
@@ -684,24 +1149,152 @@ vif(lm(contrib~.
            -maxdate
            -age,
            frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
 
+```
+## lastcontr  avecontr 
+##  2.453577  2.453577
+```
 
+```r
 #test
 summary(frcDatP2)
-        
-summary(lm(contrib~.,frcDatP2[,colnames(frcDatP2)!="gender"]))
-vif(lm(contrib~.,frcDatP2[,colnames(frcDatP2)!="gender"]))
-vif(lm(contrib~.-lastcontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
-vif(lm(contrib~.-lastcontr-avecontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
 
+```
+##     contrib          gapmos         promocontr       mincontrib    
+##  Min.   :  1.0   Min.   : 0.000   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 10.0   1st Qu.: 4.000   1st Qu.: 3.000   1st Qu.: 3.000  
+##  Median : 13.0   Median : 6.000   Median : 6.000   Median : 5.000  
+##  Mean   : 15.3   Mean   : 7.823   Mean   : 6.576   Mean   : 5.623  
+##  3rd Qu.: 20.0   3rd Qu.:10.000   3rd Qu.: 9.000   3rd Qu.: 5.000  
+##  Max.   :200.0   Max.   :77.000   Max.   :29.000   Max.   :80.000  
+##     ncontrib       maxcontrib        lastcontr         avecontr      
+##  Min.   : 1.00   Min.   :   5.00   Min.   :  1.00   Min.   :  2.261  
+##  1st Qu.: 6.00   1st Qu.:  11.00   1st Qu.: 10.00   1st Qu.:  7.098  
+##  Median :10.00   Median :  15.00   Median : 14.00   Median :  9.894  
+##  Mean   :12.34   Mean   :  18.09   Mean   : 14.85   Mean   : 11.160  
+##  3rd Qu.:16.00   3rd Qu.:  20.00   3rd Qu.: 20.00   3rd Qu.: 13.191  
+##  Max.   :91.00   Max.   :1000.00   Max.   :250.00   Max.   :103.571  
+##     mailord           mindate        maxdate          age        gender  
+##  Min.   :  0.000   Min.   :8608   Min.   :8312   Min.   : 4.00   F:1868  
+##  1st Qu.:  0.000   1st Qu.:9006   1st Qu.:9401   1st Qu.:50.00   M:1468  
+##  Median :  1.000   Median :9210   Median :9504   Median :64.00   U: 124  
+##  Mean   :  4.436   Mean   :9207   Mean   :9409   Mean   :62.63           
+##  3rd Qu.:  5.000   3rd Qu.:9410   3rd Qu.:9511   3rd Qu.:75.00           
+##  Max.   :240.000   Max.   :9702   Max.   :9702   Max.   :98.00
+```
+
+```r
+summary(lm(contrib~.,frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
+
+```
+## 
+## Call:
+## lm(formula = contrib ~ ., data = frcDatP2[, colnames(frcDatP2) != 
+##     "gender"])
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -66.823  -2.237  -0.651   1.746 152.753 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.8552706  8.9233645   0.432   0.6657    
+## gapmos       0.0294980  0.0207031   1.425   0.1543    
+## promocontr  -0.0442674  0.0635951  -0.696   0.4864    
+## mincontrib  -0.0107045  0.0460743  -0.232   0.8163    
+## ncontrib    -0.0386822  0.0329822  -1.173   0.2409    
+## maxcontrib   0.0043328  0.0075044   0.577   0.5637    
+## lastcontr    0.6053627  0.0199387  30.361   <2e-16 ***
+## avecontr     0.3539121  0.0409038   8.652   <2e-16 ***
+## mailord     -0.0145348  0.0118326  -1.228   0.2194    
+## mindate     -0.0013286  0.0005647  -2.353   0.0187 *  
+## maxdate      0.0011660  0.0007521   1.550   0.1212    
+## age          0.0056309  0.0083481   0.675   0.5000    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 7.487 on 3448 degrees of freedom
+## Multiple R-squared:  0.5824,	Adjusted R-squared:  0.581 
+## F-statistic: 437.1 on 11 and 3448 DF,  p-value: < 2.2e-16
+```
+
+```r
+vif(lm(contrib~.,frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
+
+```
+##     gapmos promocontr mincontrib   ncontrib maxcontrib  lastcontr   avecontr 
+##   1.050807   5.690033   2.560951   5.520969   1.587125   2.880492   4.919317 
+##    mailord    mindate    maxdate        age 
+##   1.017543   1.350942   1.282494   1.066863
+```
+
+```r
+vif(lm(contrib~.-lastcontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
+
+```
+##     gapmos promocontr mincontrib   ncontrib maxcontrib   avecontr    mailord 
+##   1.050454   5.665194   2.496871   5.501488   1.547036   3.022373   1.016919 
+##    mindate    maxdate        age 
+##   1.331296   1.209896   1.066854
+```
+
+```r
+vif(lm(contrib~.-lastcontr-avecontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
+
+```
+##     gapmos promocontr mincontrib   ncontrib maxcontrib    mailord    mindate 
+##   1.049984   5.656133   1.327124   5.491452   1.118333   1.015228   1.251838 
+##    maxdate        age 
+##   1.205271   1.066530
+```
+
+```r
 summary(lm(contrib~.-lastcontr-avecontr,frcDatP2[,colnames(frcDatP2)!="gender"]))
+```
+
+```
+## 
+## Call:
+## lm(formula = contrib ~ . - lastcontr - avecontr, data = frcDatP2[, 
+##     colnames(frcDatP2) != "gender"])
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -171.245   -4.533   -1.513    2.788  163.555 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 36.8695540 11.0485339   3.337 0.000856 ***
+## gapmos       0.0563781  0.0263692   2.138 0.032585 *  
+## promocontr  -0.0057477  0.0807901  -0.071 0.943287    
+## mincontrib   0.8607341  0.0422616  20.367  < 2e-16 ***
+## ncontrib    -0.1475108  0.0419128  -3.519 0.000438 ***
+## maxcontrib   0.1774098  0.0080266  22.103  < 2e-16 ***
+## mailord      0.0112875  0.0150597   0.750 0.453598    
+## mindate     -0.0082015  0.0006926 -11.842  < 2e-16 ***
+## maxdate      0.0050143  0.0009291   5.397 7.23e-08 ***
+## age          0.0012787  0.0106354   0.120 0.904309    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 9.539 on 3450 degrees of freedom
+## Multiple R-squared:  0.3216,	Adjusted R-squared:  0.3198 
+## F-statistic: 181.7 on 9 and 3450 DF,  p-value: < 2.2e-16
+```
+
+```r
 # 
 # summary(lm(contrib~.,frcDatP2[,colnames(Auto)!="name"], data = frcDatP2))
 # vif(lm(mpg~.,Auto[,colnames(Auto)!="name"]))
 # vif(lm(mpg~.-displacement,Auto[,colnames(Auto)!="name"]))
 # vif(lm(mpg~.-displacement-weight,Auto[,colnames(Auto)!="name"]))
 # summary(lm(mpg~.-displacement-weight,Auto[,colnames(Auto)!="name"]))
-
 ```
 <p style="color:blue">VIF tests collinearity</p>
 
