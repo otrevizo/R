@@ -1,11 +1,14 @@
 ---
 title: "R Intro"
+author: 'Oscar A. Trevizo'
+date: "`r Sys.Date()`"
 output:
   pdf_document:
     toc: yes
-  word_document:
-    toc: yes
   html_document:
+    toc: yes
+    keep_md: yes
+  github_document:
     toc: yes
 ---
 
@@ -15,6 +18,10 @@ output:
 # library(reshape2)
 # library(ggplot2)
 knitr::opts_chunk$set(echo = TRUE)
+
+# The following tip shows how to force the creation of ONLY and md file.
+# https://stackoverflow.com/questions/39814916/how-can-i-see-output-of-rmd-in-github
+
 ```
 
 # Basics
