@@ -1,9 +1,12 @@
 ---
-title: 'Correlation vignette'
+title: "Correlation vignette"
 author: "Oscar A. Trevizo"
 output:
+  pdf_document:
+    toc: yes
   html_document:
-    toc: true
+    toc: yes
+    keep_md: yes
 ---
 
 # Load the libraries
@@ -14,6 +17,8 @@ library(ISLR)
 library(GGally)
 
 knitr::opts_chunk$set(echo = TRUE)
+
+# https://stackoverflow.com/questions/39814916/how-can-i-see-output-of-rmd-in-github
 ```
 
 # Get the data 
