@@ -1,13 +1,13 @@
 ---
 title: "Correlation vignette"
 author: "Oscar A. Trevizo"
+date: '`r format(Sys.Date(), "%Y-%B-%d")`'
 output:
-  # pdf_document: 
-  #   toc: yes
-  # html_document:
-  #   toc: yes
-  #   keep_md: yes
-  # The following parameter forces the creation of ONLY and md file.
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    keep_md: yes
   github_document:
     toc: yes
 ---

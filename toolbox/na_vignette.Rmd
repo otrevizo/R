@@ -1,0 +1,73 @@
+---
+title: "DAAG library vignette"
+output:
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+library(DAAG)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# DAAG
+
+## Datasets
+
+```{r}
+data(package='DAAG')
+```
+
+## Rainforest example
+
+### Looking for NA and missing data
+
+Reference: Dr. Bharantendra https://www.youtube.com/watch?v=Q7gYkpSi8Nk&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=11
+
+```{r}
+
+data('rainforest')
+# str(rainforest)
+summary(rainforest)
+dim(rainforest)
+```
+
+Notice the extra row with NA values. You will not be able to calculate the mean or the sd.
+
+### Ignoring NA 
+
+```{r}
+
+mean(rainforest$wood, na.rm = TRUE)
+
+```
+## Science example
+
+```{r}
+# Load the data
+data('science')
+summary(science)
+dim(science)
+```
+
+### Identify rows with NA
+
+Use !complete.cases(dataset) which mean NOT complete cases, those with NA.
+
+```{r}
+science[!complete.cases(science),]
+
+```
+
+### Save dataset without NA
+
+```{r}
+science_wo_na <- na.omit(science)
+summary(science_wo_na)
+dim(science_wo_na)
+
+```
+

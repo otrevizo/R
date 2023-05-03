@@ -1,10 +1,14 @@
 ---
 title: "DPLYR Library Vignette"
+author: "Oscar A. Trevizo"
 date: '`r format(Sys.Date(), "%Y-%B-%d")`'
 output:
   pdf_document:
     toc: yes
   html_document:
+    toc: yes
+    keep_md: yes
+  github_document:
     toc: yes
 ---
 
@@ -13,6 +17,8 @@ output:
 This vignette aims to introduce you dplyr library. It is here for learning purposes.
 
 - \{dplyr\} (pronounced d - plier dataset plier... pliers to trim data) 
+
+Most of this code came from Harvard STAT 109 class, Prof. Bharatendra Rai. Material used here for educational purposes. It is available in YouTube and GitHub. See links under references. I expanded the material with my own notes and R documentation and I plan on continue adding examples overtime.
 
 # Libraries
 
@@ -34,8 +40,416 @@ library(dplyr)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Exploratory Data Analysis for flights {nycflights13} dataset
 
-# Load possum dataset from DAAG
+From Harvard STAT 109 class, Prof. Bharatendra Rai described the _"Process of Visualization"_ through the following steps. Material used here for educational purposes.
+
+1. Business question 
+1. Data
+1. Choose visualization
+1. Data preparation
+1. Develop visualization
+1. Develop insights
+1. Next steps
+
+
+This study focuses on the data. That is the _Exploratory Data Analysis (EDA)_ step. We do this study using the dplyr library from R, to:
+
+1. Select
+1. Filter
+1. Arrange
+1. Summarize (spelling too Summarise)
+1. Summarize and Group By
+1. Mutate
+
+Another Rmarkdown follows this file to cover data visualization.
+
+# Load the library
+
+```{r}
+# The EDA functionality from dplyr (dee-plier).
+library(dplyr, warn.conflicts = FALSE)
+
+# Use NYC Flights 2013 library to demo EDA in this study.
+# https://www.transtats.bts.gov/Homepage.asp
+library(nycflights13)
+```
+
+# Load the data
+
+Display its documentation from the console:
+
+\>?flights
+
+
+```{r}
+# From doc: "On-time data for all flights that departed NYC (i.e. JFK, LGA or EWR) in 2013."
+data('flights')
+str(flights)
+head(flights)
+```
+
+# Select
+
+\>?select
+
+_"Select (and optionally rename) variables in a data frame, using a concise mini-language that makes it easy to refer to variables based on their name (e.g. a:f selects all columns from a on the left to f on the right) or type (e.g. where(is.numeric) selects all numeric columns)._
+
+select(.data, ...)
+
+## Select example 1
+
+List the columns one by one, separated by a comma.
+
+```{r}
+# Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method1 <- flights %>% select(month, day, origin, dest, carrier)
+
+# Explore its structure.
+str(sel_flights_method1)
+head(sel_flights_method1)
+```
+
+## Select example 2
+
+Put the column names inside a vector.
+
+```{r}
+# Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method2 <- flights %>% select(c('month', 'day', 'origin', 'dest', 'carrier'))
+
+# Explore its structure.
+str(sel_flights_method2)
+head(sel_flights_method2)
+```
+## Select example 3
+
+Do a combination of a vector containing a list of column names, and another one separate as in method 1.
+
+```{r}
+# Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method3 <- flights %>% select(c('month', 'day', 'origin', 'dest'), carrier)
+
+# Explore its structure.
+str(sel_flights_method3)
+head(sel_flights_method3)
+```
+
+## Select example 4
+
+Change the order of the column names, and use a combination of a _c()_ vector and individual column names.
+
+```{r}
+# Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method4 <- flights %>% select(c('month', 'day','carrier'), origin, c('dest'))
+
+# Explore its structure.
+str(sel_flights_method4)
+head(sel_flights_method4)
+```
+
+# Filter
+
+From the documentation: _"The filter() function is used to subset a data frame, retaining all rows that satisfy your conditions. To be retained, the row must produce a value of TRUE for all conditions. Note that when a condition evaluates to NA the row will be dropped, unlike base subsetting with [."_
+
+filter(.data, ..., .by = NULL, .preserve = FALSE)
+
+The following examples will have a _select()_ before doing a filter, to simplify the resulting tibble.
+
+## Filter example 1
+
+Simple example using the  _"=="_ operator to obtain records that match the value of a variable.
+
+```{r}
+# Lets filter on a specific carrier, say 'UA' as an example.
+fltr_flights_1 <- flights %>% select(month, day, origin, dest, carrier) %>% 
+  filter(carrier == 'UA')
+
+str(fltr_flights_1)
+head(fltr_flights_1)
+```
+First notice how the number of rows went down as we filter on _"UA"_ carriers.
+
+## Filter example 2
+
+Front it with a Boolean NOT _"!"_. It is still a simple example using the  _"=="_ operator to obtain records that this time do not match the value of a variable.
+
+```{r}
+# Lets filter on NOT a specific carrier, say 'UA' as an example.
+fltr_flights_2 <- flights %>% select(month, day, origin, dest, carrier) %>% 
+  filter(!carrier == 'UA')
+
+str(fltr_flights_2)
+head(fltr_flights_2)
+```
+So now we get a complement dataset to the one we obtained in the previous example.
+
+## Filter example 3
+
+Do more Boolean operations. If we separate by _","_ commas we will be doing _AND_ operations. WE can also use the _"&"_ ampersand operator to perform _AND_ Boolean operations.
+
+```{r}
+# Lets filter on UA flights originating from Newark EWR going to Chicago ORD.
+fltr_flights_3 <- flights %>% select(month, day, carrier, origin, dest, flight, dep_time) %>% 
+  filter(carrier == 'UA', origin == 'EWR', dest == 'ORD')
+
+str(fltr_flights_3)
+head(fltr_flights_3)
+```
+
+## Filter example 4
+
+Do more Boolean operations. To perform _OR_ operations, use the _"|"_ straight line operator.
+
+```{r}
+# Enclosing the Boolean within parentheses was really optional, but it is a safe approoach.
+fltr_flights_4 <- flights %>% select(month, day, origin, dest, carrier) %>% 
+  filter((carrier == 'UA' | carrier == 'AA'), (origin == 'JFK' | origin == 'EWR'), dest == 'ORD')
+
+str(fltr_flights_4)
+head(fltr_flights_4)
+```
+
+## Filter example 5
+
+Do more Boolean operations. To perform _greater than / smaller than_ operations, use the _"> or <"_ operators.
+
+```{r}
+# Enclosing the Boolean within parentheses was really optional, but it is a safe approach.
+fltr_flights_5 <- flights %>% select(month, day, origin, dest, carrier) %>% 
+  filter(month > 6)
+
+str(fltr_flights_5)
+head(fltr_flights_5)
+```
+
+
+# Arrange
+
+From the documentation: _"arrange() orders the rows of a data frame by the values of selected columns._
+
+_Unlike other dplyr verbs, arrange() largely ignores grouping; you need to explicitly mention grouping variables (or use .by_group = TRUE) in order to group by them, and functions of variables are evaluated once per data frame, not once per group._
+
+## Arrange example 1
+
+Simple example to demonstrate how _arrange()_ will sort data in a certain order.
+
+The default is _ascending_ order.
+
+```{r}
+# Enclosing the Boolean within parentheses was really optional, but it is a safe approach.
+arr_flights_1 <- flights %>% select(month, day, origin, dest, air_time, carrier) %>% 
+  arrange(air_time)
+
+str(arr_flights_1)
+head(arr_flights_1)
+```
+
+## Arrange example 2
+
+Simple example to demonstrate how _arrange()_ will sort data in a certain order.
+
+To make it into _descending_ order, one needs to add _desc()_ within _arrange()_.
+
+Who wants to go to Honolulu? 
+
+```{r}
+# Enclosing the Boolean within parentheses was really optional, but it is a safe approach.
+arr_flights_2 <- flights %>% select(month, day, origin, dest, air_time, carrier) %>% 
+  arrange(desc(air_time))
+
+str(arr_flights_2)
+head(arr_flights_2)
+```
+
+# Summarize or Summarise
+
+From the documentation: _summarise() creates a new data frame. It returns one row for each combination of grouping variables; if there are no grouping variables, the output will have a single row summarising all observations in the input. It will contain one column for each grouping variable and one column for each of the summary statistics that you have specified._
+
+_summarise() and summarize() are synonyms._
+
+## Summarize example 1
+
+This example include standard _mean()_ calculations. Pay close attention to setting up argument _na.rm = TRUE_.
+
+This example includes the _n()_ contextual function to provide the group size (number of observation).
+
+
+```{r}
+sumze_example_1 <- flights %>% summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+                                         AVG_distance = mean(distance, na.rm = TRUE),
+                                         No_of_flights = n())
+
+str(sumze_example_1)
+sumze_example_1
+
+```
+
+## Summarize example 2
+
+Add pipe operations as above. Then run _summarize()_ to see how the data is impacted.
+
+
+```{r}
+# Lets filter on UA flights originating from Newark EWR going to Chicago ORD.
+# And summarize the avg time, sd, also for the distance... does the distance change?
+sumze_example_2 <- flights %>% select(month, day, origin, dest, carrier, distance, air_time) %>% 
+  filter(carrier == 'UA', origin == 'EWR', dest == 'ORD') %>% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            No_of_flights = n())
+
+str(sumze_example_2)
+sumze_example_2
+```
+Verify the distance is always the same, and it is since $sigma = 0$. The number of flights coincides with the previous calculation when we were focused on the filter. The difference here is the entire pipe return a small tibble with only the summaries.
+
+
+# Group By
+
+From the documentation: _Most data operations are done on groups defined by variables. group_by() takes an existing tbl and converts it into a grouped tbl where operations are performed "by group". ungroup() removes grouping._
+
+## Group_by example 1
+
+Let _group_by()_ be followed by a _summarize()_. At the end add _arrange()_ to capture our table in a certain order.
+
+```{r}
+grpby_example_1 <- flights %>% group_by(origin) %>% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            No_of_flights = n()) %>% 
+  arrange(desc(AVG_air_time))
+  
+str(grpby_example_1)
+grpby_example_1
+```
+We get a nice table with rows represented by the _unique_ values from the variables entered in _group_by()_. In this case I chose variable _origin_ because we have only three airports: Newark, JFK, and La Guardia. 
+
+The result is a table with three rows. The first column is for the _orgin_, the airport name. Then the other columns represent the values calculated in _summarize()_.
+
+## Group_by example 2
+
+Let's focus on other variables in this new example.
+
+```{r}
+grpby_example_2 <- flights %>% group_by(origin) %>% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %>% 
+  arrange(desc(AVG_air_time))
+  
+str(grpby_example_2)
+grpby_example_2
+```
+
+## Group_by example 3
+
+Let's use two variables in the _group_by()_ command.
+
+```{r}
+grpby_example_3 <- flights %>% group_by(origin, dest) %>% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %>% 
+  arrange(desc(origin), desc(dest))
+  
+str(grpby_example_3)
+head(grpby_example_3)
+```
+
+## Group_by example 4
+
+Let's use two variables in the _group_by()_ command.Change it a bit, base it on carriers this time.
+
+Let's look only at Unites (AA), American (AA), Delta (DL), and Southwest (WN).
+
+And make it to ORD only.
+
+```{r}
+grpby_example_4 <- flights %>% 
+  filter((carrier == 'UA' | carrier == 'AA' | carrier == 'DL' | carrier == 'WN'), dest=='ORD') %>% 
+  group_by(carrier, origin, dest) %>% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %>%
+  arrange(carrier, desc(origin), desc(dest))
+ 
+str(grpby_example_4) 
+grpby_example_4
+
+```
+
+# Mutate (filter to remove observations)
+
+Prof. Bharatendra used _group_by()_ followed by _summarize()_ and _filter()_
+
+
+## Mutate example 1
+
+Instead of _origin_, let's use _dest_ to get a good number of rows (greater than the 3 we would get if we stuck with _origin_).
+
+
+```{r}
+mtate_example_1 <- flights %>% group_by(dest) %>% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %>% 
+  filter(AVG_air_time > 345) %>% 
+  arrange(desc(AVG_air_time))
+  
+str(mtate_example_1)
+mtate_example_1
+```
+
+The size of the table, number of rows, is impacted by the filter. SO we are _mutating_ the table by filtering and capturing only a subset of the otherwise bigger table.
+
+I played with the value in the filter to increase or decrease my result in terms of number of observations.
+
+
+# Mutate: From documentation
+
+The documentation of _dplyr_ identifies a function called _mutate()_: _"mutate() creates new columns that are functions of existing variables. It can also modify (if the name is the same as an existing column) and delete columns (by setting their value to NULL)."_
+
+## Mutate (doc) example 1
+
+Let's reduce the number of columns first to simplify the example. Then let's run _mutate()_ to basically create new columns based on calculations from the other columns.
+
+```{r}
+mtate_example_2 <- flights %>% select(origin, dest, carrier, air_time, arr_time, dep_time) %>% 
+  mutate(CALC_air_time = arr_time - dep_time)
+
+str(mtate_example_2)
+head(mtate_example_2)
+
+```
+
+This last example would require a bit more testing. What if the plane arrive on a different date, that is if the plane left just before midnight... But that is ok for now. I will ignore those nuances. 
+
+Notice that if you subtract arrival time minus departure time you get a different result than the value seen in air time. There is a reason for that. I am not considering these are class date / time variables and cannot just subtract like that... One hour does not have 100 minutes... One needs to change the class to date.
+
+I just wanted to prove that you can subtract and add a new column.
+
+# Exploratory Data Analysis for possum {DAAG} dataset
+
 
 ```{r}
 
@@ -62,7 +476,7 @@ summary(possum)
 - Mac shortcut shift-command-m for %>% (that is from {dyplr})
 - To be demosntrated throughout this vignette
 
-## SELECT
+## Select
 
 - To specific column, by column number or column 'name'
 
@@ -73,7 +487,7 @@ summary(possum)
 possum %>% select(2:3, 4:7)
 ```
 
-## FILTER
+## Filter
 
 ```{r}
 # This example shows a filter with multiple conditions.
@@ -81,7 +495,7 @@ possum %>% select(2:3, 4:7)
 possum %>% filter(sex == 'f', Pop == 'Vic', age < 4)
 ```
 
-## ARRANGE
+## Arrange
 
 - A type of sort
 
@@ -94,7 +508,7 @@ possum %>% filter(sex == 'f', Pop == 'Vic', age < 4) %>%
 
 ```
 
-## SUMMARISE
+## Summarise
 
 - You can introduce functions or equations and summarise.
 
@@ -109,7 +523,7 @@ possum %>% filter(sex == 'f', Pop == 'Vic', age < 4) %>%
 
 ```
 
-## GROUP BY
+## Group By
 
 - It creates a table.
 
@@ -234,7 +648,11 @@ inner <- dfa %>% inner_join(dfb)
 
 ```
 
-# References
 
-Dr. Bharatendra https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
+
+
+# References
+1. Dr. Bharatendra Rai YouTube Channel (accessed Jan. 22, 2023) https://www.youtube.com/watch?v=BPR_Dkll17Y&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42
+1. Dr. Bharatendra Rai YouTube Channel (accessed Feb 7, 2023) https://www.youtube.com/watch?v=rsfV57N7Uns&list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&index=10
+1. Harvard STAT 109 slides by Dr. Bharatendra Rai
 

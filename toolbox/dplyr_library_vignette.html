@@ -12,7 +12,7 @@
 <meta name="author" content="Oscar A. Trevizo" />
 
 
-<title>dyplr library vignette</title>
+<title>DPLYR Library Vignette</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,8 +349,9 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">dyplr library vignette</h1>
+<h1 class="title toc-ignore">DPLYR Library Vignette</h1>
 <h4 class="author">Oscar A. Trevizo</h4>
+<h4 class="date">2023-May-03</h4>
 
 </div>
 
@@ -358,17 +359,89 @@ display: none;
 <ul>
 <li><a href="#purpose" id="toc-purpose">Purpose</a></li>
 <li><a href="#libraries" id="toc-libraries">Libraries</a></li>
-<li><a href="#load-possum-dataset-from-daag" id="toc-load-possum-dataset-from-daag">Load possum dataset from DAAG</a>
+<li><a href="#exploratory-data-analysis-for-flights-nycflights13-dataset" id="toc-exploratory-data-analysis-for-flights-nycflights13-dataset">Exploratory
+Data Analysis for flights {nycflights13} dataset</a></li>
+<li><a href="#load-the-library" id="toc-load-the-library">Load the
+library</a></li>
+<li><a href="#load-the-data" id="toc-load-the-data">Load the
+data</a></li>
+<li><a href="#select" id="toc-select">Select</a>
+<ul>
+<li><a href="#select-example-1" id="toc-select-example-1">Select example
+1</a></li>
+<li><a href="#select-example-2" id="toc-select-example-2">Select example
+2</a></li>
+<li><a href="#select-example-3" id="toc-select-example-3">Select example
+3</a></li>
+<li><a href="#select-example-4" id="toc-select-example-4">Select example
+4</a></li>
+</ul></li>
+<li><a href="#filter" id="toc-filter">Filter</a>
+<ul>
+<li><a href="#filter-example-1" id="toc-filter-example-1">Filter example
+1</a></li>
+<li><a href="#filter-example-2" id="toc-filter-example-2">Filter example
+2</a></li>
+<li><a href="#filter-example-3" id="toc-filter-example-3">Filter example
+3</a></li>
+<li><a href="#filter-example-4" id="toc-filter-example-4">Filter example
+4</a></li>
+<li><a href="#filter-example-5" id="toc-filter-example-5">Filter example
+5</a></li>
+</ul></li>
+<li><a href="#arrange" id="toc-arrange">Arrange</a>
+<ul>
+<li><a href="#arrange-example-1" id="toc-arrange-example-1">Arrange
+example 1</a></li>
+<li><a href="#arrange-example-2" id="toc-arrange-example-2">Arrange
+example 2</a></li>
+</ul></li>
+<li><a href="#summarize-or-summarise" id="toc-summarize-or-summarise">Summarize or Summarise</a>
+<ul>
+<li><a href="#summarize-example-1" id="toc-summarize-example-1">Summarize example 1</a></li>
+<li><a href="#summarize-example-2" id="toc-summarize-example-2">Summarize example 2</a></li>
+</ul></li>
+<li><a href="#group-by" id="toc-group-by">Group By</a>
+<ul>
+<li><a href="#group_by-example-1" id="toc-group_by-example-1">Group_by
+example 1</a></li>
+<li><a href="#group_by-example-2" id="toc-group_by-example-2">Group_by
+example 2</a></li>
+<li><a href="#group_by-example-3" id="toc-group_by-example-3">Group_by
+example 3</a></li>
+<li><a href="#group_by-example-4" id="toc-group_by-example-4">Group_by
+example 4</a></li>
+</ul></li>
+<li><a href="#mutate-filter-to-remove-observations" id="toc-mutate-filter-to-remove-observations">Mutate (filter to remove
+observations)</a>
+<ul>
+<li><a href="#mutate-example-1" id="toc-mutate-example-1">Mutate example
+1</a></li>
+</ul></li>
+<li><a href="#mutate-from-documentation" id="toc-mutate-from-documentation">Mutate: From documentation</a>
+<ul>
+<li><a href="#mutate-doc-example-1" id="toc-mutate-doc-example-1">Mutate
+(doc) example 1</a></li>
+</ul></li>
+<li><a href="#exploratory-data-analysis-for-possum-daag-dataset" id="toc-exploratory-data-analysis-for-possum-daag-dataset">Exploratory
+Data Analysis for possum {DAAG} dataset</a>
 <ul>
 <li><a href="#pipes" id="toc-pipes">Pipes</a></li>
-<li><a href="#select" id="toc-select">SELECT</a></li>
-<li><a href="#filter" id="toc-filter">FILTER</a></li>
-<li><a href="#arrange" id="toc-arrange">ARRANGE</a></li>
-<li><a href="#summarise" id="toc-summarise">SUMMARISE</a></li>
-<li><a href="#group-by" id="toc-group-by">GROUP BY</a></li>
+<li><a href="#select-1" id="toc-select-1">Select</a></li>
+<li><a href="#filter-1" id="toc-filter-1">Filter</a></li>
+<li><a href="#arrange-1" id="toc-arrange-1">Arrange</a></li>
+<li><a href="#summarise" id="toc-summarise">Summarise</a></li>
+<li><a href="#group-by-1" id="toc-group-by-1">Group By</a></li>
 <li><a href="#example-arrange-on-that-table-created-by-group_by" id="toc-example-arrange-on-that-table-created-by-group_by">Example:
 arrange() on that table created by group_by()</a></li>
 <li><a href="#create-a-new-table-mutate" id="toc-create-a-new-table-mutate">Create a new table (mutate)</a></li>
+<li><a href="#join" id="toc-join">Join</a>
+<ul>
+<li><a href="#example-1" id="toc-example-1">Example 1</a></li>
+<li><a href="#example-2" id="toc-example-2">Example 2</a></li>
+</ul></li>
+<li><a href="#relocate-move-columns-around" id="toc-relocate-move-columns-around">Relocate: Move columns
+around</a></li>
 </ul></li>
 <li><a href="#references" id="toc-references">References</a></li>
 </ul>
@@ -382,6 +455,11 @@ learning purposes.</p>
 <li>{dplyr} (pronounced d - plier dataset plier… pliers to trim
 data)</li>
 </ul>
+<p>Most of this code came from Harvard STAT 109 class, Prof. Bharatendra
+Rai. Material used here for educational purposes. It is available in
+YouTube and GitHub. See links under references. I expanded the material
+with my own notes and R documentation and I plan on continue adding
+examples overtime.</p>
 </div>
 <div id="libraries" class="section level1">
 <h1>Libraries</h1>
@@ -394,8 +472,744 @@ data)</li>
 <li>Pipes %&gt;% to chain commands</li>
 </ul>
 </div>
-<div id="load-possum-dataset-from-daag" class="section level1">
-<h1>Load possum dataset from DAAG</h1>
+<div id="exploratory-data-analysis-for-flights-nycflights13-dataset" class="section level1">
+<h1>Exploratory Data Analysis for flights {nycflights13} dataset</h1>
+<p>From Harvard STAT 109 class, Prof. Bharatendra Rai described the
+<em>“Process of Visualization”</em> through the following steps.
+Material used here for educational purposes.</p>
+<ol style="list-style-type: decimal">
+<li>Business question</li>
+<li>Data</li>
+<li>Choose visualization</li>
+<li>Data preparation</li>
+<li>Develop visualization</li>
+<li>Develop insights</li>
+<li>Next steps</li>
+</ol>
+<p>This study focuses on the data. That is the <em>Exploratory Data
+Analysis (EDA)</em> step. We do this study using the dplyr library from
+R, to:</p>
+<ol style="list-style-type: decimal">
+<li>Select</li>
+<li>Filter</li>
+<li>Arrange</li>
+<li>Summarize (spelling too Summarise)</li>
+<li>Summarize and Group By</li>
+<li>Mutate</li>
+</ol>
+<p>Another Rmarkdown follows this file to cover data visualization.</p>
+</div>
+<div id="load-the-library" class="section level1">
+<h1>Load the library</h1>
+<pre class="r"><code># The EDA functionality from dplyr (dee-plier).
+library(dplyr, warn.conflicts = FALSE)
+
+# Use NYC Flights 2013 library to demo EDA in this study.
+# https://www.transtats.bts.gov/Homepage.asp
+library(nycflights13)</code></pre>
+</div>
+<div id="load-the-data" class="section level1">
+<h1>Load the data</h1>
+<p>Display its documentation from the console:</p>
+<p>&gt;?flights</p>
+<pre class="r"><code># From doc: &quot;On-time data for all flights that departed NYC (i.e. JFK, LGA or EWR) in 2013.&quot;
+data(&#39;flights&#39;)
+str(flights)</code></pre>
+<pre><code>## tibble [336,776 × 19] (S3: tbl_df/tbl/data.frame)
+##  $ year          : int [1:336776] 2013 2013 2013 2013 2013 2013 2013 2013 2013 2013 ...
+##  $ month         : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day           : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ dep_time      : int [1:336776] 517 533 542 544 554 554 555 557 557 558 ...
+##  $ sched_dep_time: int [1:336776] 515 529 540 545 600 558 600 600 600 600 ...
+##  $ dep_delay     : num [1:336776] 2 4 2 -1 -6 -4 -5 -3 -3 -2 ...
+##  $ arr_time      : int [1:336776] 830 850 923 1004 812 740 913 709 838 753 ...
+##  $ sched_arr_time: int [1:336776] 819 830 850 1022 837 728 854 723 846 745 ...
+##  $ arr_delay     : num [1:336776] 11 20 33 -18 -25 12 19 -14 -8 8 ...
+##  $ carrier       : chr [1:336776] &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...
+##  $ flight        : int [1:336776] 1545 1714 1141 725 461 1696 507 5708 79 301 ...
+##  $ tailnum       : chr [1:336776] &quot;N14228&quot; &quot;N24211&quot; &quot;N619AA&quot; &quot;N804JB&quot; ...
+##  $ origin        : chr [1:336776] &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest          : chr [1:336776] &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...
+##  $ air_time      : num [1:336776] 227 227 160 183 116 150 158 53 140 138 ...
+##  $ distance      : num [1:336776] 1400 1416 1089 1576 762 ...
+##  $ hour          : num [1:336776] 5 5 5 5 6 5 6 6 6 6 ...
+##  $ minute        : num [1:336776] 15 29 40 45 0 58 0 0 0 0 ...
+##  $ time_hour     : POSIXct[1:336776], format: &quot;2013-01-01 05:00:00&quot; &quot;2013-01-01 05:00:00&quot; ...</code></pre>
+<pre class="r"><code>head(flights)</code></pre>
+<pre><code>## # A tibble: 6 × 19
+##    year month   day dep_time sched_dep…¹ dep_d…² arr_t…³ sched…⁴ arr_d…⁵ carrier
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;       &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;  
+## 1  2013     1     1      517         515       2     830     819      11 UA     
+## 2  2013     1     1      533         529       4     850     830      20 UA     
+## 3  2013     1     1      542         540       2     923     850      33 AA     
+## 4  2013     1     1      544         545      -1    1004    1022     -18 B6     
+## 5  2013     1     1      554         600      -6     812     837     -25 DL     
+## 6  2013     1     1      554         558      -4     740     728      12 UA     
+## # … with 9 more variables: flight &lt;int&gt;, tailnum &lt;chr&gt;, origin &lt;chr&gt;,
+## #   dest &lt;chr&gt;, air_time &lt;dbl&gt;, distance &lt;dbl&gt;, hour &lt;dbl&gt;, minute &lt;dbl&gt;,
+## #   time_hour &lt;dttm&gt;, and abbreviated variable names ¹​sched_dep_time,
+## #   ²​dep_delay, ³​arr_time, ⁴​sched_arr_time, ⁵​arr_delay</code></pre>
+</div>
+<div id="select" class="section level1">
+<h1>Select</h1>
+<p>&gt;?select</p>
+<p><em>“Select (and optionally rename) variables in a data frame, using
+a concise mini-language that makes it easy to refer to variables based
+on their name (e.g. a:f selects all columns from a on the left to f on
+the right) or type (e.g. where(is.numeric) selects all numeric
+columns).</em></p>
+<p>select(.data, …)</p>
+<div id="select-example-1" class="section level2">
+<h2>Select example 1</h2>
+<p>List the columns one by one, separated by a comma.</p>
+<pre class="r"><code># Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method1 &lt;- flights %&gt;% select(month, day, origin, dest, carrier)
+
+# Explore its structure.
+str(sel_flights_method1)</code></pre>
+<pre><code>## tibble [336,776 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:336776] &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest   : chr [1:336776] &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...
+##  $ carrier: chr [1:336776] &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...</code></pre>
+<pre class="r"><code>head(sel_flights_method1)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1     1     1 EWR    IAH   UA     
+## 2     1     1 LGA    IAH   UA     
+## 3     1     1 JFK    MIA   AA     
+## 4     1     1 JFK    BQN   B6     
+## 5     1     1 LGA    ATL   DL     
+## 6     1     1 EWR    ORD   UA</code></pre>
+</div>
+<div id="select-example-2" class="section level2">
+<h2>Select example 2</h2>
+<p>Put the column names inside a vector.</p>
+<pre class="r"><code># Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method2 &lt;- flights %&gt;% select(c(&#39;month&#39;, &#39;day&#39;, &#39;origin&#39;, &#39;dest&#39;, &#39;carrier&#39;))
+
+# Explore its structure.
+str(sel_flights_method2)</code></pre>
+<pre><code>## tibble [336,776 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:336776] &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest   : chr [1:336776] &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...
+##  $ carrier: chr [1:336776] &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...</code></pre>
+<pre class="r"><code>head(sel_flights_method2)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1     1     1 EWR    IAH   UA     
+## 2     1     1 LGA    IAH   UA     
+## 3     1     1 JFK    MIA   AA     
+## 4     1     1 JFK    BQN   B6     
+## 5     1     1 LGA    ATL   DL     
+## 6     1     1 EWR    ORD   UA</code></pre>
+</div>
+<div id="select-example-3" class="section level2">
+<h2>Select example 3</h2>
+<p>Do a combination of a vector containing a list of column names, and
+another one separate as in method 1.</p>
+<pre class="r"><code># Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method3 &lt;- flights %&gt;% select(c(&#39;month&#39;, &#39;day&#39;, &#39;origin&#39;, &#39;dest&#39;), carrier)
+
+# Explore its structure.
+str(sel_flights_method3)</code></pre>
+<pre><code>## tibble [336,776 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:336776] &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest   : chr [1:336776] &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...
+##  $ carrier: chr [1:336776] &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...</code></pre>
+<pre class="r"><code>head(sel_flights_method3)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1     1     1 EWR    IAH   UA     
+## 2     1     1 LGA    IAH   UA     
+## 3     1     1 JFK    MIA   AA     
+## 4     1     1 JFK    BQN   B6     
+## 5     1     1 LGA    ATL   DL     
+## 6     1     1 EWR    ORD   UA</code></pre>
+</div>
+<div id="select-example-4" class="section level2">
+<h2>Select example 4</h2>
+<p>Change the order of the column names, and use a combination of a
+<em>c()</em> vector and individual column names.</p>
+<pre class="r"><code># Put the results in another tibble to avoid printing a very long dataset.
+sel_flights_method4 &lt;- flights %&gt;% select(c(&#39;month&#39;, &#39;day&#39;,&#39;carrier&#39;), origin, c(&#39;dest&#39;))
+
+# Explore its structure.
+str(sel_flights_method4)</code></pre>
+<pre><code>## tibble [336,776 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:336776] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ carrier: chr [1:336776] &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...
+##  $ origin : chr [1:336776] &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest   : chr [1:336776] &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...</code></pre>
+<pre class="r"><code>head(sel_flights_method4)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day carrier origin dest 
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;
+## 1     1     1 UA      EWR    IAH  
+## 2     1     1 UA      LGA    IAH  
+## 3     1     1 AA      JFK    MIA  
+## 4     1     1 B6      JFK    BQN  
+## 5     1     1 DL      LGA    ATL  
+## 6     1     1 UA      EWR    ORD</code></pre>
+</div>
+</div>
+<div id="filter" class="section level1">
+<h1>Filter</h1>
+<p>From the documentation: <em>“The filter() function is used to subset
+a data frame, retaining all rows that satisfy your conditions. To be
+retained, the row must produce a value of TRUE for all conditions. Note
+that when a condition evaluates to NA the row will be dropped, unlike
+base subsetting with [.”</em></p>
+<p>filter(.data, …, .by = NULL, .preserve = FALSE)</p>
+<p>The following examples will have a <em>select()</em> before doing a
+filter, to simplify the resulting tibble.</p>
+<div id="filter-example-1" class="section level2">
+<h2>Filter example 1</h2>
+<p>Simple example using the <em>“==”</em> operator to obtain records
+that match the value of a variable.</p>
+<pre class="r"><code># Lets filter on a specific carrier, say &#39;UA&#39; as an example.
+fltr_flights_1 &lt;- flights %&gt;% select(month, day, origin, dest, carrier) %&gt;% 
+  filter(carrier == &#39;UA&#39;)
+
+str(fltr_flights_1)</code></pre>
+<pre><code>## tibble [58,665 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:58665] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:58665] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:58665] &quot;EWR&quot; &quot;LGA&quot; &quot;EWR&quot; &quot;JFK&quot; ...
+##  $ dest   : chr [1:58665] &quot;IAH&quot; &quot;IAH&quot; &quot;ORD&quot; &quot;LAX&quot; ...
+##  $ carrier: chr [1:58665] &quot;UA&quot; &quot;UA&quot; &quot;UA&quot; &quot;UA&quot; ...</code></pre>
+<pre class="r"><code>head(fltr_flights_1)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1     1     1 EWR    IAH   UA     
+## 2     1     1 LGA    IAH   UA     
+## 3     1     1 EWR    ORD   UA     
+## 4     1     1 JFK    LAX   UA     
+## 5     1     1 EWR    SFO   UA     
+## 6     1     1 EWR    LAS   UA</code></pre>
+<p>First notice how the number of rows went down as we filter on
+<em>“UA”</em> carriers.</p>
+</div>
+<div id="filter-example-2" class="section level2">
+<h2>Filter example 2</h2>
+<p>Front it with a Boolean NOT <em>“!”</em>. It is still a simple
+example using the <em>“==”</em> operator to obtain records that this
+time do not match the value of a variable.</p>
+<pre class="r"><code># Lets filter on NOT a specific carrier, say &#39;UA&#39; as an example.
+fltr_flights_2 &lt;- flights %&gt;% select(month, day, origin, dest, carrier) %&gt;% 
+  filter(!carrier == &#39;UA&#39;)
+
+str(fltr_flights_2)</code></pre>
+<pre><code>## tibble [278,111 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:278111] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:278111] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:278111] &quot;JFK&quot; &quot;JFK&quot; &quot;LGA&quot; &quot;EWR&quot; ...
+##  $ dest   : chr [1:278111] &quot;MIA&quot; &quot;BQN&quot; &quot;ATL&quot; &quot;FLL&quot; ...
+##  $ carrier: chr [1:278111] &quot;AA&quot; &quot;B6&quot; &quot;DL&quot; &quot;B6&quot; ...</code></pre>
+<pre class="r"><code>head(fltr_flights_2)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1     1     1 JFK    MIA   AA     
+## 2     1     1 JFK    BQN   B6     
+## 3     1     1 LGA    ATL   DL     
+## 4     1     1 EWR    FLL   B6     
+## 5     1     1 LGA    IAD   EV     
+## 6     1     1 JFK    MCO   B6</code></pre>
+<p>So now we get a complement dataset to the one we obtained in the
+previous example.</p>
+</div>
+<div id="filter-example-3" class="section level2">
+<h2>Filter example 3</h2>
+<p>Do more Boolean operations. If we separate by <em>“,”</em> commas we
+will be doing <em>AND</em> operations. WE can also use the
+<em>“&amp;”</em> ampersand operator to perform <em>AND</em> Boolean
+operations.</p>
+<pre class="r"><code># Lets filter on UA flights originating from Newark EWR going to Chicago ORD.
+fltr_flights_3 &lt;- flights %&gt;% select(month, day, carrier, origin, dest, flight, dep_time) %&gt;% 
+  filter(carrier == &#39;UA&#39;, origin == &#39;EWR&#39;, dest == &#39;ORD&#39;)
+
+str(fltr_flights_3)</code></pre>
+<pre><code>## tibble [3,822 × 7] (S3: tbl_df/tbl/data.frame)
+##  $ month   : int [1:3822] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day     : int [1:3822] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ carrier : chr [1:3822] &quot;UA&quot; &quot;UA&quot; &quot;UA&quot; &quot;UA&quot; ...
+##  $ origin  : chr [1:3822] &quot;EWR&quot; &quot;EWR&quot; &quot;EWR&quot; &quot;EWR&quot; ...
+##  $ dest    : chr [1:3822] &quot;ORD&quot; &quot;ORD&quot; &quot;ORD&quot; &quot;ORD&quot; ...
+##  $ flight  : int [1:3822] 1696 544 580 985 32 683 459 702 1623 1676 ...
+##  $ dep_time: int [1:3822] 554 715 902 1038 1356 1416 1529 1601 1716 1758 ...</code></pre>
+<pre class="r"><code>head(fltr_flights_3)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##   month   day carrier origin dest  flight dep_time
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;int&gt;    &lt;int&gt;
+## 1     1     1 UA      EWR    ORD     1696      554
+## 2     1     1 UA      EWR    ORD      544      715
+## 3     1     1 UA      EWR    ORD      580      902
+## 4     1     1 UA      EWR    ORD      985     1038
+## 5     1     1 UA      EWR    ORD       32     1356
+## 6     1     1 UA      EWR    ORD      683     1416</code></pre>
+</div>
+<div id="filter-example-4" class="section level2">
+<h2>Filter example 4</h2>
+<p>Do more Boolean operations. To perform <em>OR</em> operations, use
+the <em>“|”</em> straight line operator.</p>
+<pre class="r"><code># Enclosing the Boolean within parentheses was really optional, but it is a safe approoach.
+fltr_flights_4 &lt;- flights %&gt;% select(month, day, origin, dest, carrier) %&gt;% 
+  filter((carrier == &#39;UA&#39; | carrier == &#39;AA&#39;), (origin == &#39;JFK&#39; | origin == &#39;EWR&#39;), dest == &#39;ORD&#39;)
+
+str(fltr_flights_4)</code></pre>
+<pre><code>## tibble [4,187 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:4187] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ day    : int [1:4187] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:4187] &quot;EWR&quot; &quot;EWR&quot; &quot;EWR&quot; &quot;EWR&quot; ...
+##  $ dest   : chr [1:4187] &quot;ORD&quot; &quot;ORD&quot; &quot;ORD&quot; &quot;ORD&quot; ...
+##  $ carrier: chr [1:4187] &quot;UA&quot; &quot;UA&quot; &quot;UA&quot; &quot;UA&quot; ...</code></pre>
+<pre class="r"><code>head(fltr_flights_4)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1     1     1 EWR    ORD   UA     
+## 2     1     1 EWR    ORD   UA     
+## 3     1     1 EWR    ORD   UA     
+## 4     1     1 EWR    ORD   UA     
+## 5     1     1 EWR    ORD   UA     
+## 6     1     1 EWR    ORD   UA</code></pre>
+</div>
+<div id="filter-example-5" class="section level2">
+<h2>Filter example 5</h2>
+<p>Do more Boolean operations. To perform <em>greater than / smaller
+than</em> operations, use the <em>“&gt; or &lt;”</em> operators.</p>
+<pre class="r"><code># Enclosing the Boolean within parentheses was really optional, but it is a safe approach.
+fltr_flights_5 &lt;- flights %&gt;% select(month, day, origin, dest, carrier) %&gt;% 
+  filter(month &gt; 6)
+
+str(fltr_flights_5)</code></pre>
+<pre><code>## tibble [170,618 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ month  : int [1:170618] 10 10 10 10 10 10 10 10 10 10 ...
+##  $ day    : int [1:170618] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ origin : chr [1:170618] &quot;EWR&quot; &quot;EWR&quot; &quot;JFK&quot; &quot;LGA&quot; ...
+##  $ dest   : chr [1:170618] &quot;CLT&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;IAH&quot; ...
+##  $ carrier: chr [1:170618] &quot;US&quot; &quot;UA&quot; &quot;AA&quot; &quot;UA&quot; ...</code></pre>
+<pre class="r"><code>head(fltr_flights_5)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   month   day origin dest  carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  
+## 1    10     1 EWR    CLT   US     
+## 2    10     1 EWR    IAH   UA     
+## 3    10     1 JFK    MIA   AA     
+## 4    10     1 LGA    IAH   UA     
+## 5    10     1 JFK    SJU   B6     
+## 6    10     1 JFK    BQN   B6</code></pre>
+</div>
+</div>
+<div id="arrange" class="section level1">
+<h1>Arrange</h1>
+<p>From the documentation: <em>“arrange() orders the rows of a data
+frame by the values of selected columns.</em></p>
+<p><em>Unlike other dplyr verbs, arrange() largely ignores grouping; you
+need to explicitly mention grouping variables (or use .by_group = TRUE)
+in order to group by them, and functions of variables are evaluated once
+per data frame, not once per group.</em></p>
+<div id="arrange-example-1" class="section level2">
+<h2>Arrange example 1</h2>
+<p>Simple example to demonstrate how <em>arrange()</em> will sort data
+in a certain order.</p>
+<p>The default is <em>ascending</em> order.</p>
+<pre class="r"><code># Enclosing the Boolean within parentheses was really optional, but it is a safe approach.
+arr_flights_1 &lt;- flights %&gt;% select(month, day, origin, dest, air_time, carrier) %&gt;% 
+  arrange(air_time)
+
+str(arr_flights_1)</code></pre>
+<pre><code>## tibble [336,776 × 6] (S3: tbl_df/tbl/data.frame)
+##  $ month   : int [1:336776] 1 4 12 2 2 2 3 3 3 3 ...
+##  $ day     : int [1:336776] 16 13 6 3 5 12 2 8 18 19 ...
+##  $ origin  : chr [1:336776] &quot;EWR&quot; &quot;EWR&quot; &quot;EWR&quot; &quot;EWR&quot; ...
+##  $ dest    : chr [1:336776] &quot;BDL&quot; &quot;BDL&quot; &quot;BDL&quot; &quot;PHL&quot; ...
+##  $ air_time: num [1:336776] 20 20 21 21 21 21 21 21 21 21 ...
+##  $ carrier : chr [1:336776] &quot;EV&quot; &quot;EV&quot; &quot;EV&quot; &quot;EV&quot; ...</code></pre>
+<pre class="r"><code>head(arr_flights_1)</code></pre>
+<pre><code>## # A tibble: 6 × 6
+##   month   day origin dest  air_time carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;  
+## 1     1    16 EWR    BDL         20 EV     
+## 2     4    13 EWR    BDL         20 EV     
+## 3    12     6 EWR    BDL         21 EV     
+## 4     2     3 EWR    PHL         21 EV     
+## 5     2     5 EWR    BDL         21 EV     
+## 6     2    12 EWR    PHL         21 EV</code></pre>
+</div>
+<div id="arrange-example-2" class="section level2">
+<h2>Arrange example 2</h2>
+<p>Simple example to demonstrate how <em>arrange()</em> will sort data
+in a certain order.</p>
+<p>To make it into <em>descending</em> order, one needs to add
+<em>desc()</em> within <em>arrange()</em>.</p>
+<p>Who wants to go to Honolulu?</p>
+<pre class="r"><code># Enclosing the Boolean within parentheses was really optional, but it is a safe approach.
+arr_flights_2 &lt;- flights %&gt;% select(month, day, origin, dest, air_time, carrier) %&gt;% 
+  arrange(desc(air_time))
+
+str(arr_flights_2)</code></pre>
+<pre><code>## tibble [336,776 × 6] (S3: tbl_df/tbl/data.frame)
+##  $ month   : int [1:336776] 3 2 3 3 3 2 11 3 11 3 ...
+##  $ day     : int [1:336776] 17 6 15 17 16 5 12 14 20 15 ...
+##  $ origin  : chr [1:336776] &quot;EWR&quot; &quot;JFK&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest    : chr [1:336776] &quot;HNL&quot; &quot;HNL&quot; &quot;HNL&quot; &quot;HNL&quot; ...
+##  $ air_time: num [1:336776] 695 691 686 686 683 679 676 676 675 671 ...
+##  $ carrier : chr [1:336776] &quot;UA&quot; &quot;HA&quot; &quot;HA&quot; &quot;HA&quot; ...</code></pre>
+<pre class="r"><code>head(arr_flights_2)</code></pre>
+<pre><code>## # A tibble: 6 × 6
+##   month   day origin dest  air_time carrier
+##   &lt;int&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;  
+## 1     3    17 EWR    HNL        695 UA     
+## 2     2     6 JFK    HNL        691 HA     
+## 3     3    15 JFK    HNL        686 HA     
+## 4     3    17 JFK    HNL        686 HA     
+## 5     3    16 JFK    HNL        683 HA     
+## 6     2     5 JFK    HNL        679 HA</code></pre>
+</div>
+</div>
+<div id="summarize-or-summarise" class="section level1">
+<h1>Summarize or Summarise</h1>
+<p>From the documentation: <em>summarise() creates a new data frame. It
+returns one row for each combination of grouping variables; if there are
+no grouping variables, the output will have a single row summarising all
+observations in the input. It will contain one column for each grouping
+variable and one column for each of the summary statistics that you have
+specified.</em></p>
+<p><em>summarise() and summarize() are synonyms.</em></p>
+<div id="summarize-example-1" class="section level2">
+<h2>Summarize example 1</h2>
+<p>This example include standard <em>mean()</em> calculations. Pay close
+attention to setting up argument <em>na.rm = TRUE</em>.</p>
+<p>This example includes the <em>n()</em> contextual function to provide
+the group size (number of observation).</p>
+<pre class="r"><code>sumze_example_1 &lt;- flights %&gt;% summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+                                         AVG_distance = mean(distance, na.rm = TRUE),
+                                         No_of_flights = n())
+
+str(sumze_example_1)</code></pre>
+<pre><code>## tibble [1 × 3] (S3: tbl_df/tbl/data.frame)
+##  $ AVG_air_time : num 151
+##  $ AVG_distance : num 1040
+##  $ No_of_flights: int 336776</code></pre>
+<pre class="r"><code>sumze_example_1</code></pre>
+<pre><code>## # A tibble: 1 × 3
+##   AVG_air_time AVG_distance No_of_flights
+##          &lt;dbl&gt;        &lt;dbl&gt;         &lt;int&gt;
+## 1         151.        1040.        336776</code></pre>
+</div>
+<div id="summarize-example-2" class="section level2">
+<h2>Summarize example 2</h2>
+<p>Add pipe operations as above. Then run <em>summarize()</em> to see
+how the data is impacted.</p>
+<pre class="r"><code># Lets filter on UA flights originating from Newark EWR going to Chicago ORD.
+# And summarize the avg time, sd, also for the distance... does the distance change?
+sumze_example_2 &lt;- flights %&gt;% select(month, day, origin, dest, carrier, distance, air_time) %&gt;% 
+  filter(carrier == &#39;UA&#39;, origin == &#39;EWR&#39;, dest == &#39;ORD&#39;) %&gt;% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            No_of_flights = n())
+
+str(sumze_example_2)</code></pre>
+<pre><code>## tibble [1 × 5] (S3: tbl_df/tbl/data.frame)
+##  $ AVG_air_time : num 114
+##  $ SD_air_time  : num 10.1
+##  $ AVG_distance : num 719
+##  $ SD_distance  : num 0
+##  $ No_of_flights: int 3822</code></pre>
+<pre class="r"><code>sumze_example_2</code></pre>
+<pre><code>## # A tibble: 1 × 5
+##   AVG_air_time SD_air_time AVG_distance SD_distance No_of_flights
+##          &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;         &lt;int&gt;
+## 1         114.        10.1          719           0          3822</code></pre>
+<p>Verify the distance is always the same, and it is since <span class="math inline">\(sigma = 0\)</span>. The number of flights
+coincides with the previous calculation when we were focused on the
+filter. The difference here is the entire pipe return a small tibble
+with only the summaries.</p>
+</div>
+</div>
+<div id="group-by" class="section level1">
+<h1>Group By</h1>
+<p>From the documentation: <em>Most data operations are done on groups
+defined by variables. group_by() takes an existing tbl and converts it
+into a grouped tbl where operations are performed “by group”. ungroup()
+removes grouping.</em></p>
+<div id="group_by-example-1" class="section level2">
+<h2>Group_by example 1</h2>
+<p>Let <em>group_by()</em> be followed by a <em>summarize()</em>. At the
+end add <em>arrange()</em> to capture our table in a certain order.</p>
+<pre class="r"><code>grpby_example_1 &lt;- flights %&gt;% group_by(origin) %&gt;% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            No_of_flights = n()) %&gt;% 
+  arrange(desc(AVG_air_time))
+  
+str(grpby_example_1)</code></pre>
+<pre><code>## tibble [3 × 6] (S3: tbl_df/tbl/data.frame)
+##  $ origin       : chr [1:3] &quot;JFK&quot; &quot;EWR&quot; &quot;LGA&quot;
+##  $ AVG_air_time : num [1:3] 178 153 118
+##  $ SD_air_time  : num [1:3] 113.8 93.3 49.4
+##  $ AVG_distance : num [1:3] 1266 1057 780
+##  $ SD_distance  : num [1:3] 896 730 372
+##  $ No_of_flights: int [1:3] 111279 120835 104662</code></pre>
+<pre class="r"><code>grpby_example_1</code></pre>
+<pre><code>## # A tibble: 3 × 6
+##   origin AVG_air_time SD_air_time AVG_distance SD_distance No_of_flights
+##   &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;         &lt;int&gt;
+## 1 JFK            178.       114.         1266.        896.        111279
+## 2 EWR            153.        93.3        1057.        730.        120835
+## 3 LGA            118.        49.4         780.        372.        104662</code></pre>
+<p>We get a nice table with rows represented by the <em>unique</em>
+values from the variables entered in <em>group_by()</em>. In this case I
+chose variable <em>origin</em> because we have only three airports:
+Newark, JFK, and La Guardia.</p>
+<p>The result is a table with three rows. The first column is for the
+<em>orgin</em>, the airport name. Then the other columns represent the
+values calculated in <em>summarize()</em>.</p>
+</div>
+<div id="group_by-example-2" class="section level2">
+<h2>Group_by example 2</h2>
+<p>Let’s focus on other variables in this new example.</p>
+<pre class="r"><code>grpby_example_2 &lt;- flights %&gt;% group_by(origin) %&gt;% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %&gt;% 
+  arrange(desc(AVG_air_time))
+  
+str(grpby_example_2)</code></pre>
+<pre><code>## tibble [3 × 8] (S3: tbl_df/tbl/data.frame)
+##  $ origin       : chr [1:3] &quot;JFK&quot; &quot;EWR&quot; &quot;LGA&quot;
+##  $ AVG_air_time : num [1:3] 178 153 118
+##  $ SD_air_time  : num [1:3] 113.8 93.3 49.4
+##  $ AVG_distance : num [1:3] 1266 1057 780
+##  $ SD_distance  : num [1:3] 896 730 372
+##  $ AVG_dep_time : num [1:3] 1402 1322 1308
+##  $ SD_dep_time  : num [1:3] 482 465 447
+##  $ No_of_flights: int [1:3] 111279 120835 104662</code></pre>
+<pre class="r"><code>grpby_example_2</code></pre>
+<pre><code>## # A tibble: 3 × 8
+##   origin AVG_air_time SD_air_time AVG_distance SD_dist…¹ AVG_d…² SD_de…³ No_of…⁴
+##   &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+## 1 JFK            178.       114.         1266.      896.   1402.    482.  111279
+## 2 EWR            153.        93.3        1057.      730.   1322.    465.  120835
+## 3 LGA            118.        49.4         780.      372.   1308.    447.  104662
+## # … with abbreviated variable names ¹​SD_distance, ²​AVG_dep_time, ³​SD_dep_time,
+## #   ⁴​No_of_flights</code></pre>
+</div>
+<div id="group_by-example-3" class="section level2">
+<h2>Group_by example 3</h2>
+<p>Let’s use two variables in the <em>group_by()</em> command.</p>
+<pre class="r"><code>grpby_example_3 &lt;- flights %&gt;% group_by(origin, dest) %&gt;% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %&gt;% 
+  arrange(desc(origin), desc(dest))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;origin&#39;. You can override using the
+## `.groups` argument.</code></pre>
+<pre class="r"><code>str(grpby_example_3)</code></pre>
+<pre><code>## gropd_df [224 × 9] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ origin       : chr [1:224] &quot;LGA&quot; &quot;LGA&quot; &quot;LGA&quot; &quot;LGA&quot; ...
+##  $ dest         : chr [1:224] &quot;XNA&quot; &quot;TYS&quot; &quot;TVC&quot; &quot;TPA&quot; ...
+##  $ AVG_air_time : num [1:224] 173.2 97.8 94.6 146 38.1 ...
+##  $ SD_air_time  : num [1:224] 15.91 8.52 6.49 10.99 3.52 ...
+##  $ AVG_distance : num [1:224] 1147 647 655 1010 198 ...
+##  $ SD_distance  : num [1:224] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ AVG_dep_time : num [1:224] 1316 1992 1396 1280 1726 ...
+##  $ SD_dep_time  : num [1:224] 451 135 404 437 455 ...
+##  $ No_of_flights: int [1:224] 745 308 77 2145 293 1822 737 217 6 68 ...
+##  - attr(*, &quot;groups&quot;)= tibble [3 × 2] (S3: tbl_df/tbl/data.frame)
+##   ..$ origin: chr [1:3] &quot;EWR&quot; &quot;JFK&quot; &quot;LGA&quot;
+##   ..$ .rows : list&lt;int&gt; [1:3] 
+##   .. ..$ : int [1:86] 139 140 141 142 143 144 145 146 147 148 ...
+##   .. ..$ : int [1:70] 69 70 71 72 73 74 75 76 77 78 ...
+##   .. ..$ : int [1:68] 1 2 3 4 5 6 7 8 9 10 ...
+##   .. ..@ ptype: int(0) 
+##   ..- attr(*, &quot;.drop&quot;)= logi TRUE</code></pre>
+<pre class="r"><code>head(grpby_example_3)</code></pre>
+<pre><code>## # A tibble: 6 × 9
+## # Groups:   origin [1]
+##   origin dest  AVG_air_time SD_air_time AVG_di…¹ SD_di…² AVG_d…³ SD_de…⁴ No_of…⁵
+##   &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+## 1 LGA    XNA          173.        15.9      1147       0   1316.    451.     745
+## 2 LGA    TYS           97.8        8.52      647       0   1992.    135.     308
+## 3 LGA    TVC           94.6        6.49      655       0   1396.    404.      77
+## 4 LGA    TPA          146.        11.0      1010       0   1280.    437.    2145
+## 5 LGA    SYR           38.1        3.52      198       0   1726.    455.     293
+## 6 LGA    STL          133.        11.1       888       0   1308.    405.    1822
+## # … with abbreviated variable names ¹​AVG_distance, ²​SD_distance, ³​AVG_dep_time,
+## #   ⁴​SD_dep_time, ⁵​No_of_flights</code></pre>
+</div>
+<div id="group_by-example-4" class="section level2">
+<h2>Group_by example 4</h2>
+<p>Let’s use two variables in the <em>group_by()</em> command.Change it
+a bit, base it on carriers this time.</p>
+<p>Let’s look only at Unites (AA), American (AA), Delta (DL), and
+Southwest (WN).</p>
+<p>And make it to ORD only.</p>
+<pre class="r"><code>grpby_example_4 &lt;- flights %&gt;% 
+  filter((carrier == &#39;UA&#39; | carrier == &#39;AA&#39; | carrier == &#39;DL&#39; | carrier == &#39;WN&#39;), dest==&#39;ORD&#39;) %&gt;% 
+  group_by(carrier, origin, dest) %&gt;% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %&gt;%
+  arrange(carrier, desc(origin), desc(dest))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;carrier&#39;, &#39;origin&#39;. You can override using
+## the `.groups` argument.</code></pre>
+<pre class="r"><code>str(grpby_example_4) </code></pre>
+<pre><code>## gropd_df [4 × 9] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ carrier      : chr [1:4] &quot;AA&quot; &quot;AA&quot; &quot;UA&quot; &quot;UA&quot;
+##  $ origin       : chr [1:4] &quot;LGA&quot; &quot;JFK&quot; &quot;LGA&quot; &quot;EWR&quot;
+##  $ dest         : chr [1:4] &quot;ORD&quot; &quot;ORD&quot; &quot;ORD&quot; &quot;ORD&quot;
+##  $ AVG_air_time : num [1:4] 116 122 115 114
+##  $ SD_air_time  : num [1:4] 9.91 9.1 9.72 10.13
+##  $ AVG_distance : num [1:4] 733 740 733 719
+##  $ AVG_dep_time : num [1:4] 1269 1710 1284 1287
+##  $ SD_dep_time  : num [1:4] 464.45 7.52 464.28 427.95
+##  $ No_of_flights: int [1:4] 5694 365 3162 3822
+##  - attr(*, &quot;groups&quot;)= tibble [4 × 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ carrier: chr [1:4] &quot;AA&quot; &quot;AA&quot; &quot;UA&quot; &quot;UA&quot;
+##   ..$ origin : chr [1:4] &quot;JFK&quot; &quot;LGA&quot; &quot;EWR&quot; &quot;LGA&quot;
+##   ..$ .rows  : list&lt;int&gt; [1:4] 
+##   .. ..$ : int 2
+##   .. ..$ : int 1
+##   .. ..$ : int 4
+##   .. ..$ : int 3
+##   .. ..@ ptype: int(0) 
+##   ..- attr(*, &quot;.drop&quot;)= logi TRUE</code></pre>
+<pre class="r"><code>grpby_example_4</code></pre>
+<pre><code>## # A tibble: 4 × 9
+## # Groups:   carrier, origin [4]
+##   carrier origin dest  AVG_air_time SD_air_time AVG_di…¹ AVG_d…² SD_de…³ No_of…⁴
+##   &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+## 1 AA      LGA    ORD           116.        9.91      733   1269.  464.      5694
+## 2 AA      JFK    ORD           122.        9.10      740   1710.    7.52     365
+## 3 UA      LGA    ORD           115.        9.72      733   1284.  464.      3162
+## 4 UA      EWR    ORD           114.       10.1       719   1287.  428.      3822
+## # … with abbreviated variable names ¹​AVG_distance, ²​AVG_dep_time, ³​SD_dep_time,
+## #   ⁴​No_of_flights</code></pre>
+</div>
+</div>
+<div id="mutate-filter-to-remove-observations" class="section level1">
+<h1>Mutate (filter to remove observations)</h1>
+<p>Prof. Bharatendra used <em>group_by()</em> followed by
+<em>summarize()</em> and <em>filter()</em></p>
+<div id="mutate-example-1" class="section level2">
+<h2>Mutate example 1</h2>
+<p>Instead of <em>origin</em>, let’s use <em>dest</em> to get a good
+number of rows (greater than the 3 we would get if we stuck with
+<em>origin</em>).</p>
+<pre class="r"><code>mtate_example_1 &lt;- flights %&gt;% group_by(dest) %&gt;% 
+  summarize(AVG_air_time = mean(air_time, na.rm = TRUE),
+            SD_air_time = sd(air_time, na.rm = TRUE),
+            AVG_distance = mean(distance, na.rm = TRUE),
+            SD_distance = sd(distance, na.rm=TRUE),
+            AVG_dep_time = mean(sched_dep_time, na.rm = TRUE),
+            SD_dep_time = sd(sched_dep_time, na.rm = TRUE),
+            No_of_flights = n()) %&gt;% 
+  filter(AVG_air_time &gt; 345) %&gt;% 
+  arrange(desc(AVG_air_time))
+  
+str(mtate_example_1)</code></pre>
+<pre><code>## tibble [4 × 8] (S3: tbl_df/tbl/data.frame)
+##  $ dest         : chr [1:4] &quot;HNL&quot; &quot;ANC&quot; &quot;SJC&quot; &quot;SFO&quot;
+##  $ AVG_air_time : num [1:4] 617 413 347 346
+##  $ SD_air_time  : num [1:4] 21.7 14.7 16.5 17.2
+##  $ AVG_distance : num [1:4] 4973 3370 2569 2578
+##  $ SD_distance  : num [1:4] 10 0 0 10.2
+##  $ AVG_dep_time : num [1:4] 1126 1618 1833 1297
+##  $ SD_dep_time  : num [1:4] 182.69 4.63 34.27 447.82
+##  $ No_of_flights: int [1:4] 707 8 329 13331</code></pre>
+<pre class="r"><code>mtate_example_1</code></pre>
+<pre><code>## # A tibble: 4 × 8
+##   dest  AVG_air_time SD_air_time AVG_distance SD_dista…¹ AVG_d…² SD_de…³ No_of…⁴
+##   &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;
+## 1 HNL           617.        21.7        4973.       10.0   1126.  183.       707
+## 2 ANC           413.        14.7        3370         0     1618.    4.63       8
+## 3 SJC           347.        16.5        2569         0     1833.   34.3      329
+## 4 SFO           346.        17.2        2578.       10.2   1297.  448.     13331
+## # … with abbreviated variable names ¹​SD_distance, ²​AVG_dep_time, ³​SD_dep_time,
+## #   ⁴​No_of_flights</code></pre>
+<p>The size of the table, number of rows, is impacted by the filter. SO
+we are <em>mutating</em> the table by filtering and capturing only a
+subset of the otherwise bigger table.</p>
+<p>I played with the value in the filter to increase or decrease my
+result in terms of number of observations.</p>
+</div>
+</div>
+<div id="mutate-from-documentation" class="section level1">
+<h1>Mutate: From documentation</h1>
+<p>The documentation of <em>dplyr</em> identifies a function called
+<em>mutate()</em>: <em>“mutate() creates new columns that are functions
+of existing variables. It can also modify (if the name is the same as an
+existing column) and delete columns (by setting their value to
+NULL).”</em></p>
+<div id="mutate-doc-example-1" class="section level2">
+<h2>Mutate (doc) example 1</h2>
+<p>Let’s reduce the number of columns first to simplify the example.
+Then let’s run <em>mutate()</em> to basically create new columns based
+on calculations from the other columns.</p>
+<pre class="r"><code>mtate_example_2 &lt;- flights %&gt;% select(origin, dest, carrier, air_time, arr_time, dep_time) %&gt;% 
+  mutate(CALC_air_time = arr_time - dep_time)
+
+str(mtate_example_2)</code></pre>
+<pre><code>## tibble [336,776 × 7] (S3: tbl_df/tbl/data.frame)
+##  $ origin       : chr [1:336776] &quot;EWR&quot; &quot;LGA&quot; &quot;JFK&quot; &quot;JFK&quot; ...
+##  $ dest         : chr [1:336776] &quot;IAH&quot; &quot;IAH&quot; &quot;MIA&quot; &quot;BQN&quot; ...
+##  $ carrier      : chr [1:336776] &quot;UA&quot; &quot;UA&quot; &quot;AA&quot; &quot;B6&quot; ...
+##  $ air_time     : num [1:336776] 227 227 160 183 116 150 158 53 140 138 ...
+##  $ arr_time     : int [1:336776] 830 850 923 1004 812 740 913 709 838 753 ...
+##  $ dep_time     : int [1:336776] 517 533 542 544 554 554 555 557 557 558 ...
+##  $ CALC_air_time: int [1:336776] 313 317 381 460 258 186 358 152 281 195 ...</code></pre>
+<pre class="r"><code>head(mtate_example_2)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##   origin dest  carrier air_time arr_time dep_time CALC_air_time
+##   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;    &lt;int&gt;    &lt;int&gt;         &lt;int&gt;
+## 1 EWR    IAH   UA           227      830      517           313
+## 2 LGA    IAH   UA           227      850      533           317
+## 3 JFK    MIA   AA           160      923      542           381
+## 4 JFK    BQN   B6           183     1004      544           460
+## 5 LGA    ATL   DL           116      812      554           258
+## 6 EWR    ORD   UA           150      740      554           186</code></pre>
+<p>This last example would require a bit more testing. What if the plane
+arrive on a different date, that is if the plane left just before
+midnight… But that is ok for now. I will ignore those nuances.</p>
+<p>Notice that if you subtract arrival time minus departure time you get
+a different result than the value seen in air time. There is a reason
+for that. I am not considering these are class date / time variables and
+cannot just subtract like that… One hour does not have 100 minutes… One
+needs to change the class to date.</p>
+<p>I just wanted to prove that you can subtract and add a new
+column.</p>
+</div>
+</div>
+<div id="exploratory-data-analysis-for-possum-daag-dataset" class="section level1">
+<h1>Exploratory Data Analysis for possum {DAAG} dataset</h1>
 <pre class="r"><code># Add DAAG to pull some data
 library(DAAG)
 
@@ -458,8 +1272,8 @@ str(possum)</code></pre>
 <li>To be demosntrated throughout this vignette</li>
 </ul>
 </div>
-<div id="select" class="section level2">
-<h2>SELECT</h2>
+<div id="select-1" class="section level2">
+<h2>Select</h2>
 <ul>
 <li>To specific column, by column number or column ‘name’</li>
 </ul>
@@ -572,8 +1386,8 @@ possum %&gt;% select(2:3, 4:7)</code></pre>
 ## BTP20    7 other   m   4    91.5   55.2
 ## BTP21    7 other   f   3    93.6   59.9</code></pre>
 </div>
-<div id="filter" class="section level2">
-<h2>FILTER</h2>
+<div id="filter-1" class="section level2">
+<h2>Filter</h2>
 <pre class="r"><code># This example shows a filter with multiple conditions.
 #
 possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4)</code></pre>
@@ -602,8 +1416,8 @@ possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4)</code
 ## BB33  27.0  30.0
 ## BB40  29.0  31.0</code></pre>
 </div>
-<div id="arrange" class="section level2">
-<h2>ARRANGE</h2>
+<div id="arrange-1" class="section level2">
+<h2>Arrange</h2>
 <ul>
 <li>A type of sort</li>
 </ul>
@@ -638,7 +1452,7 @@ possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4) %&gt;
 ## BB31  25.0  25.0</code></pre>
 </div>
 <div id="summarise" class="section level2">
-<h2>SUMMARISE</h2>
+<h2>Summarise</h2>
 <ul>
 <li>You can introduce functions or equations and summarise.</li>
 </ul>
@@ -652,8 +1466,8 @@ possum %&gt;% filter(sex == &#39;f&#39;, Pop == &#39;Vic&#39;, age &lt; 4) %&gt;
 <pre><code>##    Avg       SD count
 ## 1 31.5 3.667424    11</code></pre>
 </div>
-<div id="group-by" class="section level2">
-<h2>GROUP BY</h2>
+<div id="group-by-1" class="section level2">
+<h2>Group By</h2>
 <ul>
 <li>It creates a table.</li>
 </ul>
@@ -716,10 +1530,87 @@ print(mytable)</code></pre>
 ## 6     3 0.423     7
 ## 7     1 0.406    33</code></pre>
 </div>
+<div id="join" class="section level2">
+<h2>Join</h2>
+<p>From <em>dplyr</em> documentation:</p>
+<p>mutate-joins {dplyr} R Documentation</p>
+<p>Mutating joins</p>
+<p>Description</p>
+<p>Mutating joins add columns from y to x, matching observations based
+on the keys. There are four mutating joins: the inner join, and the
+three outer joins.</p>
+<p>Inner join: An inner_join() only keeps observations from x that have
+a matching key in y.</p>
+<p>The most important property of an inner join is that unmatched rows
+in either input are not included in the result. This means that
+generally inner joins are not appropriate in most analyses, because it
+is too easy to lose observations.</p>
+<p>Outer joins: The three outer joins keep observations that appear in
+at least one of the data frames:</p>
+<p>A left_join() keeps all observations in x.</p>
+<p>A right_join() keeps all observations in y.</p>
+<p>A full_join() keeps all observations in x and y.</p>
+<div id="example-1" class="section level3">
+<h3>Example 1</h3>
+<pre class="r"><code># Let&#39;s do an example
+students_math &lt;- c(&#39;mary&#39;, &#39;john&#39;, &#39;paul&#39;, &#39;jane&#39;, &#39;peter&#39;)
+math &lt;- c(&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;B&#39;)
+
+students_english &lt;- c(&#39;tom&#39;, &#39;mary&#39;, &#39;john&#39;, &#39;paul&#39;)
+english &lt;- c(&#39;C&#39;, &#39;B&#39;, &#39;C&#39;, &#39;A&#39;)
+
+dfa &lt;- data.frame(students_math, math)
+dfb &lt;- data.frame(students_english, english)
+
+colnames(dfa) &lt;- c(&#39;students&#39;, &#39;math&#39;)
+colnames(dfb) &lt;- c(&#39;students&#39;, &#39;english&#39;)
+
+left &lt;- dfa %&gt;% left_join(dfb)</code></pre>
+<pre><code>## Joining with `by = join_by(students)`</code></pre>
+<pre class="r"><code>right &lt;- dfa %&gt;% right_join(dfb)</code></pre>
+<pre><code>## Joining with `by = join_by(students)`</code></pre>
+<pre class="r"><code>inner &lt;- dfa %&gt;% inner_join(dfb)</code></pre>
+<pre><code>## Joining with `by = join_by(students)`</code></pre>
+</div>
+<div id="example-2" class="section level3">
+<h3>Example 2</h3>
+<p>Joining based on two columns</p>
+<pre class="r"><code># Let&#39;s do an example
+semester_math &lt;- c(&#39;fall&#39;, &#39;fall&#39;, &#39;fall&#39;, &#39;fall&#39;, &#39;fall&#39;, &#39;spring&#39;, &#39;spring&#39;, &#39;spring&#39;, &#39;spring&#39;, &#39;spring&#39;)
+students_math &lt;- c(&#39;mary&#39;, &#39;john&#39;, &#39;paul&#39;, &#39;jane&#39;, &#39;peter&#39;, &#39;mary&#39;, &#39;john&#39;, &#39;paul&#39;, &#39;jane&#39;, &#39;peter&#39;)
+math &lt;- c(&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;)
+
+semester_english &lt;- c(&#39;fall&#39;, &#39;fall&#39;, &#39;fall&#39;, &#39;fall&#39;, &#39;spring&#39;, &#39;spring&#39;, &#39;spring&#39;, &#39;spring&#39;)
+students_english &lt;- c(&#39;tom&#39;, &#39;mary&#39;, &#39;john&#39;, &#39;paul&#39;, &#39;tom&#39;, &#39;mary&#39;, &#39;john&#39;, &#39;paul&#39;)
+english &lt;- c(&#39;C&#39;, &#39;B&#39;, &#39;C&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;, &#39;B&#39;, &#39;A&#39;)
+
+dfa &lt;- data.frame(semester_math, students_math, math)
+dfb &lt;- data.frame(semester_english, students_english, english)
+
+colnames(dfa) &lt;- c(&#39;semester&#39;, &#39;students&#39;, &#39;math&#39;)
+colnames(dfb) &lt;- c(&#39;semester&#39;, &#39;students&#39;, &#39;english&#39;)
+
+left &lt;- dfa %&gt;% left_join(dfb)</code></pre>
+<pre><code>## Joining with `by = join_by(semester, students)`</code></pre>
+<pre class="r"><code>right &lt;- dfa %&gt;% right_join(dfb)</code></pre>
+<pre><code>## Joining with `by = join_by(semester, students)`</code></pre>
+<pre class="r"><code>inner &lt;- dfa %&gt;% inner_join(dfb)</code></pre>
+<pre><code>## Joining with `by = join_by(semester, students)`</code></pre>
+</div>
+</div>
+<div id="relocate-move-columns-around" class="section level2">
+<h2>Relocate: Move columns around</h2>
+<pre class="r"><code># # https://dplyr.tidyverse.org/reference/relocate.html
+# df &lt;- df %&gt;% dplyr::relocate(column_x, column_y, vector_of_columns)</code></pre>
+</div>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
-<p>Dr. Bharatendra <a href="https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10" class="uri">https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10</a></p>
+<ol style="list-style-type: decimal">
+<li>Dr. Bharatendra Rai YouTube Channel (accessed Jan. 22, 2023) <a href="https://www.youtube.com/watch?v=BPR_Dkll17Y&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42" class="uri">https://www.youtube.com/watch?v=BPR_Dkll17Y&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42</a></li>
+<li>Dr. Bharatendra Rai YouTube Channel (accessed Feb 7, 2023) <a href="https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10" class="uri">https://www.youtube.com/watch?v=rsfV57N7Uns&amp;list=PL34t5iLfZddtUUABMikey6NtL05hPAp42&amp;index=10</a></li>
+<li>Harvard STAT 109 slides by Dr. Bharatendra Rai</li>
+</ol>
 </div>
 
 

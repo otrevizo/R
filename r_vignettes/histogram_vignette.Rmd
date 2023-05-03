@@ -2,7 +2,12 @@
 title: "histograms vignette"
 output:
   html_document:
-    toc: true
+    toc: yes
+    keep_md: yes
+  pdf_document:
+    toc: yes
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
