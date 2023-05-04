@@ -1,0 +1,136 @@
+---
+title: "Tree rpart{rpart}: Classification Example"
+author: "Oscar A. Trevizo"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document: 
+    toc: yes
+    number_sections: yes
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE, warning=FALSE, message = FALSE}
+# Message false to remove all warnings when loading libraries.
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Random Forest using train{caret}
+
+Function _train()_ "sets up a grid of tuning parameters for a number of classification and regression routines, fits each model and calculates a resampling based performance measure." [Rstudio doc]
+
+This example uses _train()_ to fit a _Random Forest_ model using the OJ{ISLR} dataset.
+
+Additional documention:
+
+http://topepo.github.io/caret/available-models.html
+
+We will use _Random Forest_ in this example. Search for method value ' _rf_ '. 
+
+
+# Libraries
+
+```{r libraries, include=FALSE, warning=FALSE, message = FALSE}
+# Message false to remove all warnings when loading libraries.
+
+# Recommended libraries always.
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# rpart package
+library(rpart)
+library(rpart.plot)
+library(mlbench)
+library(pROC)
+library(caret)
+
+# ISLR has a dataset used in this example, OJ (Orange Juice)
+library(ISLR)
+```
+
+# Classification Tree. Credit{ISLR}
+
+## EDA
+
+```{r}
+str(Credit)
+head(Credit)
+summary(Credit)
+```
+
+## Split the data: train / test datasets
+
+```{r}
+set.seed(1234)
+ind <- sample(2, nrow(Credit), replace = T, prob = c(0.7, 0.3))
+train <- Credit[ind == 1,]
+test <- Credit[ind == 2,]
+
+```
+
+
+### Fit the model 
+
+
+```{r}
+# regression tree
+set.seed(12321)
+tree <- rpart(Student ~
+              +Income
+              +Limit
+              +Rating
+              +Gender
+              +Age
+              +Balance
+              , data = train)
+```
+
+### Plotthe model
+
+```{r}
+rpart.plot(tree)
+printcp(tree)
+plotcp(tree)
+
+```
+
+### Predict
+
+```{r}
+p <- predict(tree, test, type = 'class')
+
+p_df <- data.frame(p, test)
+
+
+```
+
+### Prediction performance
+
+#### Confusion matrix: Test dataset
+
+```{r}
+confusionMatrix(p, test$Student)
+```
+
+#### ROC
+
+```{r}
+#### ROC
+p1 <- predict(tree, test, type = 'prob')
+p1 <- p1[,2]
+r <- multiclass.roc(test$Student, p1, percent = TRUE)
+roc <- r[['rocs']]
+r1 <- roc[[1]]
+plot.roc(r1,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+```
+
