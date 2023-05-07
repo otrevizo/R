@@ -191,7 +191,7 @@ between the outcome, categorical valuable, and predictor, numeric variable.
 boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
 ```
 
-![](logistic_regression_vignette_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](logistic_regression_LDA_QDA_functions_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ```r
 # Now place a histogram on top of another histogram
@@ -233,7 +233,7 @@ plot(x, ifelse(y=="A", 0,1), breaks=breaks, col=ifelse(y=="A", "lightblue","oran
 ## Warning in title(...): "breaks" is not a graphical parameter
 ```
 
-![](logistic_regression_vignette_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
+![](logistic_regression_LDA_QDA_functions_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
 
 ```r
 par(oldpar)

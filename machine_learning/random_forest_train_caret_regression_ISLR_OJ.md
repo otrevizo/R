@@ -1,7 +1,7 @@
 ---
 title: "Ramdom Forest using train{caret}: Regression Example"
 author: "Oscar A. Trevizo"
-date: "2023-05-04"
+date: "2023-05-07"
 output: 
   html_document: 
     keep_md: yes
@@ -177,7 +177,7 @@ contributors %>% dplyr::select(Overall) %>% arrange(desc(Overall))
 plot(varImp(forest))
 ```
 
-![](random_forest_train_caret_regression_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](random_forest_train_caret_regression_ISLR_OJ_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ### See what RF did on train dataset
 
@@ -233,7 +233,7 @@ rf_df %>% ggplot(aes(x = SalePriceMM, y = rf)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](random_forest_train_caret_regression_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](random_forest_train_caret_regression_ISLR_OJ_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 ### Prediction performance
 
@@ -815,7 +815,7 @@ rf_df %>% ggplot(aes(x = SalePriceMM, y = rf)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](random_forest_train_caret_regression_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](random_forest_train_caret_regression_ISLR_OJ_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 ### Prediction performance
 

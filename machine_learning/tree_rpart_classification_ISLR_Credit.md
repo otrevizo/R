@@ -1,7 +1,7 @@
 ---
 title: "Tree rpart{rpart}: Classification Example"
 author: "Oscar A. Trevizo"
-date: "2023-05-04"
+date: "2023-05-07"
 output: 
   html_document: 
     keep_md: yes
@@ -139,7 +139,7 @@ tree <- rpart(Student ~
 rpart.plot(tree)
 ```
 
-![](tree_rpart_classification_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](tree_rpart_classification_ISLR_Credit_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 ```r
 printcp(tree)
@@ -168,7 +168,7 @@ printcp(tree)
 plotcp(tree)
 ```
 
-![](tree_rpart_classification_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
+![](tree_rpart_classification_ISLR_Credit_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
 
 ### Predict
 
@@ -246,5 +246,11 @@ plot.roc(r1,
          main= 'ROC Curve')
 ```
 
-![](tree_rpart_classification_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](tree_rpart_classification_ISLR_Credit_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
+# References
+
+1. Harvard STAT 109 2023. Weekly slides by Dr. Bharatendra Rai.
+1. Dr. Bharatendra Rai.YouTube channel. https://youtu.be/cW59Yh_GfNk
+1. John Maindonald and W. John Braun. "Data Analysis and Graphics Using R". Cambridge. Third Ed. ISBN 978-0-521-76293-9. 5th printing 2016.
+1. Gareth James, et al. "And Introduction to Statistical Learning with Applications in R." Springer Science. ISBN 978-1-4614-7137-0. 8th printing 2017. 

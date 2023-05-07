@@ -134,3 +134,9 @@ plot.roc(r1,
          main= 'ROC Curve')
 ```
 
+# References
+
+1. Harvard STAT 109 2023. Weekly slides by Dr. Bharatendra Rai.
+1. Dr. Bharatendra Rai.YouTube channel. https://youtu.be/cW59Yh_GfNk
+1. John Maindonald and W. John Braun. "Data Analysis and Graphics Using R". Cambridge. Third Ed. ISBN 978-0-521-76293-9. 5th printing 2016.
+1. Gareth James, et al. "And Introduction to Statistical Learning with Applications in R." Springer Science. ISBN 978-1-4614-7137-0. 8th printing 2017. 
