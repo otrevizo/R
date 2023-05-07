@@ -67,7 +67,7 @@ OJ %>% ggplot(aes(x=PriceCH, y=PriceMM, col = Store7)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 
 ### pairs.panels
@@ -79,7 +79,7 @@ OJ %>% dplyr::select(PriceCH, PriceMM, DiscCH, DiscMM,
   pairs.panels()
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 # Train Test data split
 
@@ -184,7 +184,7 @@ par(mfrow = c(2,2))
 plot(m)
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 ```r
 par(mfrow = c(1,1))
@@ -244,7 +244,7 @@ df %>% ggplot(aes(x = PriceCH, y = p)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 ### Assess performance: RMSE and R^2
 
@@ -507,7 +507,7 @@ par(mfrow = c(2,2))
 plot(m_noi)
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 ```r
 par(mfrow = c(1,1))
@@ -540,7 +540,7 @@ df_noi %>% ggplot(aes(x = PriceCH, y = p_noi)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
 
 ### Assess performance: RMSE and R^2
 
@@ -634,7 +634,7 @@ par(mfrow = c(2,2))
 plot(m)
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
 ```r
 par(mfrow = c(1,1))
@@ -692,7 +692,7 @@ df %>% ggplot(aes(x = PriceCH, y = p)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
 
 ### Assess performance: RMSE and R^2
 
@@ -781,7 +781,7 @@ par(mfrow = c(2,2))
 plot(m_noi)
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-33-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-33-1.png)<!-- -->
 
 ```r
 par(mfrow = c(1,1))
@@ -814,7 +814,7 @@ df_noi %>% ggplot(aes(x = PriceCH, y = p_noi)) +
 ## `geom_smooth()` using formula = 'y ~ x'
 ```
 
-![](multiple_linear_regression_vignette_files/figure-html/unnamed-chunk-35-1.png)<!-- -->
+![](multiple_linear_regression_ISLR_OJ_files/figure-html/unnamed-chunk-35-1.png)<!-- -->
 
 ### Assess performance: RMSE and R^2
 
