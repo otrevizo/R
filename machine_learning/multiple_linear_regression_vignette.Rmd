@@ -1,0 +1,502 @@
+---
+title: "Multiple Linear Regression"
+author: "Oscar A. Trevizo"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    keep_md: yes
+    toc: yes
+    number_sections: yes
+  pdf_document: 
+    toc: yes
+    number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Example
+# {r chunk_name, fig.width=4, fig.height=3, fig.align="center", echo = FALSE, message = FALSE, warning = FALSE}
+```
+
+
+# Load the libraries
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# From Week7Class.R
+library(DAAG)
+library(ggplot2)
+library(psych)
+library(MASS)
+library(dplyr)
+library(ISLR)
+
+```
+
+# Multiple Linear Regression, Model Coefficients, Measures.
+
+# Load the data: OJ{ISLR}
+
+Using dataset OJ from the ISLR library (see references).
+
+```{r}
+str(OJ)
+```
+
+Note: There are 1070 observations. This infomation will be needed when calculating the degrees of freedom downstream.
+
+### ggplot PriceCH vs. PriceMM
+
+```{r}
+OJ %>% ggplot(aes(x=PriceCH, y=PriceMM, col = Store7)) +
+  geom_point() +
+  geom_smooth(method = 'lm')
+
+
+```
+
+
+### pairs.panels
+
+```{r}
+OJ %>% dplyr::select(PriceCH, PriceMM, DiscCH, DiscMM, 
+                     Store7, LoyalCH, PctDiscMM, PctDiscCH, ListPriceDiff) %>% 
+  pairs.panels()
+
+```
+
+# Train Test data split
+
+```{r}
+## Split the data: train / test datasets
+
+set.seed(1234)
+ind <- sample(2, nrow(OJ), replace = T, prob = c(0.7, 0.3))
+train <- OJ[ind == 1,]
+test <- OJ[ind == 2,]
+
+dim(train)
+dim(test)
+```
+
+# Example 1: Combo numeric and factors
+
+## Fit the model: Train set
+
+Iterate to fit the model. See _anova()_ description a few chunks below.
+
+```{r}
+# You can start with a '+' on the first variable if you want to.
+# I like to start with a '+' because it can flexibly add and delete variables
+# as I go through the analysis process.
+m <- lm(PriceCH ~ 
+        +PriceMM 
+        +WeekofPurchase
+        +DiscCH
+        +Store7 
+        +STORE
+        , train)
+
+# Display the summary with the correlation of the coefficients.
+# Put it in a variable to use it downstream.
+(summary_m <- summary(m, corr = TRUE))
+```
+
+Note: Store7 is a factor variable, and it is quantified only once: Store7Yes. 
+It is quantified once and not twice because Store7No would simply be the opposite
+to Store7Yes. We only need one dummy variable, therefore.
+
+Note: Residual error has 741 degrees of freedom. 
+That is $=n-p-1$, when using the _Intercept_ as we did above.
+
+- Observations in the train dataset: $n = 747$
+- Explanatory variables: $p = 5$
+- Residual error degrees of freedom: $DF = n - p - 1 = 747 - 5 - 1 = 741$
+
+### Diagnostic plots
+
+```{r}
+
+par(mfrow = c(2,2))
+plot(m)
+par(mfrow = c(1,1))
+```
+
+### Test the model with anova()
+
+Compare the Pr(>F) with the p-values from the summary of the model They should be comparable.
+
+
+```{r}
+anova(m)
+```
+
+### Predict on test dataset
+
+
+```{r}
+p <-  predict(m,  test)
+
+# For ggplot we need a dataframe:
+df <- data.frame(p, test)
+```
+
+
+
+### Plot predictions vs actuals
+
+```{r}
+df %>% ggplot(aes(x = PriceCH, y = p)) +
+  geom_point() +
+  geom_smooth(method = 'lm', col = 'red', se=FALSE) +
+  scale_y_continuous('Predictions') +
+  scale_x_continuous('Price of Citrus Hill OJ (USD)') +
+  ggtitle('Price of CH OJ', 'Dataset source: OJ{ISLR}')
+
+```
+
+### Assess performance: RMSE and R^2
+
+- Root Mean Squared Error
+- R-squared
+
+```{r}
+# RMSE
+sqrt(mean((test$PriceCH - p)^2))
+
+# R squared
+cor(test$PriceCH, p)^2 ## R-Squared
+```
+
+# How to get model information
+
+## How to get the attributes
+
+```{r}
+attributes(m)
+```
+
+## Pull the coefficients
+
+```{r}
+m$coefficients
+```
+
+
+## How to get more info: Pull the attributes from summary model
+
+```{r}
+attributes(summary_m)
+```
+
+## Get the degrees of freedom: Regression, Residual Error
+
+```{r}
+summary_m$df
+```
+It's giving us the degrees of freedom with $p + the intercept = 6$.
+
+Worth repeating:
+
+Regression degrees of freedom for the Residual error based on train dataset $= n - p - 1 = 747 - 5 - 1 = 741$
+
+[Reference DAAG page 171]
+
+## Get the model Std. Errors
+
+Statology: "And to only extract the standard errors for each of the individual regression coefficients, we can use the following syntax:"
+
+extract standard error of individual regression coefficients
+
+sqrt(diag(vcov(model)))
+
+```{r}
+# From: https://www.statology.org/extract-standard-error-from-lm-in-r/
+# extract standard error of individual regression coefficients
+# sqrt(diag(vcov(model)))
+
+sqrt(diag(vcov(m)))
+
+```
+
+
+
+## Get the Confidence Intervals
+
+```{r}
+# Put it in a variable to get more information later on.
+ci_m <- confint(m)
+ci_m
+```
+
+Good to see that the confidence intervals did not cross _zero_.
+
+## Get more information on the C.I.
+
+```{r}
+attributes(ci_m)
+```
+
+
+95% confidence interval for volume:
+
+0.708 ± 2.18×0.0611
+
+Where:
+
+- 0.708 = the average between the two two CI numbers (lower , higher)
+- And notice how the coefficient is also the average between the CI,
+- 0.708 = Volume coefficient
+- 2.18 = t-value for 12 DF from qt(0.975, 12)
+- 0.0611 = Standard error found from sqrt(diag(vcov(m)))[2]
+
+
+### Get the C.I. mean for the 2nd variable: PriceMM
+
+```{r}
+ci_mu <- mean(c(ci_m[2,1], ci_m[2,2]))
+ci_mu
+
+```
+## t-distribution 95% level: the formula
+
+Reference DAAG page 171.
+
+```{r}
+qt(0.975, 12)
+```
+
+
+
+
+
+
+# Example 2: Without Intercept
+
+## Fit the model without Intercept
+
+
+```{r}
+# Remove the Intercept by asdding a -1
+m_noi <- lm(PriceCH ~ -1
+        +PriceMM 
+        +WeekofPurchase
+        +DiscCH
+        +Store7 
+        +STORE
+        , train)
+
+summary(m_noi)
+```
+Now, here pay close attention to what the model did with the factor variable.
+
+It created a two dummy variable, one for each level: Store7No and Store7Yes.
+
+### Plots
+
+```{r}
+
+par(mfrow = c(2,2))
+plot(m_noi)
+par(mfrow = c(1,1))
+```
+
+### Predict on test dataset
+
+
+```{r}
+p_noi <-  predict(m_noi,  test)
+
+# For ggplot we need a dataframe:
+df_noi <- data.frame(p_noi, test)
+```
+
+### Plot predictions vs actuals
+
+```{r}
+df_noi %>% ggplot(aes(x = PriceCH, y = p_noi)) +
+  geom_point() +
+  geom_smooth(method = 'lm', col = 'red', se=FALSE) +
+  scale_y_continuous('Predictions (without Intercept)') +
+  scale_x_continuous('Price of Citrus Hill OJ (USD)') +
+  ggtitle('Price of CH OJ', 'Dataset source: OJ{ISLR}')
+
+```
+
+### Assess performance: RMSE and R^2
+
+- Root Mean Squared Error
+- R-squared
+
+```{r}
+# RMSE
+sqrt(mean((test$PriceCH - p_noi)^2))
+
+# R squared
+cor(test$PriceCH, p_noi)^2 ## R-Squared
+```
+Interesting same results with or without Intercept.
+
+
+# Example 3: Numeric explanatory variables (3 of them)
+
+## Fit the model: Train set
+
+Iterate to fit the model. See _anova()_ description a few chunks below.
+
+```{r}
+# You can start with a '+' on the first variable if you want to.
+# I like to start with a '+' because it can flexibly add and delete variables
+# as I go through the analysis process.
+m <- lm(PriceCH ~ 
+        +PriceMM 
+        +WeekofPurchase
+        +STORE
+        , train)
+
+# Display the summary with the correlation of the coefficients.
+# Put it in a variable to use it downstream.
+(summary_m <- summary(m, corr = TRUE))
+```
+
+
+Note: Degrees of freedom $=n-p-1$, when using the _Intercept_ as we did above.
+
+- Observations in the train dataset: $n = 747$
+- Explanatory variables: $p = 3$
+- Residual error degrees of freedom: $DF = n - p - 1 = 747 - 3 - 1 = 743$
+
+### Diagnostic plots
+
+```{r}
+
+par(mfrow = c(2,2))
+plot(m)
+par(mfrow = c(1,1))
+```
+
+### Test the model with anova()
+
+Compare the Pr(>F) with the p-values from the summary of the model They should be comparable.
+
+
+```{r}
+anova(m)
+```
+
+### Predict on test dataset
+
+
+```{r}
+p <-  predict(m,  test)
+
+# For ggplot we need a dataframe:
+df <- data.frame(p, test)
+```
+
+
+
+### Plot predictions vs actuals
+
+```{r}
+df %>% ggplot(aes(x = PriceCH, y = p)) +
+  geom_point() +
+  geom_smooth(method = 'lm', col = 'red', se=FALSE) +
+  scale_y_continuous('Predictions') +
+  scale_x_continuous('Price of Citrus Hill OJ (USD)') +
+  ggtitle('Price of CH OJ', 'Dataset source: OJ{ISLR}')
+
+```
+
+### Assess performance: RMSE and R^2
+
+- Root Mean Squared Error
+- R-squared
+
+```{r}
+# RMSE
+sqrt(mean((test$PriceCH - p)^2))
+
+# R squared
+cor(test$PriceCH, p)^2 ## R-Squared
+```
+# Example 4: Without Intercept
+
+## Fit the model without Intercept: Train set
+
+Iterate to fit the model. See _anova()_ description a few chunks below.
+
+```{r}
+# You can start with a '+' on the first variable if you want to.
+# I like to start with a '+' because it can flexibly add and delete variables
+# as I go through the analysis process.
+m_noi <- lm(PriceCH ~ -1
+        +PriceMM 
+        +WeekofPurchase
+        +STORE
+        , train)
+
+# Display the summary with the correlation of the coefficients.
+summary(m_noi, corr = TRUE)
+```
+
+Note: Degrees of freedom $=n-p-1$, when using the _Intercept_ as we did above.
+
+- Observations in the train dataset: $n = 747$
+- Explanatory variables: $p = 3$
+- Intercept = NO, think of it as $=0$
+- Residual error degrees of freedom: $DF = n - p - 0 = 747 - 3 - 0 = 744$
+
+### Plots
+
+```{r}
+
+par(mfrow = c(2,2))
+plot(m_noi)
+par(mfrow = c(1,1))
+```
+
+### Predict on test dataset
+
+
+```{r}
+p_noi <-  predict(m_noi,  test)
+
+# For ggplot we need a dataframe:
+df_noi <- data.frame(p_noi, test)
+```
+
+### Plot predictions vs actuals
+
+```{r}
+df_noi %>% ggplot(aes(x = PriceCH, y = p_noi)) +
+  geom_point() +
+  geom_smooth(method = 'lm', col = 'red', se=FALSE) +
+  scale_y_continuous('Predictions (without Intercept)') +
+  scale_x_continuous('Price of Citrus Hill OJ (USD)') +
+  ggtitle('Price of CH OJ', 'Dataset source: OJ{ISLR}')
+
+```
+
+### Assess performance: RMSE and R^2
+
+- Root Mean Squared Error
+- R-squared
+
+```{r}
+# RMSE
+sqrt(mean((test$PriceCH - p_noi)^2))
+
+# R squared
+cor(test$PriceCH, p_noi)^2 ## R-Squared
+```
+Here the performance went down by a little bit only.
+
+# References
+
+1. Harvard STAT 109 2023. Weekly slides by Dr. Bharatendra Rai.
+1. Dr. Bharatendra Rai.YouTube channel. https://youtu.be/cW59Yh_GfNk
+1. John Maindonald and W. John Braun. "Data Analysis and Graphics Using R". Cambridge. Third Ed. ISBN 978-0-521-76293-9. 5th printing 2016.
+1. Gareth James, et al. "And Introduction to Statistical Learning with Applications in R." Springer Science. ISBN 978-1-4614-7137-0. 8th printing 2017. 
+
+
