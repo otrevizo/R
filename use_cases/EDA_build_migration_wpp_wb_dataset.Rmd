@@ -1,0 +1,807 @@
+---
+title: "Build Dataset: Human migration dataset based on UN WPP and World Bank"
+author: "Oscar A. Trevizo"
+date: "2023-05-08"
+output:
+  html_document: 
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Introduction
+
+At the end of this use case, we will have a dataset built on sources from the United Nations and the World Bank to provide relationships between migration, demographics, socioeconomic, and development indicators.
+
+# Load the libraries
+
+
+```{r libraries}
+# Essential libraries
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(psych)
+library(GGally)
+library(PerformanceAnalytics)
+
+
+
+```
+
+# United Nations WPP
+
+## Load the data
+
+
+```{r read_un_wpp}
+# https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/\
+# EXCEL_FILES/1_General/WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_REV1.xlsx
+# wpp_raw <- read_excel('data/wpp.xlsx',
+#                  sheet = 'Estimates',
+#                  skip = 16,
+#                  col_types = 'text')
+
+# Saved as CSV
+wpp_raw <- read.csv('../data/WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_REV1.csv', check.names=FALSE)
+```
+
+
+## Create WPP data set
+
+```{r wpp_filter}
+# The first 3 columns listed below are only informative.
+# Total population is redundant. Keeping the July data.
+# Notice, Year is class 'int'
+wpp <- wpp_raw %>% filter((Type == 'Country/Area')) %>% 
+  dplyr::select(-c('Variant',
+            'Notes',
+            'Location code',
+            'SDMX code**',
+            'Total Population, as of 1 January (thousands)'))
+
+dim(wpp)
+head(wpp)
+```
+
+## Add Columns Regions and Subregions
+
+```{r}
+# Get Subregions in a small table.... One year takes care of having one row per region.
+# We need to include both Subregion and Region because the USA, Canada, Greenland,... 
+# have NORTH AMERICA as Parent Code while the other countries have Subregion as
+# Parent Code. Pick one year, any year like 2019 to create these temporary dataframe.
+wpp_parent_code <- wpp_raw %>% filter((Type == 'Subregion' | Type == 'Region') 
+                                     & Year == 2019) %>% 
+  dplyr::select(c('Region, subregion, country or area *',
+                  'Location code'))
+
+# Rename columns in preparation for a merge that will be done based on 'Parent code'
+colnames(wpp_parent_code) <- c('Subregion', 'Parent code')
+
+# Now merge with wpp based on 'Parent code'
+wpp <- wpp %>% left_join(wpp_parent_code)
+
+# Now we have subregions.
+# The next step is to add Region (COntinent / subcontinent). The problem there
+# is NORTH AMERICA is Region but also Parent Code for USA and Canada.
+
+wpp_subregions <- wpp_raw %>% filter(Type == 'Subregion'
+                                     & Year == 2019) %>% 
+  dplyr::select(c('Region, subregion, country or area *',
+                  'Parent code'))
+
+wpp_regions <- wpp_raw %>% filter(Type == 'Region'
+                                     & Year == 2019) %>% 
+  dplyr::select(c('Region, subregion, country or area *',
+                  'Location code'))
+
+# Rename columns in wpp_regions to match the column name 'Parent code'
+# before left_join(). this way the function automatically will pick Parent code
+
+colnames(wpp_regions) <- c('Region', 'Parent code')
+colnames(wpp_subregions) <- c('Subregion', 'Parent code')
+
+# now the join will automaticaly use 'Parent code' to join left.
+wpp_subregions <- wpp_subregions %>% left_join(wpp_regions)
+
+# Remove columns 'Parent Code' no longer needed
+wpp_subregions <- wpp_subregions %>% dplyr::select(-c('Parent code'))
+
+# But we need to add NORTH AMERICA... Let's follow the Upper Case Lower Case approach
+wpp_subregions <- rbind(wpp_subregions, c('NORTHERN AMERICA', 'NORTHERN AMERICA'))
+
+
+# Now merge with wpp based on 'Subregion'
+wpp <- wpp %>% left_join(wpp_subregions)
+
+
+```
+
+
+## Rename and re-sort columns
+
+
+### Save column names and create a table
+
+
+```{r wpp_new_column_names}
+wpp_columns_orig <- colnames(wpp)
+wpp_columns_new <- c('index', 'country', 'ISO3', 'ISO2', 'type', 'parent_code', 'year',
+                     'pop', 'pop_m', 'pop_f', 'pop_density', 'pop_sex_ratio', 'med_age',
+                     'natural_change', 'natural_change_rate', 'pop_change',
+                     'pop_growth_rate', 'pop_doubling', 'births', 'births_w15to19',
+                     'birth_rate', 'fertility_rate', 'net_reproduction_rate',
+                     'mean_age_childbearing', 'sex_ratio_birth', 'tot_deaths',
+                     'male_deaths', 'female_deaths', 'death_rate',
+                     'life_exp', 'life_exp_m', 'life_exp_f',
+                     'life_exp_15', 'life_exp_15_m', 'life_exp_15_f',
+                     'life_exp_65', 'life_exp_65_m', 'life_exp_65_f',
+                     'life_exp_80', 'life_exp_80_m', 'life_exp_80_f',
+                     'infant_deaths', 'under_five_mortality',
+                     'live_births', 'deaths_under_5', 'mortality_rate_under_5',
+                     'mortality_40', 'mortality_40_m', 'mortality_40_f',
+                     'mortality_60', 'mortality_60_m', 'mortality_60_f',
+                     'mortality_15_50', 'mortality_15_50_m', 'mortality_15_50_f',
+                     'mortality_15_60', 'mortality_15_60_m', 'mortality_15_60_f',
+                      'net_migrants', 'net_mig_rate', 'subregion', 'region'
+                     )
+```
+
+### Column definitions
+
+```{r}
+wpp_columns_table <- data.frame(wpp_columns_orig, wpp_columns_new)
+wpp_columns_table
+```
+
+
+### Rename wpp columns
+
+```{r}
+# Rename dataframe columns
+(colnames(wpp) <- wpp_columns_new)
+```
+
+### Re-sort the columns
+
+```{r}
+
+# Obtain numeric columns
+col_numeric <- wpp_columns_new[7:60]
+
+# Obtain non-numeric, character, columns... It is a handful, sort it here by hand
+col_char <-  c('index', 'country', 'subregion', 'region', 
+               'ISO3', 'ISO2', 'type', 'parent_code')
+
+wpp <- wpp %>% dplyr::select(col_char, col_numeric)
+
+colnames(wpp)
+```
+
+## Column variable types
+
+Now we need to make numeric columns be type numeric.
+
+```{r}
+# Remove white spaces from numeric columns
+# https://www.geeksforgeeks.org/remove-all-whitespace-in-each-dataframe-column-in-r/
+wpp[, 9:62] <- as.data.frame(apply(wpp[, 9:62], 2, function(x) gsub("\\s+", "", x)))
+
+# Coerce numeric
+# Tips from:
+# https://stackoverflow.com/questions/2288485/how-to-convert-a-data-frame-column-to-numeric-type
+wpp[, 9:62] <- sapply(wpp[, 9:62], as.numeric)
+
+# Year should actually be Date as this:
+# The challenge with a Date is it will try to pin down the exact month and day too.
+# Even if the format is Year only, underneath the data will have exact days
+# wpp$Year <- as.Date(wpp$year, '%Y')
+
+# But for now, leave it as numeric for simplicity.
+wpp$year <- as.numeric(wpp$year)
+
+# Remove columns 'type' and 'parent_code' no longer needed
+wpp <- wpp %>% dplyr::select(-c('type', 'parent_code'))
+
+```
+
+
+## Remove some columns
+
+
+```{r}
+
+# Remove pop_doubling and live_births columns, which have NAs
+wpp <- wpp %>% dplyr::select(-c('pop_doubling', 'live_births'))
+
+```
+
+## Add columns
+
+### Add migration stat variables
+
+Describe stats for migration
+
+```{r}
+describe(wpp[,c("net_migrants", "net_mig_rate")])
+```
+
+
+
+### Add columns with stats on migration
+
+
+```{r}
+# Use dplyr to find mu, sigma, and quantiles
+
+wpp_mig_stats <- wpp %>% group_by(ISO3) %>% 
+  summarise(net_mig_rate_mean = mean(net_mig_rate, na.rm = TRUE),
+            net_mig_rate_sd = sd(net_mig_rate, na.rm = TRUE),
+            net_mig_rate_med = median(net_mig_rate, na.rm = TRUE),
+            net_mig_rate_25qtl = quantile(net_mig_rate, probs = 0.25, na.rm = TRUE),
+            net_mig_rate_75qtl = quantile(net_mig_rate, probs = 0.75, na.rm = TRUE)
+            )
+
+# Now join those values to the data set.
+wpp <- wpp %>% left_join(wpp_mig_stats)
+```
+
+
+### Create factor variables for migration
+
+#### Create new factor variable: emigrates (1, 0)
+
+This new column will have a 1 if the country emigrates (leaves), and a 0 where they
+don't migrate in net figures.
+
+Call it emigrates. 
+Gets a 1 if it has a negative migration. That is, more people emigrate (like Mexico).
+Gets a 0 if it has a positive or zero migration. 
+That is, they experience immigration (like the US).
+
+That is, if it has a negative net_migration, the country emigrates (leaves), and if it 
+has a positive net_migration, the country receives migrants.
+
+#### New columns migration pattern mig_pattern: factor 'emigration' or 'immigration'
+
+Countries may experience a mix of years when they have emigration (leaving) and other
+years when they have immigration. For the most part the pattern is consistent.
+Some countries consistently receive immigrants (like the United States and Germany) 
+and other countries consistently have emigrants leave the country.
+
+To avoid a possible mix between emigration and immigration within a country, this 
+variable will classify the country based on its general pattern. The variable
+will be class as factor and will have the values:
+
+- emigration
+- immigration
+
+To add this column we need to go through a two step process.
+
+```{r}
+# First remove any country that has NA in net_mig_rate.
+# Upon exploration, there is only one country as such = VAT (the Vatican)
+# It is best to remove it as it does not show any other patterns.
+# (note, there was another command before that removed the Vatican)
+# (leave this one here for now, even though it is is not doing anything)
+wpp <- wpp %>% drop_na(net_mig_rate)
+
+# This command create the new column 'emigrates' with values either 1 or 0.
+# Note that the same country may have a mix of 1s and 0s in different years.
+# This variable can change from 1 to 0 or 0 1 for a country from year to year
+wpp <- wpp %>% mutate(emigrates = ifelse(net_mig_rate < 0, 1, 0))
+
+# Mig patterns is a category. We want to assign a category to the country based on an
+# overall migration pattern over the years. 
+# Emigration means the country tends to have emigrants (a negative mig rate overall),
+# while immigration means the country tends to receive migrants (a positive mig rate).
+# We will leave 0 as immigration to avoid having three categories.
+# But there was no single country with an exact 0.0000 mig rate mean.
+mig_pattern_df <- wpp %>% group_by(ISO3) %>%
+  summarise(mig_pattern = ifelse(median(net_mig_rate, na.rm = TRUE) > 0,
+                                 'immigration', 'emigration'))
+
+# Now join that pattern grouped by ISO3 (country) with the overall data set wpp
+wpp <- wpp %>% left_join(mig_pattern_df)
+
+
+```
+
+
+
+#### Create factor variable for migration_swings 
+
+Some countries exhibit swings, seasonal patterns (e.g. Qatar), while other countries
+exhibit a controlled migration pattern. That question can be explored by adding three
+additional columns to our data set, focusing on migration rate:
+
+If a country exhibits swings between the 25 and 75 quantiles from negative to positive
+migration, the country needs to be identified as one that exhibits migration
+swings, Those countries could have seasonal migration, leaving the country and 
+then entering the country again. That is a special category.
+
+
+```{r}
+wpp <- wpp %>% mutate(migration_swings = ifelse(net_mig_rate_75qtl * net_mig_rate_25qtl < 0, 1, 0))
+
+```
+
+
+
+```{r}
+wpp_mig_stats_swings <- wpp_mig_stats %>% 
+  mutate(migration_swings = ifelse(net_mig_rate_75qtl * net_mig_rate_25qtl < 0, 1, 0))
+
+table(wpp_mig_stats_swings$migration_swings)
+```
+
+
+
+# World Bank
+
+https://www.worldbank.org/en/home
+
+## DataBank
+
+https://databank.worldbank.org/
+
+- World Development Indicators
+- Statistical Capacity Indicators
+- Education Statistics
+- Gender Statistics
+- Health Nutrition and Population Statistics
+
+
+## World Development Indicators
+
+Tool to select multitude variables to characterize countries or regions. It allows us
+to create custom report. The reports can be shared or can be private.
+
+There are $1442$ _Series_ (i.e., variables, predictors) available. 
+
+
+
+## WorldBank databank report
+
+The tool allows you to select a layout, save the report and share the report. I created a shared report from WorldBank databank:
+
+https://databank.worldbank.org/Countries-GDP-and-Inflation/id/4f7a6fed
+
+## Load the data
+
+```{r}
+# From WOrld bankd 0 Databank:
+# https://databank.worldbank.org/id/49085302?Report_Name=Countries-GDP-Inflation-and-predictors&l=en
+# https://databank.worldbank.org/Countries-GDP-Inflation-and-predictors/id/18e02f13
+# Saved as CSV for convenience.
+#
+# wb_raw <- read.csv('data/wb.csv', check.names=FALSE, colClasses = 'character')
+wb_raw <- read.csv('../data/wb_2023.Q1.csv', check.names=FALSE)
+
+wb_metadata <- read.csv('../data/wb_metadata_2023.Q1.csv', check.names=FALSE, colClasses = 'character')
+
+```
+
+
+## World Bank data set definitions
+
+- From WB metadata
+
+```{r}
+wb_metadata[,c('Indicator Name', 'Long definition')]
+```
+
+## Create WPP data set
+
+
+```{r}
+# Use dplyr select() for simplicity. Put it in a new dataframe wb.
+# Notice Time is class 'int'... That is how read.csv pulled it in. 
+wb <- wb_raw %>%  dplyr::select(-c('Country Name', 'Time Code', 
+                                  'International migrant stock (% of population) [SM.POP.TOTL.ZS]',
+                                  'Net migration [SM.POP.NETM]'))
+```
+
+
+## Rename columns
+
+Anticipating a merge between the data sets from the World Bank (economics) with
+the United Nations (demographics), rename variables in the _wb_ data set to match
+columns in the _wpp_ data set. Specifically:
+
+- ISO3: Country code
+- Year: The time period.
+
+Simultaneously, rename the remaining columns to something more practical
+from the scripting perspective.
+
+Save the old names and the new names in a new table for the record.
+
+```{r}
+wb_columns_orig <- colnames(wb)
+wb_columns_new <- c('ISO3', 
+                    'year', 
+                    'GDP', 
+                    'GDP_growth', 
+                    'GDP_pc', 
+                    'GDP_pc_ppp',
+                    'inflation',
+                    'natl_income_pc',
+                    'cpi',
+                    'food',
+                    'homicides',
+                    'electricity',
+                    'co2_emissions',
+                    'education',
+                    'mig_stock'
+                    )
+```
+
+
+### Column definitions
+
+```{r}
+wb_columns_table <- data.frame(wb_columns_orig, wb_columns_new)
+
+wb_columns_table
+```
+
+### Rename columns
+
+```{r}
+(colnames(wb) <- wb_columns_new)
+# head(wb)
+```
+
+## Replace '..' values with NA  
+
+```{r}
+# Replace across the entire data set, all columns, specifically applies to numerics.
+wb[wb == '..'] <- NA
+head(wb)
+```
+
+## Coerce chars as numeric
+
+```{r}
+# Remove white spaces from numeric columns
+# https://www.geeksforgeeks.org/remove-all-whitespace-in-each-dataframe-column-in-r/
+wb[, 3:15] <- as.data.frame(apply(wb[, 3:15], 2, function(x) gsub("\\s+", "", x)))
+
+wb[, 3:15] <- sapply(wb[, 3:15], as.numeric)
+
+# Year should actually be Date:
+# The challenge with a Date is it will try to pin down the exact month and day too.
+# Even if the format is Year only, underneath the data will have exact days
+# wb$year <- as.Date(wb$year, '%Y')
+
+# But for now, leave it as numeric for simplicity.
+wb$year <- as.numeric(wb$year)
+```
+
+
+
+## WB Summary
+
+```{r}
+# It's helpful to see the min and max in determining which variables are candidates for log transformation.
+summary(wb)
+```
+
+## Correlation pairs
+
+### Economics indicators
+
+```{r}
+wb[,3:9] %>% pairs.panels()
+
+```
+
+### Development indicators
+
+```{r}
+wb[,11:15] %>% pairs.panels()
+
+```
+
+## Transforms
+
+Candidates for $log()$ transformation are all of the economic variables except perhaps for _GDP_growth_:
+
+- GDP
+- GDP_pc
+- GDP_pc_ppp
+- inflation
+- natl_income_pc
+- cpi
+- mig_stock
+
+
+```{r}
+# Instead of replacing, add new log variables using dplyr mutate()
+wb <- wb %>% mutate(log_GDP = log(GDP),
+                    log_GDP_pc = log(GDP_pc),
+                    log_GDP_pc_ppp = log(GDP_pc_ppp),
+                    log_inflation = log(inflation + 20),
+                    log_natl_income_pc = log(natl_income_pc + 500),
+                    log_cpi = log(cpi),
+                    log_mig_stock = log(mig_stock))
+head(wb)
+```
+
+Summary of the log transformed econ indicators
+
+```{r}
+summary(wb[16:22])
+```
+
+
+Do $log()$ transformation also for:
+
+- food
+- homicides
+- electricity
+- co2_emissions
+- education
+
+For simplicity, _log_ transform all the numeric variables.
+
+
+```{r}
+# Instead of replacing, add new log variables using dplyr mutate()
+
+wb <- wb %>% mutate(log_food = log(food),
+                    log_homicides = log(homicides + 0.01),
+                    log_electricity = log(electricity),
+                    log_co2_emissions = log(co2_emissions),
+                    log_education = log(education + 0.01))
+head(wb)
+```
+
+```{r}
+summary(wb[,16:27])
+```
+
+
+# Build the dataframe
+
+## Join WPP with WB by ISO3 and Year
+
+We will use _dplyr_ to perform the join, a.k.a. _merge_ of two data sets.
+
+We can either do a _left, inner,_ or a _right_ join.  The order depends on which 
+data set we pass first as an argument. 
+
+On a _left_ join, the data set passed first (left argument) serves as the main data set. 
+Matching records are added as new columns from the second data set. As a result, the number
+of rows will be determined by the _left_.
+
+On an _inner_ join, the two data sets are matched. The result will consists only of 
+those observations/rows that are found in both data sets. Therefore, the number of rows 
+will be less than or equal to that of the smaller data set.
+
+And on a _right_ join, the second data set takes precedence.
+
+Here we will use the UN WPP data set as the main data set. We will apply a _left_ join.
+
+```{r}
+wpp_wb <- wpp %>% left_join(wb)
+```
+
+Notice the resulting data set _wpp_wb_ has the same number of observations as _wpp_.
+
+Now we have a data set with demographics and with economics data.
+
+
+## Reorder the data set columns
+
+- Place non-numeric variables first
+- Then outcome variables (migration related)
+- Then the rest of the numeric variables.
+
+## Column names wpp_wb
+
+```{r}
+colnames(wpp_wb)
+```
+
+## Separate non-numeric from outcome and predictor variables
+
+```{r}
+# First group
+# These describe/identify the observations, e.g. country/region name, ISO, year
+non_num_cnames <- colnames(wpp_wb[, 1:7])
+
+# Second group, outcomes and related migration vars
+# This step will remove some columns as well
+outcomes <- c('net_mig_rate',
+              'net_migrants',
+              'mig_stock',
+              'log_mig_stock',
+              'emigrates',
+              'mig_pattern',
+              'migration_swings',
+              'net_mig_rate_mean',
+              'net_mig_rate_med')
+
+# Third group - Predictors
+num_cnames <- colnames(wpp_wb[, 8:91])
+
+predictors <- num_cnames[! num_cnames %in% c('net_mig_rate',
+                                      'net_migrants',
+                                      'migration_stock',
+                                      'log_mig_stock',
+                                      'emigrates',
+                                      'mig_pattern',
+                                      'migration_swings',
+                                      'net_mig_rate_mean',
+                                      'net_mig_rate_sd',
+                                      'net_mig_rate_med',
+                                      'net_mig_rate_25qtl',
+                                      'net_mig_rate_75qtl'
+                                )]
+
+```
+
+
+## Rearrange migration variables to the left of the numeric dataframe
+
+
+```{r}
+
+wpp_wb <- wpp_wb %>% dplyr::select(non_num_cnames, outcomes, predictors)
+
+# make categorical variables as factors
+wpp_wb$mig_pattern <- as.factor(wpp_wb$mig_pattern)
+wpp_wb$emigrates <- as.factor(wpp_wb$emigrates)
+wpp_wb$migration_swings <- as.factor(wpp_wb$migration_swings)
+
+colnames(wpp_wb)
+```
+
+# Train test split
+
+Build a train test split up-front to be used consistently throughout this analysis.
+
+```{r}
+# We have 236 countries.
+countries <- unique(wpp_wb$country)
+
+# Now get a sample of say 70% of that list
+set.seed(12321) 
+countries_sample <- sample(countries, length(countries)*0.7)
+
+# Now we will want train to contain those countries
+# And test not to contain those countries.
+train <- wpp_wb %>% filter(country %in% countries_sample)
+test <- wpp_wb %>% filter(!country %in% countries_sample)
+
+# Traditionally we would split the df up and down as follows
+# set.seed(12321) 
+# ind <- sample(2, nrow(wpp_wb), replace = T, prob = c(0.7, 0.3))
+# train <- wpp_wb[ind == 1,]
+# test <- wpp_wb[ind == 2,]
+
+# Another option data scientists use when splitting data that originates
+# from a time series is by training from year 1 to year x 
+# and testing from years x+1 to last year. 
+
+
+```
+
+## Explore train and test sets
+
+This shows the count of observations/rows:
+
+### By region
+
+```{r}
+train %>% 
+  group_by(region) %>% 
+  summarize(count = n())
+
+test %>% 
+  group_by(region) %>% 
+  summarize(count = n())
+
+```
+
+
+### By subregion
+
+```{r}
+train %>% 
+  group_by(subregion) %>% 
+  summarize(count = n())
+
+test %>% 
+  group_by(subregion) %>% 
+  summarize(count = n())
+
+```
+
+### By country
+
+```{r}
+train %>% 
+  group_by(country) %>% 
+  summarize(count = n())
+
+test %>% 
+  group_by(country) %>% 
+  summarize(count = n())
+
+```
+
+### By year
+
+```{r}
+train %>% 
+  group_by(year) %>% 
+  summarize(count = n())
+
+test %>% 
+  group_by(year) %>% 
+  summarize(count = n())
+
+```
+
+The count of countries can be taken by dividing by 20, since each country should have 20 rows/observations (1 for each year)
+
+### Countries by region
+
+```{r}
+train %>% 
+  group_by(region) %>% 
+  summarize(count = n()/20)
+
+test %>% 
+  group_by(region) %>% 
+  summarize(count = n()/20)
+
+```
+
+# Write to CSV to be used downstream
+
+
+```{r}
+write.csv(wpp_wb, '../data/wpp_wb_2023.Q1.csv', row.names = FALSE)
+write.csv(train, '../data/wpp_wb_train_2023.Q1.csv', row.names = FALSE)
+write.csv(test, '../data/wpp_wb_test_2023.Q1.csv', row.names = FALSE)
+
+```
+
+# References
+
+1.	United Nations Datamart - World Population Prospects (accessed Mar. 15, 2023) https://population.un.org/wpp/Download/Standard/MostUsed/
+2.	World Bank World Development Indicators (accessed Mar. 16, 2022) https://databank.worldbank.org/source/world-development-indicators 
+3.	World Bank World Development Indicators. Data_Extract (accessed Mar. 18, 2023) https://databank.worldbank.org/Countries-GDP-and-Inflation/id/4f7a6fed   
+4.	Migration Policy Institute. “Immigration Has Been a Defining, Often Contentious, Element Throughout U.S. History.” Jan. 6, 2022 (accessed Mar 30, 2023) https://www.migrationpolicy.org/article/immigration-shaped-united-states-history 
+5.   International Organization for Migration (IOM). "World Migration Report 2022." ISBN 978-92-9268-078-7. (accessed Apr. 24, 2023)  https://publications.iom.int/books/world-migration-report-2022  
+6.	 International Organization for Migration (IOM) Global Migration Analysis Centre. Migration Data Portal (accessed Apr. 14, 2023) https://www.migrationdataportal.org/ 
+7.	IOM Migration Research Series. “Gallup World Poll: The Many Faces of Global Migration.” https://news.gallup.com/poll/152660/Faces-Global-Migration.aspx 
+8.	World Migration Report 2022. (accessed Apr. 10m 2023) https://migrationnetwork.un.org/resources/world-migration-report-2022
+
+**Useful links**
+
+- United Nations Datamart: http://data.un.org/
+- United Nations Datamart - World Population Prospects (WPP): https://population.un.org/wpp/Download/Standard/MostUsed/
+- United Nations Datamart - World Population Prospects Excel file: https://population.un.org/wpp/Download/Files/1_Indicators%20(Standard)/EXCEL_FILES/1_General/WPP2022_GEN_F01_DEMOGRAPHIC_INDICATORS_REV1.xlsx
+- United Nations Datamart - Economic Trading: https://population.un.org/wpp/Download/SpecialAggregates/EconomicTrading/
+- United Nations GDP: http://data.un.org/_Docs/SYB/CSV/SYB65_230_202209_GDP%20and%20GDP%20Per%20Capita.csv
+- World Bank DataBank. Global Bilateral Migration:  https://databank.worldbank.org/source/global-bilateral-migration/Type/TABLE/preview/on#
+- World Bank Inflation: https://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?view=charthttps://data.worldbank.org/indicator/FP.CPI.TOTL.ZG?view=chart
+- World Bank World Development Indicators P_Data_Extract_From_World_Development_Indicators https://databank.worldbank.org/source/world-development-indicators
+- World Bank World GDP:  https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG file API_NY.GDP.MKTP.KD.ZG_DS2_en_excel_v2_4701280.xls
+- US DHS Satistics: https://www.dhs.gov/immigration-statistics/naturalizations
+- U.S. Naturalizations 2021 Data Tables: https://www.dhs.gov/sites/default/files/2022-09/2022_0624_plcy_naturalizations_fy2021_tables.zip
+- US Naturalizations: https://www.dhs.gov/sites/default/files/2022-07/2022_0624_plcy_naturalizations_fy2021.pdf
+
