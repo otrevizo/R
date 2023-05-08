@@ -3,12 +3,12 @@ title: "Build Dataset: Human migration dataset based on UN WPP and World Bank"
 author: "Oscar A. Trevizo"
 date: "2023-05-08"
 output:
-  html_document: 
-    toc: yes
-    toc_depth: 4
   pdf_document:
     toc: yes
     number_sections: yes
+    toc_depth: 4
+  html_document: 
+    toc: yes
     toc_depth: 4
 ---
 
@@ -537,10 +537,13 @@ wb <- wb %>% mutate(log_GDP = log(GDP),
 head(wb)
 ```
 
-Summary of the log transformed econ indicators
+## Summary and correlation pairs of log transformed variables
+
 
 ```{r}
 summary(wb[16:22])
+wb[16:22] %>% pairs.panels()
+
 ```
 
 
@@ -567,7 +570,9 @@ head(wb)
 ```
 
 ```{r}
-summary(wb[,16:27])
+summary(wb[,23:27])
+wb[23:27] %>% pairs.panels()
+
 ```
 
 
@@ -754,18 +759,18 @@ test %>%
 
 ```
 
-The count of countries can be taken by dividing by 20, since each country should have 20 rows/observations (1 for each year)
+The count of countries can be taken by looking at one single year (e.g. 2019)
 
 ### Countries by region
 
 ```{r}
-train %>% 
+train %>% filter(year == 2019) %>% 
   group_by(region) %>% 
-  summarize(count = n()/20)
+  summarize(count = n())
 
-test %>% 
+test %>% filter(year == 2019) %>% 
   group_by(region) %>% 
-  summarize(count = n()/20)
+  summarize(count = n())
 
 ```
 
