@@ -27,7 +27,7 @@ Function _train()_ "sets up a grid of tuning parameters for a number of classifi
 
 This example uses _train()_ to fit a _Random Forest_ model using the OJ{ISLR} dataset.
 
-Additional documention:
+Additional documentation:
 
 http://topepo.github.io/caret/available-models.html
 
