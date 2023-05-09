@@ -1,40 +1,35 @@
 ---
-title: "Logistic regression classification Vignette"
+title: "Classification: Logistic Regression, LDA, QDA"
 author: "Oscar Trevizo"
 date: "January 2023"
 output:
-  pdf_document:
-    toc: yes
-    number_sections: yes
-    toc_depth: 4
   html_document:
     toc: yes
     keep_md: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
     toc_depth: 4
   github_document:
     toc: yes
 ---
 
-This code is based on lessons from Harvard Statistical Learning class [see references]. I expanded the material with my own scripts, notes and R documentation and I plan to continue adding examples overtime.
+This code and functions are based on lessons from Harvard Statistical Learning class [see references]. I expanded the material with my own scripts, notes and R documentation and I plan to continue adding examples overtime.
 
 This vignette focuses on logistic regression based on the Generalized Linear Models from the "stats" library.
 
 
 
 
-```{r setup, include=FALSE}
-library(stats)                # Stats contains glm for logistic regression
-library(MASS)                 # LDA and QDA
 
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 # Functions
 
 Adapted from R functions shared by faculty in Harvard data science class (2021). See references at the bottom of this notebook.
 
-```{r}
 
+```r
 ###
 #
 # prediction.metrics function -- to return a list with all the metrics values
@@ -140,7 +135,6 @@ qda.pred.ftn = function(formula, df.train, df.test){
   qda.class <- qda.pred$class
   return(qda.class)
 }
-
 ```
 
 
@@ -149,8 +143,8 @@ qda.pred.ftn = function(formula, df.train, df.test){
 Play with two sets of Normally distributed sets of data with different means.
 We can change the number of samples and we can move the means around.
 
-```{r}
 
+```r
 # From Harvard data science class (see references at the end of this notebook)
 
 set.seed(11)
@@ -168,20 +162,19 @@ y <- rep(c("A", "B"), each=N)
 
 # Make a data.frame with 1 and 0 values for Y
 df <- data.frame(Y=ifelse(y=="A",0, 1), X=x)
-
 ```
 
 
 ## Build train and test sets
 
-```{r}
+
+```r
 set.seed(12321)
 
 # Get 2:1 random sample ratio for Train:Test sets
 sampleTrain <- sample(c(TRUE,FALSE,TRUE), nrow(df), rep=TRUE)
 df.train <- df[sampleTrain,]
 df.test <- df[!sampleTrain,]
-
 ```
 
 # Boxplot and histogram
@@ -196,10 +189,15 @@ The histogram adds information to visualize the behavior relationship
 between the outcome, categorical valuable, and predictor, numeric variable.
 
 
-```{r}
+
+```r
 # From Harvard data science class (see references)
 boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
+```
 
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
 # Now place a histogram on top of another histogram
 
 oldpar <- par(mfrow=c(3, 1), mar=c(2,2,1,1))
@@ -213,7 +211,35 @@ hist(x[y=="B"], breaks=breaks, col='orange', main="B", xaxt='n')
 hist(x[y=="A"], breaks=breaks, col='lightblue', main="A")
 
 plot(x, ifelse(y=="A", 0,1), breaks=breaks, col=ifelse(y=="A", "lightblue","orange"), pch=19)
+```
 
+```
+## Warning in plot.window(...): "breaks" is not a graphical parameter
+```
+
+```
+## Warning in plot.xy(xy, type, ...): "breaks" is not a graphical parameter
+```
+
+```
+## Warning in axis(side = side, at = at, labels = labels, ...): "breaks" is not a
+## graphical parameter
+
+## Warning in axis(side = side, at = at, labels = labels, ...): "breaks" is not a
+## graphical parameter
+```
+
+```
+## Warning in box(...): "breaks" is not a graphical parameter
+```
+
+```
+## Warning in title(...): "breaks" is not a graphical parameter
+```
+
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
+
+```r
 par(oldpar)
 ```
 
@@ -225,7 +251,8 @@ Needs library{stats}
 
 ## Fit the model
 
-```{r}
+
+```r
 ##
 #
 # GLA from library{stats}
@@ -235,11 +262,37 @@ glm.fit <- glm(Y~X, data=df.train, family = binomial)
 summary(glm.fit)
 ```
 
+```
+## 
+## Call:
+## glm(formula = Y ~ X, family = binomial, data = df.train)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -3.5991  -0.0311  -0.0007   0.0262   3.7959  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(>|z|)    
+## (Intercept)  -7.7363     0.7380  -10.48   <2e-16 ***
+## X             3.8413     0.3516   10.92   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1837.55  on 1325  degrees of freedom
+## Residual deviance:  167.88  on 1324  degrees of freedom
+## AIC: 171.88
+## 
+## Number of Fisher Scoring iterations: 9
+```
+
 ## Predicit
 
 * Make predictions using the test dataset.
 
-```{r lrPredictions}
+
+```r
 ##
 #
 # predict{stats}
@@ -258,13 +311,13 @@ glm.probs <- predict(glm.fit, newdata = df.test, type = "response")
 glm.pred = rep(0, dim(df.test)[1])
 # Adjust the probability. Here is something one can play with after looking at the 'table' that follows
 glm.pred[glm.probs>0.5]=1
-
 ```
 
 ## Confusion matrix
 
 
-```{r}
+
+```r
 ##
 #
 # Continued based on ISLR 4.6.2 p.156-158
@@ -273,16 +326,29 @@ glm.pred[glm.probs>0.5]=1
 #
 
 table(glm.pred, df.test$Y)
+```
 
+```
+##         
+## glm.pred   0   1
+##        0 314  11
+##        1   8 341
+```
+
+```r
 mean(glm.pred == df.test$Y)
+```
 
+```
+## [1] 0.9718101
 ```
 
 ## Prediction metrics
 
 * Now I will use the function calculate accuracy, sensitivity, and specificity
 
-```{r}
+
+```r
 ##
 #
 # Based on functions from above
@@ -293,7 +359,23 @@ lgr.pred <- lgr.pred.ftn(Y~X, df.train, df.test)
 lgr.metrics <- prediction.metrics(df.test$Y, lgr.pred)
 
 print.the.metrics(lgr.metrics)
+```
 
+```
+##  OBS =  674 ...................number of observations
+##  ACC =  0.9718101 ..................Accuracy
+##  TPR =  0.96875 ..................True Positive Rate
+##  TNR =  0.9751553 ..................True Negative Rate
+##  PPV =  0.9770774 ..................Positive Predictive Value (Precision)
+##  NPV =  0.9661538 ..................Negative Predictive Value
+##  FDR =  0.02292264 ..................False Discover Rate
+##  FPR =  0.02484472 ..................False Positive Rate
+##  TP  =  8 ..................True Positives
+##  TN  =  314 ..................True Negatives
+##  FP  =  314 ..................False Positives
+##  FN  =  11 ..................False Negatives
+##  P   =  352 ..................Positives
+##  N   =  322 ..................Negatives
 ```
 
 # Linear Discriminant Analysis (LDA)
@@ -302,7 +384,8 @@ Needs library{MASS}
 
 ## Fit the model
 
-```{r}
+
+```r
 ##
 #
 # LDA from library{MASS}
@@ -312,19 +395,38 @@ lda.fit <- lda(Y~X, data = df.train)
 summary(lda.fit)
 ```
 
+```
+##         Length Class  Mode     
+## prior   2      -none- numeric  
+## counts  2      -none- numeric  
+## means   2      -none- numeric  
+## scaling 1      -none- numeric  
+## lev     2      -none- character
+## svd     1      -none- numeric  
+## N       1      -none- numeric  
+## call    3      -none- call     
+## terms   3      terms  call     
+## xlevels 0      -none- list
+```
+
 ## Predict
 
-```{r}
+
+```r
 lda.pred <- predict(lda.fit, df.test)
 
 names(lda.pred)
+```
 
+```
+## [1] "class"     "posterior" "x"
 ```
 
 
 ## Confusion matrix
 
-```{r}
+
+```r
 ##
 #
 # Continued based on ISLR 4.6.3 p.161-162
@@ -334,9 +436,21 @@ names(lda.pred)
 lda.class <- lda.pred$class
 
 table(lda.class, df.test$Y)
+```
 
+```
+##          
+## lda.class   0   1
+##         0 314  12
+##         1   8 340
+```
+
+```r
 mean(lda.class == df.test$Y)
+```
 
+```
+## [1] 0.9703264
 ```
 * The confusion matrix is based on the test set.
 
@@ -353,7 +467,8 @@ mean(lda.class == df.test$Y)
 
 * Now I will use the function from from above
 
-```{r}
+
+```r
 ##
 #
 # Based on functions from above
@@ -364,7 +479,23 @@ lda.pred <- lda.pred.ftn(Y~X, df.train, df.test)
 lda.metrics <- prediction.metrics(df.test$Y, lda.pred)
 
 print.the.metrics(lda.metrics)
+```
 
+```
+##  OBS =  674 ...................number of observations
+##  ACC =  0.9703264 ..................Accuracy
+##  TPR =  0.9659091 ..................True Positive Rate
+##  TNR =  0.9751553 ..................True Negative Rate
+##  PPV =  0.9770115 ..................Positive Predictive Value (Precision)
+##  NPV =  0.9631902 ..................Negative Predictive Value
+##  FDR =  0.02298851 ..................False Discover Rate
+##  FPR =  0.02484472 ..................False Positive Rate
+##  TP  =  8 ..................True Positives
+##  TN  =  314 ..................True Negatives
+##  FP  =  314 ..................False Positives
+##  FN  =  12 ..................False Negatives
+##  P   =  352 ..................Positives
+##  N   =  322 ..................Negatives
 ```
 
 
