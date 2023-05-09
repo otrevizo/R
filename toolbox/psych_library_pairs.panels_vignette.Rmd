@@ -1,0 +1,31 @@
+---
+title: "Psych library vignette"
+output:
+  html_document: 
+    toc: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
+---
+
+```{r setup, include=FALSE}
+library(psych)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Psych
+
+## Pairs panels
+
+```{r}
+
+# Remove non-numeric (factor) variable
+pairs.panels(iris[-5])
+```
+
+
+
+

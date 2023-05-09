@@ -1,22 +1,28 @@
 ---
-title: "Maps"
+title: "Maps leaflet package"
 author: "Oscar A. Trevizo"
 date: "`r Sys.Date()`"
 output: 
   html_document: 
     toc: yes
-  pdf_document: 
+    toc_depth: 4
+  pdf_document:
     toc: yes
     number_sections: yes
+    toc_depth: 4
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Reference: Dr. Rai
+# Reference
 
-# https://www.youtube.com/watch?v=SW5o8B_xtH8&list=PL34t5iLfZddug6PqUszo1u8d9ndME_ub9&index=2
+Dr. Rai
+
+https://www.youtube.com/watch?v=SW5o8B_xtH8&list=PL34t5iLfZddug6PqUszo1u8d9ndME_ub9&index=2
+
+The purpose for this vignette is purely educational.
 
 # Load the libraries
 
@@ -41,7 +47,7 @@ library(mapdata)
 ```{r}
 w <- map_data('world')
 icj <- map_data('world',
-                region = c('India', 'China', 'Japan'))
+                region = c('Mexico', 'USA', 'Canada'))
 ggplot(icj, aes(x = long, y = lat, group = group)) +
   geom_polygon(color = 'black') 
 

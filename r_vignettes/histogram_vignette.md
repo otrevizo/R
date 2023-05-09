@@ -12,6 +12,7 @@ output:
 
 
 
+Based on notes from Harvard STAT 109, copied here for learning purposes.
 
 # Histograms (hist function)
 
