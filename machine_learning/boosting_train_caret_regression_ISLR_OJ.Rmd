@@ -1,0 +1,190 @@
+---
+title: "Boosting using train{caret}: Regression Example"
+author: "Oscar A. Trevizo"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
+  html_document:
+    toc: yes
+    keep_md: yes
+    toc_depth: 4
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE, warning=FALSE, message = FALSE}
+# Message false to remove all warnings when loading libraries.
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Boosting using train{caret}
+
+Function _train()_ "sets up a grid of tuning parameters for a number of classification and regression routines, fits each model and calculates a resampling based performance measure." [Rstudio doc]
+
+This example uses _train()_ to fit a _Boosting_ model using the OJ{ISLR} dataset.
+
+Additional documention:
+
+http://topepo.github.io/caret/available-models.html
+
+
+
+# Libraries
+
+```{r libraries, include=FALSE, warning=FALSE, message = FALSE}
+# Message false to remove all warnings when loading libraries.
+
+# Recommended libraries always.
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Random forest train() is in caret package
+library(caret)
+
+# ISLR has a dataset used in this example, OJ (Orange Juice)
+library(ISLR)
+```
+
+
+# Tree-based regression using Boosting on OJ{ISLR} dataset
+
+Fit a Boosting regression model for sale price of _Minute Made Orange Juice_ . 
+
+Explore OJ using '?' Rstudio help:
+
+\>?OJ
+
+Orange Juice Data
+
+Description
+
+## Load the data
+
+```{r}
+# load the data:
+data(OJ)
+str(OJ)
+head(OJ)
+```
+
+Notes about the dataset:
+
+> Variable _Purchase_ is a 2-level factor with values _CH_ ($1$) or _MM_ ($2$).
+
+> The dataset has separate columns for _sale prices_ of _CH_ and _MM_.
+
+> We are interested in the _sale price_ of _MM_: _SalePriceMM_.We want to predict it, but
+we do not want to take _PriceMM_, nor _PriceDiff_ into account.
+
+
+## Split the data: train / test datasets
+
+```{r}
+set.seed(1234)
+ind <- sample(2, nrow(OJ), replace = T, prob = c(0.7, 0.3))
+train <- OJ[ind == 1,]
+test <- OJ[ind == 2,]
+
+```
+
+
+## Fit the model: Sale price of MM vs some variables
+
+To predict SalePriceMM, remove -PriceMM -PriceDiff, -ListPriceDiff from the formula. Otherwise, the accuracy will 
+be too high. We want to challenge the model at least a little bit.
+
+```{r}
+set.seed(1234)
+cvcontrol <- trainControl(method="repeatedcv",
+                          number = 5,
+                          repeats = 2,
+                          allowParallel=TRUE)
+
+set.seed(1234)
+boo <- train(SalePriceMM ~ PriceDiff
+             +PctDiscMM
+             #+DiscMM
+             +SalePriceCH,
+                data=train,
+             method="xgbTree", 
+             trControl=cvcontrol,
+             tuneGrid = expand.grid(nrounds = 500,
+                                    max_depth = 3,
+                                    eta = 0.2,
+                                    gamma = 2.1,
+                                    colsample_bytree = 1,
+                                    min_child_weight = 1,
+                                    subsample = 1))
+
+```
+
+### Top contributors
+
+```{r}
+# Put the important variables in a dataframe for convenience
+contributors <- varImp(boo)$importance
+
+# Note, each contributor is a row. There is one column containing the importance score.
+#(contributors_names <- rownames(contributors$importance))
+
+# Arrange them top to bottom:
+contributors %>% dplyr::select(Overall) %>% arrange(desc(Overall))
+
+
+```
+
+### plot the model
+
+```{r}
+plot(varImp(boo))
+
+```
+
+### See what Boosting did on train dataset
+
+```{r}
+boo
+```
+
+### Predict on test dataset
+
+
+```{r}
+b <-  predict(boo,  test)
+
+# For ggplot we need a dataframe:
+b_df <- data.frame(b, test)
+```
+
+### Plot predictions vs actuals
+
+```{r}
+b_df %>% ggplot(aes(x = SalePriceMM, y = b)) +
+  geom_point() +
+  geom_smooth(method = 'lm', col = 'red', se=FALSE) +
+  scale_y_continuous('Predictions') +
+  scale_x_continuous('Sale Price MM (USD)') +
+  ggtitle('Sale Price MM predictions', 'Source: OJ{ISLR}')
+
+```
+
+### Prediction performance
+
+- Root Mean Squared Error
+- R-squared
+
+```{r}
+# RMSE
+sqrt(mean((test$SalePriceMM - b)^2))
+
+# R squared
+cor(test$SalePriceMM, b)^2 ## R-Squared
+```
+
+
+

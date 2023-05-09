@@ -147,7 +147,7 @@ forest <- train(SalePriceMM ~
                 +DiscMM
                 +SpecialMM
                 +Store7,
-                data=OJ,
+                data=train,
                 method="rf",
                 trControl=cvcontrol,
                 importance=TRUE)
@@ -168,11 +168,11 @@ contributors %>% dplyr::select(Overall) %>% arrange(desc(Overall))
 ```
 
 ```
-##             Overall
-## DiscMM    100.00000
-## STORE      32.43674
-## SpecialMM  26.71921
-## Store7Yes   0.00000
+##            Overall
+## DiscMM    100.0000
+## STORE      29.8360
+## SpecialMM  11.4598
+## Store7Yes   0.0000
 ```
 
 ### plot the model
@@ -194,18 +194,18 @@ forest
 ```
 ## Random Forest 
 ## 
-## 1070 samples
-##    4 predictor
+## 747 samples
+##   4 predictor
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (5 fold, repeated 2 times) 
-## Summary of sample sizes: 857, 856, 856, 855, 856, 856, ... 
+## Summary of sample sizes: 597, 597, 598, 597, 599, 599, ... 
 ## Resampling results across tuning parameters:
 ## 
 ##   mtry  RMSE       Rsquared   MAE       
-##   2     0.1153483  0.7956248  0.07931460
-##   3     0.1122843  0.8021685  0.06835454
-##   4     0.1121406  0.8026898  0.06624390
+##   2     0.1194802  0.7742615  0.08191240
+##   3     0.1170864  0.7796081  0.07260380
+##   4     0.1170186  0.7798219  0.07133181
 ## 
 ## RMSE was used to select the optimal model using the smallest value.
 ## The final value used for the model was mtry = 4.
@@ -252,7 +252,7 @@ sqrt(mean((test$SalePriceMM - rf)^2))
 ```
 
 ```
-## [1] 0.1043353
+## [1] 0.1050467
 ```
 
 ```r
@@ -261,7 +261,7 @@ cor(test$SalePriceMM, rf)^2 ## R-Squared
 ```
 
 ```
-## [1] 0.8376638
+## [1] 0.8354713
 ```
 
 
@@ -737,7 +737,7 @@ forest <- train(SalePriceMM ~
                 +DiscMM
                 +SpecialMM
                 +Store7,
-                data=OJ,
+                data=train,
                 method="rf",
                 tuneGrid = tunegrid,
                 trControl=cvcontrol,
@@ -761,8 +761,8 @@ contributors %>% dplyr::select(Overall) %>% arrange(desc(Overall))
 ```
 ##             Overall
 ## DiscMM    100.00000
-## STORE      34.16202
-## SpecialMM  31.91219
+## STORE      30.35458
+## SpecialMM  17.64353
 ## Store7Yes   0.00000
 ```
 
@@ -779,16 +779,16 @@ forest
 ```
 ## Random Forest 
 ## 
-## 1070 samples
-##    4 predictor
+## 747 samples
+##   4 predictor
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (5 fold, repeated 2 times) 
-## Summary of sample sizes: 857, 856, 856, 855, 856, 856, ... 
+## Summary of sample sizes: 597, 597, 598, 597, 599, 599, ... 
 ## Resampling results:
 ## 
-##   RMSE       Rsquared   MAE       
-##   0.1121741  0.8025847  0.06623864
+##   RMSE      Rsquared   MAE       
+##   0.117057  0.7797413  0.07137319
 ## 
 ## Tuning parameter 'mtry' was held constant at a value of 4
 ```
@@ -834,7 +834,7 @@ sqrt(mean((test$SalePriceMM - rf)^2))
 ```
 
 ```
-## [1] 0.104345
+## [1] 0.1050224
 ```
 
 ```r
@@ -843,7 +843,7 @@ cor(test$SalePriceMM, rf)^2 ## R-Squared
 ```
 
 ```
-## [1] 0.837615
+## [1] 0.8356433
 ```
 
 

@@ -112,7 +112,7 @@ forest <- train(SalePriceMM ~
                 +DiscMM
                 +SpecialMM
                 +Store7,
-                data=OJ,
+                data=train,
                 method="rf",
                 trControl=cvcontrol,
                 importance=TRUE)
@@ -228,7 +228,7 @@ forest <- train(SalePriceMM ~
                 +DiscMM
                 +SpecialMM
                 +Store7,
-                data=OJ,
+                data=train,
                 method="rf",
                 tuneGrid = tunegrid,
                 trControl=cvcontrol,
