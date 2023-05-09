@@ -1,13 +1,16 @@
 ---
 title: "DPLYR Library Vignette"
 author: "Oscar A. Trevizo"
-date: '2023-May-03'
+date: '2023-May-09'
 output:
   html_document:
     toc: yes
     keep_md: yes
+    toc_depth: 4
   pdf_document:
     toc: yes
+    number_sections: yes
+    toc_depth: 4
   github_document:
     toc: yes
 ---
@@ -18,7 +21,7 @@ This vignette aims to introduce you dplyr library. It is here for learning purpo
 
 - \{dplyr\} (pronounced d - plier dataset plier... pliers to trim data) 
 
-Most of this code came from Harvard STAT 109 class, Prof. Bharatendra Rai. Material used here for educational purposes. It is available in YouTube and GitHub. See links under references. I expanded the material with my own notes and R documentation and I plan on continue adding examples overtime.
+Most of this code came from Harvard STAT 109 class, Prof. Bharatendra Rai. Material used here for educational purposes. It is available in YouTube and GitHub. See links under references. I expanded the material with my own notes and R documentation and I plan to continue adding examples overtime.
 
 # Libraries
 

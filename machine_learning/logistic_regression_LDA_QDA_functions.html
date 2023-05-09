@@ -358,29 +358,45 @@ Vignette</h1>
 
 <div id="TOC">
 <ul>
-<li><a href="#functions" id="toc-functions"><span class="toc-section-number">1</span> Functions</a></li>
-<li><a href="#simulate-the-data" id="toc-simulate-the-data"><span class="toc-section-number">2</span> Simulate the data</a>
+<li><a href="#functions" id="toc-functions">Functions</a></li>
+<li><a href="#simulate-the-data" id="toc-simulate-the-data">Simulate the
+data</a>
 <ul>
-<li><a href="#build-train-and-test-sets" id="toc-build-train-and-test-sets"><span class="toc-section-number">2.1</span> Build train and test sets</a></li>
+<li><a href="#build-train-and-test-sets" id="toc-build-train-and-test-sets">Build train and test sets</a></li>
 </ul></li>
-<li><a href="#boxplot-and-histogram" id="toc-boxplot-and-histogram"><span class="toc-section-number">3</span>
-Boxplot and histogram</a></li>
-<li><a href="#logistic-regression-generalized-linear-models-glm" id="toc-logistic-regression-generalized-linear-models-glm"><span class="toc-section-number">4</span> Logistic regression (Generalized
-Linear Models GLM)</a>
+<li><a href="#boxplot-and-histogram" id="toc-boxplot-and-histogram">Boxplot and histogram</a></li>
+<li><a href="#logistic-regression-generalized-linear-models-glm" id="toc-logistic-regression-generalized-linear-models-glm">Logistic
+regression (Generalized Linear Models GLM)</a>
 <ul>
-<li><a href="#fit-the-model" id="toc-fit-the-model"><span class="toc-section-number">4.1</span> Fit the model</a></li>
-<li><a href="#predicit" id="toc-predicit"><span class="toc-section-number">4.2</span> Predicit</a></li>
-<li><a href="#confusion-matrix" id="toc-confusion-matrix"><span class="toc-section-number">4.3</span> Confusion matrix</a></li>
-<li><a href="#prediction-metrics" id="toc-prediction-metrics"><span class="toc-section-number">4.4</span> Prediction metrics</a></li>
+<li><a href="#fit-the-model" id="toc-fit-the-model">Fit the
+model</a></li>
+<li><a href="#predicit" id="toc-predicit">Predicit</a></li>
+<li><a href="#confusion-matrix" id="toc-confusion-matrix">Confusion
+matrix</a></li>
+<li><a href="#prediction-metrics" id="toc-prediction-metrics">Prediction
+metrics</a></li>
 </ul></li>
-<li><a href="#references" id="toc-references"><span class="toc-section-number">5</span> References</a></li>
+<li><a href="#linear-discriminant-analysis-lda" id="toc-linear-discriminant-analysis-lda">Linear Discriminant Analysis
+(LDA)</a>
+<ul>
+<li><a href="#fit-the-model-1" id="toc-fit-the-model-1">Fit the
+model</a></li>
+<li><a href="#predict" id="toc-predict">Predict</a></li>
+<li><a href="#confusion-matrix-1" id="toc-confusion-matrix-1">Confusion
+matrix</a></li>
+<li><a href="#lda-prediction-metrics" id="toc-lda-prediction-metrics">LDA prediction metrics</a></li>
+</ul></li>
+<li><a href="#references" id="toc-references">References</a></li>
 </ul>
 </div>
 
+<p>This code is based on lessons from Harvard Statistical Learning class
+[see references]. I expanded the material with my own scripts, notes and
+R documentation and I plan to continue adding examples overtime.</p>
 <p>This vignette focuses on logistic regression based on the Generalized
 Linear Models from the “stats” library.</p>
-<div id="functions" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Functions</h1>
+<div id="functions" class="section level1">
+<h1>Functions</h1>
 <p>Adapted from R functions shared by faculty in Harvard data science
 class (2021). See references at the bottom of this notebook.</p>
 <pre class="r"><code>###
@@ -489,8 +505,8 @@ qda.pred.ftn = function(formula, df.train, df.test){
   return(qda.class)
 }</code></pre>
 </div>
-<div id="simulate-the-data" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Simulate the data</h1>
+<div id="simulate-the-data" class="section level1">
+<h1>Simulate the data</h1>
 <p>Play with two sets of Normally distributed sets of data with
 different means. We can change the number of samples and we can move the
 means around.</p>
@@ -511,9 +527,8 @@ y &lt;- rep(c(&quot;A&quot;, &quot;B&quot;), each=N)
 
 # Make a data.frame with 1 and 0 values for Y
 df &lt;- data.frame(Y=ifelse(y==&quot;A&quot;,0, 1), X=x)</code></pre>
-<div id="build-train-and-test-sets" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span> Build train and test
-sets</h2>
+<div id="build-train-and-test-sets" class="section level2">
+<h2>Build train and test sets</h2>
 <pre class="r"><code>set.seed(12321)
 
 # Get 2:1 random sample ratio for Train:Test sets
@@ -522,9 +537,8 @@ df.train &lt;- df[sampleTrain,]
 df.test &lt;- df[!sampleTrain,]</code></pre>
 </div>
 </div>
-<div id="boxplot-and-histogram" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Boxplot and
-histogram</h1>
+<div id="boxplot-and-histogram" class="section level1">
+<h1>Boxplot and histogram</h1>
 <p>In a boxplot, we want to have the categorical variable in the
 horizontal axis.</p>
 <p>That is why we see a formula x~y below.</p>
@@ -561,12 +575,11 @@ plot(x, ifelse(y==&quot;A&quot;, 0,1), breaks=breaks, col=ifelse(y==&quot;A&quot
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <pre class="r"><code>par(oldpar)</code></pre>
 </div>
-<div id="logistic-regression-generalized-linear-models-glm" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Logistic regression
-(Generalized Linear Models GLM)</h1>
+<div id="logistic-regression-generalized-linear-models-glm" class="section level1">
+<h1>Logistic regression (Generalized Linear Models GLM)</h1>
 <p>Needs library{stats}</p>
-<div id="fit-the-model" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> Fit the model</h2>
+<div id="fit-the-model" class="section level2">
+<h2>Fit the model</h2>
 <pre class="r"><code>##
 #
 # GLA from library{stats}
@@ -597,8 +610,8 @@ summary(glm.fit)</code></pre>
 ## 
 ## Number of Fisher Scoring iterations: 9</code></pre>
 </div>
-<div id="predicit" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> Predicit</h2>
+<div id="predicit" class="section level2">
+<h2>Predicit</h2>
 <ul>
 <li>Make predictions using the test dataset.</li>
 </ul>
@@ -621,8 +634,8 @@ glm.pred = rep(0, dim(df.test)[1])
 # Adjust the probability. Here is something one can play with after looking at the &#39;table&#39; that follows
 glm.pred[glm.probs&gt;0.5]=1</code></pre>
 </div>
-<div id="confusion-matrix" class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> Confusion matrix</h2>
+<div id="confusion-matrix" class="section level2">
+<h2>Confusion matrix</h2>
 <pre class="r"><code>##
 #
 # Continued based on ISLR 4.6.2 p.156-158
@@ -638,9 +651,8 @@ table(glm.pred, df.test$Y)</code></pre>
 <pre class="r"><code>mean(glm.pred == df.test$Y)</code></pre>
 <pre><code>## [1] 0.9718101</code></pre>
 </div>
-<div id="prediction-metrics" class="section level2" number="4.4">
-<h2><span class="header-section-number">4.4</span> Prediction
-metrics</h2>
+<div id="prediction-metrics" class="section level2">
+<h2>Prediction metrics</h2>
 <ul>
 <li>Now I will use the function calculate accuracy, sensitivity, and
 specificity</li>
@@ -671,14 +683,104 @@ print.the.metrics(lgr.metrics)</code></pre>
 ##  N   =  322 ..................Negatives</code></pre>
 </div>
 </div>
-<div id="references" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> References</h1>
+<div id="linear-discriminant-analysis-lda" class="section level1">
+<h1>Linear Discriminant Analysis (LDA)</h1>
+<p>Needs library{MASS}</p>
+<div id="fit-the-model-1" class="section level2">
+<h2>Fit the model</h2>
+<pre class="r"><code>##
+#
+# LDA from library{MASS}
+#
+##
+lda.fit &lt;- lda(Y~X, data = df.train)
+summary(lda.fit)</code></pre>
+<pre><code>##         Length Class  Mode     
+## prior   2      -none- numeric  
+## counts  2      -none- numeric  
+## means   2      -none- numeric  
+## scaling 1      -none- numeric  
+## lev     2      -none- character
+## svd     1      -none- numeric  
+## N       1      -none- numeric  
+## call    3      -none- call     
+## terms   3      terms  call     
+## xlevels 0      -none- list</code></pre>
+</div>
+<div id="predict" class="section level2">
+<h2>Predict</h2>
+<pre class="r"><code>lda.pred &lt;- predict(lda.fit, df.test)
+
+names(lda.pred)</code></pre>
+<pre><code>## [1] &quot;class&quot;     &quot;posterior&quot; &quot;x&quot;</code></pre>
+</div>
+<div id="confusion-matrix-1" class="section level2">
+<h2>Confusion matrix</h2>
+<pre class="r"><code>##
+#
+# Continued based on ISLR 4.6.3 p.161-162
+#
+#
+
+lda.class &lt;- lda.pred$class
+
+table(lda.class, df.test$Y)</code></pre>
+<pre><code>##          
+## lda.class   0   1
+##         0 314  12
+##         1   8 340</code></pre>
+<pre class="r"><code>mean(lda.class == df.test$Y)</code></pre>
+<pre><code>## [1] 0.9703264</code></pre>
+<ul>
+<li><p>The confusion matrix is based on the test set.</p></li>
+<li><p>The confusion matrix indicates the number of observations
+correctly predicted not to be in Y.</p></li>
+<li><p>And it indicated the number of observations correctly predicted
+to be in Y.</p></li>
+<li><p>The <code>mean()</code> function calculates the diagonals over
+the total.</p></li>
+<li><p>These results parallel those from linear regression in Problem
+1.</p></li>
+</ul>
+</div>
+<div id="lda-prediction-metrics" class="section level2">
+<h2>LDA prediction metrics</h2>
+<ul>
+<li>Now I will use the function from from above</li>
+</ul>
+<pre class="r"><code>##
+#
+# Based on functions from above
+#
+
+lda.pred &lt;- lda.pred.ftn(Y~X, df.train, df.test)
+
+lda.metrics &lt;- prediction.metrics(df.test$Y, lda.pred)
+
+print.the.metrics(lda.metrics)</code></pre>
+<pre><code>##  OBS =  674 ...................number of observations
+##  ACC =  0.9703264 ..................Accuracy
+##  TPR =  0.9659091 ..................True Positive Rate
+##  TNR =  0.9751553 ..................True Negative Rate
+##  PPV =  0.9770115 ..................Positive Predictive Value (Precision)
+##  NPV =  0.9631902 ..................Negative Predictive Value
+##  FDR =  0.02298851 ..................False Discover Rate
+##  FPR =  0.02484472 ..................False Positive Rate
+##  TP  =  8 ..................True Positives
+##  TN  =  314 ..................True Negatives
+##  FP  =  314 ..................False Positives
+##  FN  =  12 ..................False Negatives
+##  P   =  352 ..................Positives
+##  N   =  322 ..................Negatives</code></pre>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
 <ul>
 <li>Harvard “Elements of Statistical Learning” (2021) taught by
 professors Dr. Sivachenko, Dr. Farutin</li>
 <li>Book “An Introduction to Statistical Learning with Applications in
 R” (ISLR) by Gareth James et al</li>
-<li>otrevizo GitHub R/toolbox/prediction_metrics_classification.Rmd</li>
 </ul>
 </div>
 

@@ -11,7 +11,7 @@
 
 
 
-<title>DAAG library vignette</title>
+<title>NA vignette</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -254,6 +254,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
 max-width: 940px;
@@ -275,6 +276,9 @@ outline: none;
 summary {
 display: list-item;
 }
+details > summary > p:only-child {
+display: inline;
+}
 pre code {
 padding: 0;
 }
@@ -293,23 +297,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -350,15 +348,14 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">DAAG library vignette</h1>
+<h1 class="title toc-ignore">NA vignette</h1>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#daag" id="toc-daag">DAAG</a>
+<li><a href="#datasets-from-daag-to-test-na" id="toc-datasets-from-daag-to-test-na">Datasets from DAAG to test NA</a>
 <ul>
-<li><a href="#datasets" id="toc-datasets">Datasets</a></li>
 <li><a href="#rainforest-example" id="toc-rainforest-example">Rainforest
 example</a>
 <ul>
@@ -376,12 +373,14 @@ example</a>
 </ul>
 </div>
 
-<div id="daag" class="section level1">
-<h1>DAAG</h1>
-<div id="datasets" class="section level2">
-<h2>Datasets</h2>
+<p>Most of this code came from Harvard STAT 109 class, Prof. Bharatendra
+Rai. Material used here for educational purposes. It is available in
+YouTube and GitHub. See links under references. I expanded the material
+with my own notes and R documentation and I plan to continue adding
+examples overtime.</p>
+<div id="datasets-from-daag-to-test-na" class="section level1">
+<h1>Datasets from DAAG to test NA</h1>
 <pre class="r"><code>data(package=&#39;DAAG&#39;)</code></pre>
-</div>
 <div id="rainforest-example" class="section level2">
 <h2>Rainforest example</h2>
 <div id="looking-for-na-and-missing-data" class="section level3">

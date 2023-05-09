@@ -5,9 +5,17 @@ date: "January 2023"
 output:
   pdf_document:
     toc: yes
+    number_sections: yes
+    toc_depth: 4
   html_document:
     toc: yes
+    keep_md: yes
+    toc_depth: 4
+  github_document:
+    toc: yes
 ---
+
+This code is based on lessons from Harvard Statistical Learning class [see references]. I expanded the material with my own scripts, notes and R documentation and I plan to continue adding examples overtime.
 
 # Purpose
 
@@ -44,8 +52,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 
 ###
+# Regression.accuracy function -- to return a list with all the regression error values
 #
-# regression.accuracy function -- to return a list with all the regression error values
+# Based on R functions shared by faculty in Harvard data science class (2021). See references.
 #
 # Input: truth (y) and predicted (yp) lists.
 #

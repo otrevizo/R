@@ -6,9 +6,12 @@ date: "`r Sys.Date()`"
 output: 
   pdf_document:
     toc: yes
+    number_sections: yes
+    toc_depth: 4
   html_document:
     toc: yes
     keep_md: yes
+    toc_depth: 4
   github_document:
     toc: yes
 ---
@@ -23,6 +26,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # Ctrl-shift-m types a dpylr pipe %>%
 
 ```
+
+Most of this code came from Harvard STAT 109 class, Prof. Bharatendra Rai. Material used here for educational purposes. It is available in YouTube and GitHub. See links under references. I expanded the material with my own notes and R documentation and I plan to continue adding examples overtime.
 
 
 # Exploratory Data Analysis

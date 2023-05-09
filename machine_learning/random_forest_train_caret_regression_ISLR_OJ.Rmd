@@ -3,11 +3,16 @@ title: "Ramdom Forest using train{caret}: Regression Example"
 author: "Oscar A. Trevizo"
 date: "`r Sys.Date()`"
 output: 
-  pdf_document: 
+  pdf_document:
     toc: yes
     number_sections: yes
-  html_document: 
+    toc_depth: 4
+  html_document:
+    toc: yes
     keep_md: yes
+    toc_depth: 4
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE, warning=FALSE, message = FALSE}

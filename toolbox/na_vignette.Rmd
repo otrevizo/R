@@ -1,9 +1,15 @@
 ---
-title: "DAAG library vignette"
+title: "NA vignette"
 output:
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
   html_document:
     toc: yes
-  pdf_document:
+    keep_md: yes
+    toc_depth: 4
+  github_document:
     toc: yes
 ---
 
@@ -12,10 +18,10 @@ library(DAAG)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Most of this code came from Harvard STAT 109 class, Prof. Bharatendra Rai. Material used here for educational purposes. It is available in YouTube and GitHub. See links under references. I expanded the material with my own notes and R documentation and I plan to continue adding examples overtime.
 
-# DAAG
 
-## Datasets
+# Datasets from DAAG to test NA
 
 ```{r}
 data(package='DAAG')

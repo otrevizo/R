@@ -2,18 +2,23 @@
 title: 'Visualization'
 subtitle: 'GGPLOT2 study based on library(nycflights13)'
 author: "Oscar A. Trevizo"
-date: "2023-05-03"
+date: "2023-05-09"
 output: 
   html_document:
     toc: yes
     keep_md: yes
+    toc_depth: 4
   pdf_document:
     toc: yes
+    number_sections: yes
+    toc_depth: 4
   github_document:
     toc: yes
 ---
 
 
+
+Most of this code came from Harvard STAT 109 class, Prof. Bharatendra Rai. Material used here for educational purposes. It is available in YouTube and GitHub. See links under references. I expanded the material with my own notes and R documentation and I plan to continue adding examples overtime.
 
 
 # Exploratory Data Analysis

@@ -3,15 +3,19 @@ title: "Logistic regression classification Vignette"
 author: "Oscar Trevizo"
 date: "January 2023"
 output:
-  html_document: 
+  html_document:
+    toc: yes
     keep_md: yes
+    toc_depth: 4
+  pdf_document:
     toc: yes
     number_sections: yes
-  pdf_document: 
+    toc_depth: 4
+  github_document:
     toc: yes
-    number_sections: yes
 ---
 
+This code is based on lessons from Harvard Statistical Learning class [see references]. I expanded the material with my own scripts, notes and R documentation and I plan to continue adding examples overtime.
 
 This vignette focuses on logistic regression based on the Generalized Linear Models from the "stats" library.
 
@@ -374,10 +378,128 @@ print.the.metrics(lgr.metrics)
 ##  N   =  322 ..................Negatives
 ```
 
+# Linear Discriminant Analysis (LDA)
+
+Needs library{MASS}
+
+## Fit the model
+
+
+```r
+##
+#
+# LDA from library{MASS}
+#
+##
+lda.fit <- lda(Y~X, data = df.train)
+summary(lda.fit)
+```
+
+```
+##         Length Class  Mode     
+## prior   2      -none- numeric  
+## counts  2      -none- numeric  
+## means   2      -none- numeric  
+## scaling 1      -none- numeric  
+## lev     2      -none- character
+## svd     1      -none- numeric  
+## N       1      -none- numeric  
+## call    3      -none- call     
+## terms   3      terms  call     
+## xlevels 0      -none- list
+```
+
+## Predict
+
+
+```r
+lda.pred <- predict(lda.fit, df.test)
+
+names(lda.pred)
+```
+
+```
+## [1] "class"     "posterior" "x"
+```
+
+
+## Confusion matrix
+
+
+```r
+##
+#
+# Continued based on ISLR 4.6.3 p.161-162
+#
+#
+
+lda.class <- lda.pred$class
+
+table(lda.class, df.test$Y)
+```
+
+```
+##          
+## lda.class   0   1
+##         0 314  12
+##         1   8 340
+```
+
+```r
+mean(lda.class == df.test$Y)
+```
+
+```
+## [1] 0.9703264
+```
+* The confusion matrix is based on the test set.
+
+* The confusion matrix indicates the number of observations correctly predicted not to be in Y.
+
+* And it indicated the number of observations correctly predicted to be in Y.
+
+* The `mean()` function calculates the diagonals over the total.
+
+* These results parallel those from linear regression in Problem 1.
+
+
+## LDA prediction metrics
+
+* Now I will use the function from from above
+
+
+```r
+##
+#
+# Based on functions from above
+#
+
+lda.pred <- lda.pred.ftn(Y~X, df.train, df.test)
+
+lda.metrics <- prediction.metrics(df.test$Y, lda.pred)
+
+print.the.metrics(lda.metrics)
+```
+
+```
+##  OBS =  674 ...................number of observations
+##  ACC =  0.9703264 ..................Accuracy
+##  TPR =  0.9659091 ..................True Positive Rate
+##  TNR =  0.9751553 ..................True Negative Rate
+##  PPV =  0.9770115 ..................Positive Predictive Value (Precision)
+##  NPV =  0.9631902 ..................Negative Predictive Value
+##  FDR =  0.02298851 ..................False Discover Rate
+##  FPR =  0.02484472 ..................False Positive Rate
+##  TP  =  8 ..................True Positives
+##  TN  =  314 ..................True Negatives
+##  FP  =  314 ..................False Positives
+##  FN  =  12 ..................False Negatives
+##  P   =  352 ..................Positives
+##  N   =  322 ..................Negatives
+```
 
 
 # References
 
 * Harvard "Elements of Statistical Learning" (2021) taught by professors Dr. Sivachenko, Dr. Farutin
 * Book “An Introduction to Statistical Learning with Applications in R” (ISLR) by Gareth James et al
-* otrevizo GitHub R/toolbox/prediction_metrics_classification.Rmd

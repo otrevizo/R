@@ -7,9 +7,12 @@ output:
     toc: yes
     number_sections: yes
     toc_depth: 4
-  html_document: 
+  html_document:
     toc: yes
+    keep_md: yes
     toc_depth: 4
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Oscar A. Trevizo" />
 
-<meta name="date" content="2023-05-07" />
+<meta name="date" content="2023-05-09" />
 
 <title>Ramdom Forest using train{caret}: Regression Example</title>
 
@@ -353,10 +353,55 @@ display: none;
 <h1 class="title toc-ignore">Ramdom Forest using train{caret}:
 Regression Example</h1>
 <h4 class="author">Oscar A. Trevizo</h4>
-<h4 class="date">2023-05-07</h4>
+<h4 class="date">2023-05-09</h4>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#random-forest-using-traincaret" id="toc-random-forest-using-traincaret">Random Forest using
+train{caret}</a></li>
+<li><a href="#libraries" id="toc-libraries">Libraries</a></li>
+<li><a href="#tree-based-regression-using-random-forest-on-ojislr-dataset" id="toc-tree-based-regression-using-random-forest-on-ojislr-dataset">Tree-based
+regression using Random Forest on OJ{ISLR} dataset</a>
+<ul>
+<li><a href="#load-the-data" id="toc-load-the-data">Load the
+data</a></li>
+<li><a href="#split-the-data-train-test-datasets" id="toc-split-the-data-train-test-datasets">Split the data: train / test
+datasets</a></li>
+<li><a href="#fit-the-model-sale-price-of-mm-vs-some-variables" id="toc-fit-the-model-sale-price-of-mm-vs-some-variables">Fit the model:
+Sale price of MM vs some variables</a>
+<ul>
+<li><a href="#top-contributors" id="toc-top-contributors">Top
+contributors</a></li>
+<li><a href="#plot-the-model" id="toc-plot-the-model">plot the
+model</a></li>
+<li><a href="#see-what-rf-did-on-train-dataset" id="toc-see-what-rf-did-on-train-dataset">See what RF did on train
+dataset</a></li>
+<li><a href="#predict-on-test-dataset" id="toc-predict-on-test-dataset">Predict on test dataset</a></li>
+<li><a href="#plot-predictions-vs-actuals" id="toc-plot-predictions-vs-actuals">Plot predictions vs
+actuals</a></li>
+<li><a href="#prediction-performance" id="toc-prediction-performance">Prediction performance</a></li>
+</ul></li>
+<li><a href="#fine-tune-the-model-change-mtry" id="toc-fine-tune-the-model-change-mtry">Fine-tune the model: Change
+mtry</a>
+<ul>
+<li><a href="#verify-tuning-paramaters" id="toc-verify-tuning-paramaters">Verify tuning paramaters</a></li>
+<li><a href="#get-model-information" id="toc-get-model-information">Get
+model information</a></li>
+<li><a href="#fit-the-mode-using-mtry-9" id="toc-fit-the-mode-using-mtry-9">Fit the mode using mtry = 9</a></li>
+<li><a href="#verify-top-contributors-in-updated-model" id="toc-verify-top-contributors-in-updated-model">Verify top
+contributors in updated model</a></li>
+<li><a href="#see-what-rf-did-on-train-dataset-1" id="toc-see-what-rf-did-on-train-dataset-1">See what RF did on train
+dataset</a></li>
+<li><a href="#predict-on-test-dataset-1" id="toc-predict-on-test-dataset-1">Predict on test dataset</a></li>
+<li><a href="#plot-predictions-vs-actuals-1" id="toc-plot-predictions-vs-actuals-1">Plot predictions vs
+actuals</a></li>
+<li><a href="#prediction-performance-1" id="toc-prediction-performance-1">Prediction performance</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
 
 <div id="random-forest-using-traincaret" class="section level1">
 <h1>Random Forest using train{caret}</h1>

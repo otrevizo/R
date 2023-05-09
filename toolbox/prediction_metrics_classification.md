@@ -6,11 +6,16 @@ output:
   html_document:
     toc: yes
     keep_md: yes
+    toc_depth: 4
   pdf_document:
     toc: yes
+    number_sections: yes
+    toc_depth: 4
   github_document:
     toc: yes
 ---
+
+This code is based on lessons from Harvard Statistical Learning class [see references]. I expanded the material with my own scripts, notes and R documentation and I plan to continue adding examples overtime.
 
 # Purpose
 

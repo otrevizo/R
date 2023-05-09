@@ -3,13 +3,16 @@ title: 'Normal Distribution Vignette'
 author: "Oscar A. Trevizo"
 date: "`r Sys.Date()`"
 output:
-  html_document: 
+  html_document:
     toc: yes
+    keep_md: yes
     toc_depth: 4
   pdf_document:
     toc: yes
     number_sections: yes
     toc_depth: 4
+  github_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}

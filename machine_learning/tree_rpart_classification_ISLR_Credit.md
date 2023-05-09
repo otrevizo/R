@@ -1,13 +1,18 @@
 ---
 title: "Tree rpart{rpart}: Classification Example"
 author: "Oscar A. Trevizo"
-date: "2023-05-07"
+date: "2023-05-09"
 output: 
-  html_document: 
+  html_document:
+    toc: yes
     keep_md: yes
-  pdf_document: 
+    toc_depth: 4
+  pdf_document:
     toc: yes
     number_sections: yes
+    toc_depth: 4
+  github_document:
+    toc: yes
 ---
 
 
