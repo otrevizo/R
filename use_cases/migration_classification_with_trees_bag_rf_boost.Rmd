@@ -1,0 +1,801 @@
+---
+title: "Migration classification: Country pop > 5 million from 2000 to 2021."
+subtitle: "Trees, Random Forest, Extreme Gradient Boosting"
+author: "Oscar A. Trevizo"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
+  html_document:
+    toc: yes
+    keep_md: yes
+    toc_depth: 4
+  github_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+# Harvard Crimson and contrasting secondary color.
+# https://identityguide.hms.harvard.edu/color
+crimson <- '#A51C30'
+slate <- '#8996A0'
+
+```
+
+
+# Classification of Human Migration: Migration Pattern
+
+Migration pattern is defined by the positive or negative net migration median over the period of time in question. In this use case, a country is classfied as 'emigration' if it has a median negative migration, and 'immigration' if it has a positive median net migration reported in thousands of people.
+
+
+# Load the libraries 
+
+A list of libraries we will need in this project
+
+```{r, message=FALSE}
+# Essential libraries
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggExtra)
+library(cowplot)
+library(rpart)
+library(rpart.plot)
+library(mlbench)
+library(pROC)
+library(tree)
+library(caret)
+
+```
+
+
+# Load the data
+
+Read the UN and World Bank dataset created in the initial EDA.
+Filter for population larger than 5 million and years larger than or equal to 2000.
+
+```{r}
+# Load the dataset
+wpp_wb <- read.csv('../data/wpp_wb_2023.Q1.csv') %>% 
+  filter(pop > 5000 & year >= 2000)
+
+wpp_wb$mig_pattern <- as.factor(wpp_wb$mig_pattern)
+
+# Save the original datasets from the CSV files, and assign new dataframe names:
+df <- wpp_wb 
+```
+
+# Remove columns to create a dataframe for mig_pattern
+
+## Identify non-predictors and save them
+
+This informative type dataset will be handy downstream to be merged re-join 
+with train and test results. But these variables should not be part of training
+or testing the model.
+
+```{r}
+info_vars <- c('index', 'country', 'subregion', 'region', 'ISO3', 'year')
+
+df_info <- wpp_wb %>% dplyr::select(info_vars)
+
+```
+
+### Handling NAs
+
+Make the NA values to be equal to the next existing value.
+
+```{r}
+# Tip from stackoverflow:
+# https://stackoverflow.com/questions/40040834/replace-na-with-previous-or-next-value-by-group-using-dplyr
+# Use tidyverse {tidyr} fill() function.
+
+# df <- df %>% group_by(ISO3) %>% fill(colnames(df), .direction = 'downup')
+
+```
+
+# Split train test
+
+## Split by country
+
+```{r}
+# Train test split ----
+##
+##
+
+# We have 236 countries.
+countries <- unique(df$country)
+
+# Now get a sample of say 70% of that list
+set.seed(12321) 
+countries_sample <- sample(countries, length(countries)*0.7)
+
+# Now we will want train to contain those countries
+train <- df %>% filter(country %in% countries_sample)
+test <- df %>% filter(!country %in% countries_sample)
+
+# Drop any possible NA from the test set only
+train <- train %>% drop_na()
+test <- test %>% drop_na()
+
+```
+
+## Keep index, predictors, and outcome
+
+
+```{r}
+# These columns will not be included when fitting the model.
+not_columns <- c('country', 'subregion', 'region', 
+                                  'ISO3', 'ISO2', 'year',
+                                  'net_mig_rate',
+                                  'net_migrants',
+                                  'mig_stock',
+                                  'log_mig_stock',
+                                  'emigrates',
+                                  'migration_swings',
+                                  'net_mig_rate_mean',
+                                  'net_mig_rate_med')
+
+train <- train %>% dplyr::select(-not_columns)
+
+test <- test %>% dplyr::select(-not_columns)
+
+colnames(train)
+colnames(test)
+
+```
+
+
+## Explore train and test sets
+
+
+### By region
+
+```{r}
+right_join(df_info, train) %>% 
+  group_by(region) %>% 
+  summarize(count = n())
+
+right_join(df_info, test) %>% 
+  group_by(region) %>% 
+  summarize(count = n())
+
+```
+
+
+### By subregion
+
+```{r}
+right_join(df_info, train) %>% 
+  group_by(subregion) %>% 
+  summarize(count = n())
+
+right_join(df_info, test) %>% 
+  group_by(subregion) %>% 
+  summarize(count = n())
+
+```
+
+# Classification Tree
+
+## Fit the model 
+
+
+```{r}
+# regression tree
+set.seed(12321)
+tree <- rpart(mig_pattern ~.-index, data = train)
+```
+
+## Display the tree
+
+```{r}
+rpart.plot(tree)
+```
+
+
+## Display the table
+
+```{r}
+
+printcp(tree)
+```
+
+
+## Plot complexity paramaters
+
+```{r}
+plotcp(tree)
+
+```
+
+
+
+## Predict
+
+```{r}
+p <- predict(tree, test, type = 'class')
+
+p_df <- data.frame(p, test)
+
+p_df <- right_join(df_info, p_df)
+
+
+```
+
+
+## Prediction performance
+
+### Confusion matrix: 
+
+#### Using Function confusionMatrix()
+
+```{r}
+confusionMatrix(p, test$mig_pattern, positive = 'immigration')
+```
+
+#### Calculated by hand
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# confusionMatrix(p_boo_class, test$mig_pattern, positive = 'immigration')
+
+p_class <- ifelse(p == 'emigration', 0, 1)
+(t_p <- table(Predicted = p_class, Actual = test$mig_pattern))
+
+```
+
+### Model performance summary
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+TN <- t_p[1,1]
+FN <- t_p[1,2]
+FP <- t_p[2,1]
+TP <- t_p[2,2]
+
+# https://en.wikipedia.org/wiki/Confusion_matrix
+P = TP + FN  # total number of positives in the truth data
+N = FP + TN  # total number of negatives
+# Add the following output to return (OAT 11/9/2021)
+ACC_p = (TP + TN)/(TN + FN + FP + TP)
+TPR_p = TP/P
+TNR_p = TN/N
+PPV = TP/(TP + FP)
+NPV = TN/(TN + FN)
+FDR = FP/(TP + FP)
+FPR = FP/N
+
+paste('Training dataset: Tree Classification')
+paste('Accuracy = ', round(ACC_p*100, 2), '%')
+paste('Sensitivity = ', round(TPR_p*100, 2), '%')
+paste('Specificity = ', round(TNR_p*100, 2), '%')
+
+```
+
+### ROC
+
+```{r}
+#### ROC
+p1 <- predict(tree, test, type = 'prob')
+p1 <- p1[,2]
+r <- multiclass.roc(test$mig_pattern, p1, percent = TRUE)
+roc <- r[['rocs']]
+r1 <- roc[[1]]
+plot.roc(r1,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC_p <- as.numeric(r[['auc']])
+
+```
+
+
+# Bagging
+
+## Prep cross validation: 'cvcontrol'
+
+```{r}
+# Bagging
+set.seed(12321)
+cvcontrol <- trainControl(method="repeatedcv", 
+                          number = 5,
+                          repeats = 2,
+                          allowParallel=TRUE)
+
+```
+
+## Fit the model: method 'treebag'
+
+
+```{r}
+# regression tree
+set.seed(12321)
+bag <- train(mig_pattern ~ . -index, 
+             data=train,
+             method="treebag",
+             trControl=cvcontrol,
+             importance=TRUE)
+```
+
+
+## Plot the model
+
+```{r fig.width = 8, fig.height = 16}
+plot(varImp(bag))
+varImp(bag)
+```
+
+
+
+## See what 'bag' did
+
+```{r}
+bag
+```
+
+
+## Predict
+
+```{r}
+ba <- predict(bag,  test, type = 'raw')
+
+ba_df <- data.frame(ba, test)
+
+ba_df <- right_join(df_info, p_df)
+
+```
+
+
+## Prediction performance
+
+### Prediction performance
+
+#### Confusion matrix: 
+
+##### Using Function confusionMatrix()
+
+```{r}
+confusionMatrix(ba, test$mig_pattern, positive = 'immigration')
+```
+
+##### Calculated by hand
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# confusionMatrix(p_boo_class, test$mig_pattern, positive = 'immigration')
+
+ba_class <- ifelse(ba == 'emigration', 0, 1)
+(t_ba <- table(Predicted = ba_class, Actual = test$mig_pattern))
+
+```
+
+##### Model performance summary
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+TN <- t_ba[1,1]
+FN <- t_ba[1,2]
+FP <- t_ba[2,1]
+TP <- t_ba[2,2]
+
+# https://en.wikipedia.org/wiki/Confusion_matrix
+P = TP + FN  # total number of positives in the truth data
+N = FP + TN  # total number of negatives
+# Add the following output to return (OAT 11/9/2021)
+ACC_ba = (TP + TN)/(TN + FN + FP + TP)
+TPR_ba = TP/P
+TNR_ba = TN/N
+PPV = TP/(TP + FP)
+NPV = TN/(TN + FN)
+FDR = FP/(TP + FP)
+FPR = FP/N
+
+paste('Training dataset: Bagging Classification')
+paste('Accuracy = ', round(ACC_ba*100, 2), '%')
+paste('Sensitivity = ', round(TPR_ba*100, 2), '%')
+paste('Specificity = ', round(TNR_ba*100, 2), '%')
+
+```
+
+##### ROC
+
+```{r}
+#### ROC
+p1 <- predict(bag, test, type = 'prob')
+p1 <- p1[,2]
+r <- multiclass.roc(test$mig_pattern, p1, percent = TRUE)
+roc <- r[['rocs']]
+r1 <- roc[[1]]
+plot.roc(r1,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC_ba <- as.numeric(r[['auc']])
+
+```
+
+
+# Random Forest
+
+## Prep cross validation: 'cvcontrol'
+
+```{r}
+# Bagging (already done above)
+# set.seed(12321)
+# cvcontrol <- trainControl(method="repeatedcv", 
+#                           number = 5,
+#                           repeats = 2,
+#                           allowParallel=TRUE)
+
+```
+
+## Fit the model: method 'rf'
+
+
+```{r}
+# RF
+set.seed(12321)
+forest <- train(mig_pattern ~ .-index, 
+                data=train,
+                method="rf",
+                trControl=cvcontrol,
+                importance=TRUE)
+
+```
+
+## Plot the model
+
+```{r fig.width = 8, fig.height = 16}
+plot(varImp(forest))
+
+```
+
+## See what 'rf' did
+
+```{r}
+forest
+```
+
+
+## Predict
+
+```{r}
+# rf <-  predict(forest,  test)
+# plot(rf ~ test$medv, main = 'Predicted Vs Actual MEDV - Test data')
+
+rf <- predict(forest,  test, type = 'raw')
+
+rf_df <- data.frame(rf, test)
+
+rf_df <- right_join(df_info, rf_df)
+
+```
+
+
+### Prediction performance
+
+#### Confusion matrix: 
+
+##### Using Function confusionMatrix()
+
+```{r}
+confusionMatrix(rf, test$mig_pattern, positive = 'immigration')
+```
+##### Calculated by hand
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# confusionMatrix(p_boo_class, test$mig_pattern, positive = 'immigration')
+
+rf_class <- ifelse(rf == 'emigration', 0, 1)
+(t_rf <- table(Predicted = rf_class, Actual = test$mig_pattern))
+
+```
+
+##### Model performance summary
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+TN <- t_rf[1,1]
+FN <- t_rf[1,2]
+FP <- t_rf[2,1]
+TP <- t_rf[2,2]
+
+# https://en.wikipedia.org/wiki/Confusion_matrix
+P = TP + FN  # total number of positives in the truth data
+N = FP + TN  # total number of negatives
+# Add the following output to return (OAT 11/9/2021)
+ACC_rf = (TP + TN)/(TN + FN + FP + TP)
+TPR_rf = TP/P
+TNR_rf = TN/N
+PPV = TP/(TP + FP)
+NPV = TN/(TN + FN)
+FDR = FP/(TP + FP)
+FPR = FP/N
+
+paste('Training dataset: Random Forest Classification')
+paste('Accuracy = ', round(ACC_rf*100, 2), '%')
+paste('Sensitivity = ', round(TPR_rf*100, 2), '%')
+paste('Specificity = ', round(TNR_rf*100, 2), '%')
+
+```
+
+##### ROC
+
+```{r}
+#### ROC
+p1 <- predict(forest, test, type = 'prob')
+p1 <- p1[,2]
+r <- multiclass.roc(test$mig_pattern, p1, percent = TRUE)
+roc <- r[['rocs']]
+r1 <- roc[[1]]
+plot.roc(r1,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC_rf <- as.numeric(r[['auc']])
+
+```
+
+
+# Boosting
+
+## Prep cross validation: 'cvcontrol'
+
+```{r}
+# Bagging (already done above)
+# set.seed(12321)
+# cvcontrol <- trainControl(method="repeatedcv", 
+#                           number = 5,
+#                           repeats = 2,
+#                           allowParallel=TRUE)
+
+```
+
+## Fit the model: method 'xybTree'
+
+
+```{r}
+# RF
+set.seed(12321)
+boo <- train(mig_pattern ~ .-index, 
+             data=train,
+             method="xgbTree",   
+             trControl=cvcontrol,
+             tuneGrid = expand.grid(nrounds = 500,
+                                    max_depth = 4,
+                                    eta = 0.28,
+                                    gamma = 1.8,
+                                    colsample_bytree = 1,
+                                    min_child_weight = 1,
+                                    subsample = 1))
+
+```
+
+## Plot the model
+
+```{r fig.width = 10, fig.height = 16}
+plot(varImp(boo))
+
+```
+
+## See what 'boo' did
+
+```{r}
+boo
+```
+
+
+## Predict
+
+```{r}
+# 'raw' or 'class'
+b <- predict(boo, test, type = 'raw')
+
+boo_df <- data.frame(b, test)
+
+boo_df <- right_join(df_info, boo_df)
+
+```
+
+
+## Prediction performance
+
+### Prediction performance
+
+#### Confusion matrix: 
+
+##### Using Function confusionMatrix()
+
+```{r}
+confusionMatrix(b, test$mig_pattern, positive = 'immigration')
+```
+##### Calculated by hand
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# confusionMatrix(p_boo_class, test$mig_pattern, positive = 'immigration')
+
+b_class <- ifelse(b == 'emigration', 0, 1)
+(t_b <- table(Predicted = b_class, Actual = test$mig_pattern))
+
+```
+
+##### Model performance summary
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+TN <- t_b[1,1]
+FN <- t_b[1,2]
+FP <- t_b[2,1]
+TP <- t_b[2,2]
+
+# https://en.wikipedia.org/wiki/Confusion_matrix
+P = TP + FN  # total number of positives in the truth data
+N = FP + TN  # total number of negatives
+# Add the following output to return (OAT 11/9/2021)
+ACC_boo = (TP + TN)/(TN + FN + FP + TP)
+TPR_boo = TP/P
+TNR_boo = TN/N
+PPV = TP/(TP + FP)
+NPV = TN/(TN + FN)
+FDR = FP/(TP + FP)
+FPR = FP/N
+
+paste('Training dataset: Boosting Classification')
+paste('Accuracy = ', round(ACC_boo*100, 2), '%')
+paste('Sensitivity = ', round(TPR_boo*100, 2), '%')
+paste('Specificity = ', round(TNR_boo*100, 2), '%')
+
+```
+
+##### ROC
+
+```{r}
+#### ROC
+p1 <- predict(boo, test, type = 'prob')
+p1 <- p1[,2]
+r <- multiclass.roc(test$mig_pattern, p1, percent = TRUE)
+roc <- r[['rocs']]
+r1 <- roc[[1]]
+plot.roc(r1,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC_boo <- as.numeric(r[['auc']])
+
+```
+
+# Plot significant varialbles
+
+## Boxplots: Top Classification Predictors
+
+```{r fig.width=8, fig.height=8, echo = FALSE, message = FALSE, warning = FALSE}
+### Boxplot
+plot_map <- vector("list", length=6)
+
+# Most important variables:
+# "life_exp_m"      "GDP_pc"          "pop_sex_ratio"   "pop_density"    
+# "co2_emissions"   "pop_growth_rate"
+
+plot_map[[1]] <- wpp_wb %>% ggplot(aes(x = log(GDP_pc), y = mig_pattern, fill = mig_pattern)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(slate, crimson)) +
+  ggtitle('Migration Pattern', 'Experiences emigration or immigration') +
+  scale_x_continuous("log GDP_pc") +
+  scale_y_discrete('Migration Pattern') +
+  theme(legend.position="none")
+
+plot_map[[2]] <- wpp_wb %>% ggplot(aes(x = log(pop_sex_ratio), y = mig_pattern, fill = mig_pattern)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(slate, crimson)) +
+  ggtitle('Migration Pattern', 'Experiences emigration or immigration') +
+  scale_x_continuous("log pop_sex_ratio") +
+  scale_y_discrete('Migration Pattern') +
+  theme(legend.position="none")
+
+plot_map[[3]] <- wpp_wb %>% ggplot(aes(x = log(natl_income_pc), y = mig_pattern, fill = mig_pattern)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(slate, crimson)) +
+  ggtitle('Migration Pattern', 'Experiences emigration or immigration') +
+  scale_x_continuous("log natl_income_pc") +
+  scale_y_discrete('Migration Pattern') +
+  theme(legend.position="none")
+
+plot_map[[4]] <- wpp_wb %>% ggplot(aes(x = log(GDP_pc_ppp), y = mig_pattern, fill = mig_pattern)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(slate, crimson)) +
+  ggtitle('Migration Pattern', 'Experiences emigration or immigration') +
+  scale_x_continuous("log GDP_pc_ppp") +
+  scale_y_discrete('Migration Pattern') +
+  theme(legend.position="none")
+
+plot_map[[5]] <- wpp_wb %>% ggplot(aes(x = log(co2_emissions), y = mig_pattern, fill = mig_pattern)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(slate, crimson)) +
+  ggtitle('Migration Pattern', 'Experiences emigration or immigration') +
+  scale_x_continuous("log co2_emissions") +
+  scale_y_discrete('Migration Pattern') +
+  theme(legend.position="none")
+ 
+plot_map[[6]] <- wpp_wb %>% ggplot(aes(x = fertility_rate, y = mig_pattern, fill = mig_pattern)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c(slate, crimson)) +
+  ggtitle('Migration Pattern', 'Experiences emigration or immigration') +
+  scale_x_continuous("fertility_rate") +
+  scale_y_discrete('Migration Pattern') +
+  theme(legend.position="none")
+
+# Based on: https://cran.r-project.org/web/packages/cowplot/vignettes/introduction.html
+plot_grid(plot_map[[1]],
+          plot_map[[2]],
+          plot_map[[3]],
+          plot_map[[4]],
+          plot_map[[5]],
+          plot_map[[6]],
+          labels = c('Fig. 1', 'Fig. 2', 
+                     'Fig. 3','Fig. 4',
+                     'Fig. 5', 'Fig. 6'), label_size = 6, ncol = 2, nrow = 3)
+
+```
+
+## Scatter Plot Classification Patterns: Population Growth Rate vs. Net Migration Rate
+
+```{r most_imp_var_pop_gth_rt, echo = FALSE, message = FALSE, warning = FALSE}
+plot_pop_grth_rt_class <- wpp_wb %>% 
+  ggplot(aes(x = net_mig_rate, y = pop_growth_rate)) +
+  geom_point(aes(colour = factor(mig_pattern), alpha = 0.1, shape = '.')) +
+  scale_colour_manual(values = c(slate, crimson), aesthetics  = 'colour') +
+  # geom_smooth(method = 'lm', col = 'red', se=FALSE) +
+  scale_x_continuous('Net Migration Rate per 1,000 population') +
+  scale_y_continuous('Population Growth Rate(%)') +
+  geom_hline(yintercept = 0, color = 'red') +
+  geom_hline(yintercept = 10, color = 'red') +
+  geom_hline(yintercept = -10, color = 'red') +
+  geom_vline(xintercept = 0, color = 'red') +
+  geom_vline(xintercept = 70, color = 'red') +
+  geom_vline(xintercept = -70, color = 'red') +
+  ggtitle('Most Important Variable', 
+          'Population Growth Rate (%) vs. Net Migration Rate')
+
+ggMarginal(plot_pop_grth_rt_class, type = 'density', fill = 'lightgreen')
+
+```
+
+# Results matrix
+
+```{r best_classification, echo = FALSE, message = FALSE, warning = FALSE}
+
+# plot_grid(plot_lgr_roc, plot_boo_class_roc)
+
+class_results <- data.frame(
+  tree = c(ACC_p, TPR_p, TNR_p, AUC_p),
+  bagging = c(ACC_ba, TPR_ba, TNR_ba, AUC_ba),
+  rf = c(ACC_rf, TPR_rf, TNR_rf, AUC_rf),
+  boosting = c(ACC_boo, TPR_boo, TNR_boo, AUC_boo)
+  )
+
+rownames(class_results) <- c('Accuracy', 'Sensitivity', 'Specificity', 'AUC')
+class_results
+
+```
+
