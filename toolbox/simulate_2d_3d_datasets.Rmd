@@ -210,7 +210,7 @@ abline(v=0, col = 'red')
 # and insert a box based on help(scatterplot3d) function by Martin Maechler
 #
 
-# default values are nObs = 1000, x, y, z, limit is 1.25
+# default values are n observations = 1000, x, y, z, limit is 1.25
 set.seed(123321)
 
 xyz <- bld_3d_2c()
