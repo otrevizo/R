@@ -3,10 +3,10 @@ title: "Neural networks on 2D and 3D datasets"
 author: "Oscar A. Trevizo"
 date: "`r Sys.Date()`"
 output: 
-  # pdf_document:
-  #   toc: yes
-  #   number_sections: yes
-  #   toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
   # html_document:
   #   toc: yes
   #   keep_md: yes
