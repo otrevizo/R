@@ -21,8 +21,88 @@ This vignette focuses on logistic regression based on the Generalized Linear Mod
 
 
 
+# Load the libraries
 
 
+```r
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
+library(tidyr)
+library(ggplot2)
+library(ggExtra)
+
+library(stats)                # Stats contains glm for logistic regression
+library(MASS)                 # LDA and QDA
+```
+
+```
+## 
+## Attaching package: 'MASS'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     select
+```
+
+```r
+library(caret)
+```
+
+```
+## Warning: package 'caret' was built under R version 4.2.3
+```
+
+```
+## Loading required package: lattice
+```
+
+```
+## Warning: package 'lattice' was built under R version 4.2.3
+```
+
+```r
+library(pROC)
+```
+
+```
+## Warning: package 'pROC' was built under R version 4.2.3
+```
+
+```
+## Type 'citation("pROC")' for a citation.
+```
+
+```
+## 
+## Attaching package: 'pROC'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     cov, smooth, var
+```
 
 # Functions
 
@@ -154,6 +234,7 @@ mu = 4
 
 # Our measuring variable is continuous, numeric...
 # ...it has two Normal distribution waves
+# The first N observations has 0 mu, the second set has 4 mu
 x <- c(rnorm(N), rnorm(N, mean=mu))
 
 # Our outcome is categorical, A and B xxxx times each
@@ -161,6 +242,7 @@ x <- c(rnorm(N), rnorm(N, mean=mu))
 y <- rep(c("A", "B"), each=N)
 
 # Make a data.frame with 1 and 0 values for Y
+# The first column is Y the second column is X
 df <- data.frame(Y=ifelse(y=="A",0, 1), X=x)
 ```
 
@@ -192,10 +274,11 @@ between the outcome, categorical valuable, and predictor, numeric variable.
 
 ```r
 # From Harvard data science class (see references)
-boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
+# boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
+boxplot(x~y, col=c(crimson,royalblue), horizontal=T, las=1)
 ```
 
-![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ```r
 # Now place a histogram on top of another histogram
@@ -205,12 +288,15 @@ oldpar <- par(mfrow=c(3, 1), mar=c(2,2,1,1))
 breaks <- seq(-10, 20, by=0.25)
 
 # Histogram for 'B'
-hist(x[y=="B"], breaks=breaks, col='orange', main="B", xaxt='n')
+hist(x[y=="B"], breaks=breaks, col=royalblue, main="B", xaxt='n')
 
 # Histogram for 'A'
-hist(x[y=="A"], breaks=breaks, col='lightblue', main="A")
+hist(x[y=="A"], breaks=breaks, col=crimson, main="A")
 
-plot(x, ifelse(y=="A", 0,1), breaks=breaks, col=ifelse(y=="A", "lightblue","orange"), pch=19)
+plot(x, ifelse(y=="A", 0,1), 
+     breaks=breaks, 
+     col=ifelse(y=="A", crimson, royalblue), 
+     pch=19)
 ```
 
 ```
@@ -237,7 +323,7 @@ plot(x, ifelse(y=="A", 0,1), breaks=breaks, col=ifelse(y=="A", "lightblue","oran
 ## Warning in title(...): "breaks" is not a graphical parameter
 ```
 
-![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-4-2.png)<!-- -->
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-5-2.png)<!-- -->
 
 ```r
 par(oldpar)
@@ -300,7 +386,6 @@ summary(glm.fit)
 # Continued based on ISLR 4.6.2 p.156-158
 #
 
-# Get the probability that the device is located in Room #3
 glm.probs <- predict(glm.fit, newdata = df.test, type = "response")
 
 # Per ISLR, we need contrasts() and use the variable as a logical vector.
@@ -376,6 +461,81 @@ print.the.metrics(lgr.metrics)
 ##  FN  =  11 ..................False Negatives
 ##  P   =  352 ..................Positives
 ##  N   =  322 ..................Negatives
+```
+## Prediction performance {carat}
+
+
+```r
+confusionMatrix(factor(lgr.pred), factor(df.test$Y))
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 314  11
+##          1   8 341
+##                                           
+##                Accuracy : 0.9718          
+##                  95% CI : (0.9563, 0.9829)
+##     No Information Rate : 0.5223          
+##     P-Value [Acc > NIR] : <2e-16          
+##                                           
+##                   Kappa : 0.9435          
+##                                           
+##  Mcnemar's Test P-Value : 0.6464          
+##                                           
+##             Sensitivity : 0.9752          
+##             Specificity : 0.9688          
+##          Pos Pred Value : 0.9662          
+##          Neg Pred Value : 0.9771          
+##              Prevalence : 0.4777          
+##          Detection Rate : 0.4659          
+##    Detection Prevalence : 0.4822          
+##       Balanced Accuracy : 0.9720          
+##                                           
+##        'Positive' Class : 0               
+## 
+```
+## ROC
+
+
+```r
+# re-mdel but use 'terms'
+p1 <- predict(glm.fit, newdata = df.test, type = 'terms')
+r <- roc(df.test$Y, p1, percent = TRUE)
+```
+
+```
+## Setting levels: control = 0, case = 1
+```
+
+```
+## Warning in roc.default(df.test$Y, p1, percent = TRUE): Deprecated use a matrix
+## as predictor. Unexpected results may be produced, please pass a numeric vector.
+```
+
+```
+## Setting direction: controls < cases
+```
+
+```r
+plot.roc(r,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+```
+
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+
+```r
+AUC <- as.numeric(r[['auc']])
 ```
 
 # Linear Discriminant Analysis (LDA)

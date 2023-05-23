@@ -3,13 +3,13 @@ title: "Classification: Logistic Regression, LDA, QDA"
 author: "Oscar Trevizo"
 date: "January 2023"
 output:
-  pdf_document:
-    toc: yes
-    number_sections: yes
-    toc_depth: 4
   html_document:
     toc: yes
     keep_md: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
     toc_depth: 4
   github_document:
     toc: yes
@@ -19,14 +19,38 @@ This code and functions are based on lessons from Harvard Statistical Learning c
 
 This vignette focuses on logistic regression based on the Generalized Linear Models from the "stats" library.
 
-
-
-
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+crimson <- '#A51C30'
+royalblue <- '#002366'
+slate <- '#8996A0'
+ivy <- '#52854C'
+saffron <- '#D16103'
+indigo <- '#293352'
+shade <- '#BAC5C6'
+
+# https://data.library.virginia.edu/setting-up-color-palettes-in-r/
+cc <- palette()
+palette(c(crimson, royalblue, slate, ivy, saffron, indigo, shade))
+#colors <- palette(rainbow_hcl(2))
+colors <- palette()
+
+```
+
+# Load the libraries
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggExtra)
+
 library(stats)                # Stats contains glm for logistic regression
 library(MASS)                 # LDA and QDA
+library(caret)
+library(pROC)
 
-knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Functions
@@ -160,6 +184,7 @@ mu = 4
 
 # Our measuring variable is continuous, numeric...
 # ...it has two Normal distribution waves
+# The first N observations has 0 mu, the second set has 4 mu
 x <- c(rnorm(N), rnorm(N, mean=mu))
 
 # Our outcome is categorical, A and B xxxx times each
@@ -167,6 +192,7 @@ x <- c(rnorm(N), rnorm(N, mean=mu))
 y <- rep(c("A", "B"), each=N)
 
 # Make a data.frame with 1 and 0 values for Y
+# The first column is Y the second column is X
 df <- data.frame(Y=ifelse(y=="A",0, 1), X=x)
 
 ```
@@ -198,7 +224,8 @@ between the outcome, categorical valuable, and predictor, numeric variable.
 
 ```{r}
 # From Harvard data science class (see references)
-boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
+# boxplot(x~y, col=c("lightblue","orange"), horizontal=T, las=1)
+boxplot(x~y, col=c(crimson,royalblue), horizontal=T, las=1)
 
 # Now place a histogram on top of another histogram
 
@@ -207,12 +234,15 @@ oldpar <- par(mfrow=c(3, 1), mar=c(2,2,1,1))
 breaks <- seq(-10, 20, by=0.25)
 
 # Histogram for 'B'
-hist(x[y=="B"], breaks=breaks, col='orange', main="B", xaxt='n')
+hist(x[y=="B"], breaks=breaks, col=royalblue, main="B", xaxt='n')
 
 # Histogram for 'A'
-hist(x[y=="A"], breaks=breaks, col='lightblue', main="A")
+hist(x[y=="A"], breaks=breaks, col=crimson, main="A")
 
-plot(x, ifelse(y=="A", 0,1), breaks=breaks, col=ifelse(y=="A", "lightblue","orange"), pch=19)
+plot(x, ifelse(y=="A", 0,1), 
+     breaks=breaks, 
+     col=ifelse(y=="A", crimson, royalblue), 
+     pch=19)
 
 par(oldpar)
 ```
@@ -247,7 +277,6 @@ summary(glm.fit)
 # Continued based on ISLR 4.6.2 p.156-158
 #
 
-# Get the probability that the device is located in Room #3
 glm.probs <- predict(glm.fit, newdata = df.test, type = "response")
 
 # Per ISLR, we need contrasts() and use the variable as a logical vector.
@@ -293,6 +322,30 @@ lgr.pred <- lgr.pred.ftn(Y~X, df.train, df.test)
 lgr.metrics <- prediction.metrics(df.test$Y, lgr.pred)
 
 print.the.metrics(lgr.metrics)
+
+```
+## Prediction performance {carat}
+
+```{r}
+confusionMatrix(factor(lgr.pred), factor(df.test$Y))
+```
+## ROC
+
+```{r}
+# re-mdel but use 'terms'
+p1 <- predict(glm.fit, newdata = df.test, type = 'terms')
+r <- roc(df.test$Y, p1, percent = TRUE)
+plot.roc(r,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC <- as.numeric(r[['auc']])
 
 ```
 
