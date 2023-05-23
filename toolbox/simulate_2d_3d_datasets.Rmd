@@ -3,17 +3,16 @@ title: "Dataset simulations with 2 categories 2D and 3D within a cube or outside
 author: "Oscar A. Trevizo"
 date: "`r Sys.Date()`"
 output: 
-  # pdf_document:
-  #   toc: yes
-  #   number_sections: yes
-  #   toc_depth: 4
-  # html_document:
-  #   toc: yes
-  #   keep_md: yes
-  #   toc_depth: 4
+  html_document:
+    toc: yes
+    keep_md: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
   github_document:
     toc: yes
-
 ---
 
 ```{r setup, include=FALSE}
@@ -230,3 +229,7 @@ cubedraw(plot3d, min = -1.25, max = 1.25, cex = 2)
 ```
 
 
+# References
+
+* Harvard CSCI Statistical Learning material from Professors Andrey Sivachenko, PhD and Victor A. Farutin, PhD
+* “An Introduction to Statistical Learning with Applications in R” (ISLR) by Gareth James et al

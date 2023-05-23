@@ -1,36 +1,37 @@
-Dataset simulations with 2 categories 2D and 3D within a cube or outside
-the cube
-================
-Oscar A. Trevizo
-2023-05-19
+---
+title: "Dataset simulations with 2 categories 2D and 3D within a cube or outside the cube"
+author: "Oscar A. Trevizo"
+date: "2023-05-23"
+output: 
+  html_document:
+    toc: yes
+    keep_md: yes
+    toc_depth: 4
+  pdf_document:
+    toc: yes
+    number_sections: yes
+    toc_depth: 4
+  github_document:
+    toc: yes
+---
 
-- <a href="#load-the-libraries" id="toc-load-the-libraries">Load the
-  libraries</a>
-- <a href="#functions" id="toc-functions">Functions</a>
-- <a href="#2d-dataset-1-center-1-category"
-  id="toc-2d-dataset-1-center-1-category">2D dataset: 1 center 1
-  category</a>
-- <a href="#2d-dataset-2-centers-2-category-side-by-side"
-  id="toc-2d-dataset-2-centers-2-category-side-by-side">2D dataset: 2
-  centers 2 category side by side</a>
-- <a href="#2d-dataset-4-centers-2-category"
-  id="toc-2d-dataset-4-centers-2-category">2D dataset: 4 centers 2
-  category</a>
-- <a href="#3d-dataset-1-center-2-category-within-our-outside-a-cube"
-  id="toc-3d-dataset-1-center-2-category-within-our-outside-a-cube">3D
-  dataset: 1 center 2 category within our outside a cube</a>
+
 
 # Load the libraries
 
-``` r
+
+```r
 library(scatterplot3d)
 ```
 
-    ## Warning: package 'scatterplot3d' was built under R version 4.2.3
+```
+## Warning: package 'scatterplot3d' was built under R version 4.2.3
+```
 
 # Functions
 
-``` r
+
+```r
 ##
 #
 # 3D dataset with 2 categories: 0 and 1
@@ -96,7 +97,8 @@ cubedraw <- function(res3d, min = 0, max = 255, cex = 2, text. = FALSE)
 
 # 2D dataset: 1 center 1 category
 
-``` r
+
+```r
 set.seed(1234321)
 
 # Number of observations per cluster
@@ -111,11 +113,13 @@ abline(h=0, col = 'red')
 abline(v=0, col = 'red')
 ```
 
-![](simulate_2d_3d_datasets_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](simulate_2d_3d_datasets_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
 
 # 2D dataset: 2 centers 2 category side by side
 
-``` r
+
+```r
 set.seed(1234321)
 
 # Number of observations per category
@@ -149,11 +153,12 @@ abline(h=0, col = 'red')
 abline(v=0, col = 'red')
 ```
 
-![](simulate_2d_3d_datasets_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](simulate_2d_3d_datasets_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 # 2D dataset: 4 centers 2 category
 
-``` r
+
+```r
 set.seed(1234321)
 
 # Number of observations per category
@@ -185,11 +190,14 @@ abline(h=0, col = 'red')
 abline(v=0, col = 'red')
 ```
 
-![](simulate_2d_3d_datasets_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](simulate_2d_3d_datasets_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
+
 
 # 3D dataset: 1 center 2 category within our outside a cube
 
-``` r
+
+```r
 ##
 #
 # Call the function defined above to return our dataset.
@@ -204,27 +212,33 @@ xyz <- bld_3d_2c()
 class(xyz)
 ```
 
-    ## [1] "matrix" "array"
+```
+## [1] "matrix" "array"
+```
 
-``` r
+```r
 dim(xyz)
 ```
 
-    ## [1] 1000    4
+```
+## [1] 1000    4
+```
 
-``` r
+```r
 summary(xyz)
 ```
 
-    ##        cl              x                  y                  z            
-    ##  Min.   :0.000   Min.   :-3.26890   Min.   :-4.24749   Min.   :-3.054616  
-    ##  1st Qu.:0.000   1st Qu.:-0.64607   1st Qu.:-0.71121   1st Qu.:-0.660167  
-    ##  Median :0.000   Median : 0.10213   Median :-0.05072   Median :-0.014138  
-    ##  Mean   :0.498   Mean   : 0.05624   Mean   :-0.03680   Mean   : 0.000756  
-    ##  3rd Qu.:1.000   3rd Qu.: 0.70019   3rd Qu.: 0.62941   3rd Qu.: 0.681671  
-    ##  Max.   :1.000   Max.   : 3.14482   Max.   : 2.93870   Max.   : 3.409373
+```
+##        cl              x                  y                  z            
+##  Min.   :0.000   Min.   :-3.26890   Min.   :-4.24749   Min.   :-3.054616  
+##  1st Qu.:0.000   1st Qu.:-0.64607   1st Qu.:-0.71121   1st Qu.:-0.660167  
+##  Median :0.000   Median : 0.10213   Median :-0.05072   Median :-0.014138  
+##  Mean   :0.498   Mean   : 0.05624   Mean   :-0.03680   Mean   : 0.000756  
+##  3rd Qu.:1.000   3rd Qu.: 0.70019   3rd Qu.: 0.62941   3rd Qu.: 0.681671  
+##  Max.   :1.000   Max.   : 3.14482   Max.   : 2.93870   Max.   : 3.409373
+```
 
-``` r
+```r
 # Plot the cube
 
 colors <- colors[as.numeric(factor(xyz[,1]))]
@@ -236,4 +250,10 @@ plot3d <- scatterplot3d(xyz[,2:4],
 cubedraw(plot3d, min = -1.25, max = 1.25, cex = 2)
 ```
 
-![](simulate_2d_3d_datasets_files/figure-gfm/3d_1ctr_2cats-1.png)<!-- -->
+![](simulate_2d_3d_datasets_files/figure-html/3d_1ctr_2cats-1.png)<!-- -->
+
+
+# References
+
+* Harvard CSCI Statistical Learning material from Professors Andrey Sivachenko, PhD and Victor A. Farutin, PhD
+* “An Introduction to Statistical Learning with Applications in R” (ISLR) by Gareth James et al

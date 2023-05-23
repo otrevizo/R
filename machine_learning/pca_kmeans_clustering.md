@@ -1,7 +1,7 @@
 ---
 title: "Principal Components Analysis (PCA) and K-means clustering"
 author: "Oscar A. Trevizo"
-date: "2023-05-22"
+date: "2023-05-23"
 output: 
   html_document:
     toc: yes
@@ -124,4 +124,9 @@ table(k$cluster,c)
 ```
 
 
+# References
+
+* Harvard CSCI Statistical Learning material from Professors Andrey Sivachenko, PhD and Victor A. Farutin, PhD
+* Harvard CSCI Statistical Learning material notes from Sihong Ma lecture
+* “An Introduction to Statistical Learning with Applications in R” (ISLR) by Gareth James et al
 
