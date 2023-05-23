@@ -180,12 +180,12 @@ We can change the number of samples and we can move the means around.
 set.seed(11)
 
 N = 1000
-mu = 4
+mu = 2
 
 # Our measuring variable is continuous, numeric...
 # ...it has two Normal distribution waves
 # The first N observations has 0 mu, the second set has 4 mu
-x <- c(rnorm(N), rnorm(N, mean=mu))
+x <- c(rnorm(N), rnorm(N, mean=mu, sd = 2))
 
 # Our outcome is categorical, A and B xxxx times each
 # ...the idea is to match A and B to a number x
@@ -265,7 +265,7 @@ glm.fit <- glm(Y~X, data=df.train, family = binomial)
 summary(glm.fit)
 ```
 
-## Predicit
+## Predict
 
 * Make predictions using the test dataset.
 
@@ -307,7 +307,7 @@ mean(glm.pred == df.test$Y)
 
 ```
 
-## Prediction metrics
+## Prediction metrics (function)
 
 * Now I will use the function calculate accuracy, sensitivity, and specificity
 
@@ -367,7 +367,7 @@ summary(lda.fit)
 
 ## Predict
 
-```{r}
+```{r ldaPredictions}
 lda.pred <- predict(lda.fit, df.test)
 
 names(lda.pred)
@@ -402,7 +402,7 @@ mean(lda.class == df.test$Y)
 * These results parallel those from linear regression in Problem 1.
 
 
-## LDA prediction metrics
+## Prediction metrics (function)
 
 * Now I will use the function from from above
 
@@ -420,6 +420,123 @@ print.the.metrics(lda.metrics)
 
 ```
 
+## Prediction performance {carat}
+
+```{r}
+confusionMatrix(factor(lda.pred), factor(df.test$Y))
+```
+
+## ROC
+
+```{r}
+p1 <- predict(lda.fit, newdata = df.test, type = 'terms')
+r <- roc(df.test$Y, p1$x, percent = TRUE)
+plot.roc(r,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC <- as.numeric(r[['auc']])
+
+```
+
+# Quadratic Discriminant Analysis (QDA)
+
+Needs library{MASS}
+
+## Fit the model
+
+```{r}
+##
+#
+# QDA from library{MASS}
+#
+##
+qda.fit <- qda(Y~X, data = df.train)
+summary(qda.fit)
+```
+## Predict
+
+* Make predictions using the test dataset.
+
+```{r qdaPredictions}
+##
+#
+# predict{stats}
+#
+# Continued based on ISLR 4.6.4 p.163
+#
+
+qda.pred <- predict(qda.fit, df.test)
+
+
+```
+
+
+## Confusion matrix
+
+```{r}
+##
+#
+# Continued based on ISLR 4.6.4 p.163
+#
+#
+
+qda.class <- qda.pred$class
+
+table(qda.class, df.test$Y)
+
+mean(qda.class == df.test$Y)
+
+```
+
+## Prediction metrics (function)
+
+* Now I will use the function calculate accuracy, sensitivity, and specificity
+
+```{r}
+##
+#
+# Based on functions from above
+#
+
+qda.pred <- qda.pred.ftn(Y~X, df.train, df.test)
+
+qda.metrics <- prediction.metrics(df.test$Y, qda.pred)
+
+print.the.metrics(qda.metrics)
+
+```
+
+## Prediction performance {carat}
+
+```{r}
+confusionMatrix(factor(qda.pred), factor(df.test$Y))
+```
+
+## ROC
+
+```{r}
+p1 <- predict(qda.fit, newdata = df.test, type = 'terms')
+r <- roc(df.test$Y, p1$posterior[,1], percent = TRUE)
+plot.roc(r,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+
+AUC <- as.numeric(r[['auc']])
+
+```
 
 # References
 

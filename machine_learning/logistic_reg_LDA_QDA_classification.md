@@ -230,12 +230,12 @@ We can change the number of samples and we can move the means around.
 set.seed(11)
 
 N = 1000
-mu = 4
+mu = 2
 
 # Our measuring variable is continuous, numeric...
 # ...it has two Normal distribution waves
 # The first N observations has 0 mu, the second set has 4 mu
-x <- c(rnorm(N), rnorm(N, mean=mu))
+x <- c(rnorm(N), rnorm(N, mean=mu, sd = 2))
 
 # Our outcome is categorical, A and B xxxx times each
 # ...the idea is to match A and B to a number x
@@ -355,25 +355,25 @@ summary(glm.fit)
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -3.5991  -0.0311  -0.0007   0.0262   3.7959  
+## -2.2412  -0.8567  -0.3845   0.7624   3.4313  
 ## 
 ## Coefficients:
 ##             Estimate Std. Error z value Pr(>|z|)    
-## (Intercept)  -7.7363     0.7380  -10.48   <2e-16 ***
-## X             3.8413     0.3516   10.92   <2e-16 ***
+## (Intercept) -0.83635    0.07802  -10.72   <2e-16 ***
+## X            0.88206    0.05239   16.84   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 1837.55  on 1325  degrees of freedom
-## Residual deviance:  167.88  on 1324  degrees of freedom
-## AIC: 171.88
+##     Null deviance: 1837.5  on 1325  degrees of freedom
+## Residual deviance: 1359.6  on 1324  degrees of freedom
+## AIC: 1363.6
 ## 
-## Number of Fisher Scoring iterations: 9
+## Number of Fisher Scoring iterations: 5
 ```
 
-## Predicit
+## Predict
 
 * Make predictions using the test dataset.
 
@@ -416,8 +416,8 @@ table(glm.pred, df.test$Y)
 ```
 ##         
 ## glm.pred   0   1
-##        0 314  11
-##        1   8 341
+##        0 269 105
+##        1  53 247
 ```
 
 ```r
@@ -425,10 +425,10 @@ mean(glm.pred == df.test$Y)
 ```
 
 ```
-## [1] 0.9718101
+## [1] 0.7655786
 ```
 
-## Prediction metrics
+## Prediction metrics (function)
 
 * Now I will use the function calculate accuracy, sensitivity, and specificity
 
@@ -448,17 +448,17 @@ print.the.metrics(lgr.metrics)
 
 ```
 ##  OBS =  674 ...................number of observations
-##  ACC =  0.9718101 ..................Accuracy
-##  TPR =  0.96875 ..................True Positive Rate
-##  TNR =  0.9751553 ..................True Negative Rate
-##  PPV =  0.9770774 ..................Positive Predictive Value (Precision)
-##  NPV =  0.9661538 ..................Negative Predictive Value
-##  FDR =  0.02292264 ..................False Discover Rate
-##  FPR =  0.02484472 ..................False Positive Rate
-##  TP  =  8 ..................True Positives
-##  TN  =  314 ..................True Negatives
-##  FP  =  314 ..................False Positives
-##  FN  =  11 ..................False Negatives
+##  ACC =  0.7655786 ..................Accuracy
+##  TPR =  0.7017045 ..................True Positive Rate
+##  TNR =  0.8354037 ..................True Negative Rate
+##  PPV =  0.8233333 ..................Positive Predictive Value (Precision)
+##  NPV =  0.7192513 ..................Negative Predictive Value
+##  FDR =  0.1766667 ..................False Discover Rate
+##  FPR =  0.1645963 ..................False Positive Rate
+##  TP  =  53 ..................True Positives
+##  TN  =  269 ..................True Negatives
+##  FP  =  269 ..................False Positives
+##  FN  =  105 ..................False Negatives
 ##  P   =  352 ..................Positives
 ##  N   =  322 ..................Negatives
 ```
@@ -474,26 +474,26 @@ confusionMatrix(factor(lgr.pred), factor(df.test$Y))
 ## 
 ##           Reference
 ## Prediction   0   1
-##          0 314  11
-##          1   8 341
+##          0 269 105
+##          1  53 247
 ##                                           
-##                Accuracy : 0.9718          
-##                  95% CI : (0.9563, 0.9829)
+##                Accuracy : 0.7656          
+##                  95% CI : (0.7317, 0.7971)
 ##     No Information Rate : 0.5223          
-##     P-Value [Acc > NIR] : <2e-16          
+##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
-##                   Kappa : 0.9435          
+##                   Kappa : 0.5334          
 ##                                           
-##  Mcnemar's Test P-Value : 0.6464          
+##  Mcnemar's Test P-Value : 4.963e-05       
 ##                                           
-##             Sensitivity : 0.9752          
-##             Specificity : 0.9688          
-##          Pos Pred Value : 0.9662          
-##          Neg Pred Value : 0.9771          
+##             Sensitivity : 0.8354          
+##             Specificity : 0.7017          
+##          Pos Pred Value : 0.7193          
+##          Neg Pred Value : 0.8233          
 ##              Prevalence : 0.4777          
-##          Detection Rate : 0.4659          
-##    Detection Prevalence : 0.4822          
-##       Balanced Accuracy : 0.9720          
+##          Detection Rate : 0.3991          
+##    Detection Prevalence : 0.5549          
+##       Balanced Accuracy : 0.7686          
 ##                                           
 ##        'Positive' Class : 0               
 ## 
@@ -601,8 +601,8 @@ table(lda.class, df.test$Y)
 ```
 ##          
 ## lda.class   0   1
-##         0 314  12
-##         1   8 340
+##         0 279 114
+##         1  43 238
 ```
 
 ```r
@@ -610,7 +610,7 @@ mean(lda.class == df.test$Y)
 ```
 
 ```
-## [1] 0.9703264
+## [1] 0.7670623
 ```
 * The confusion matrix is based on the test set.
 
@@ -623,7 +623,7 @@ mean(lda.class == df.test$Y)
 * These results parallel those from linear regression in Problem 1.
 
 
-## LDA prediction metrics
+## Prediction metrics (function)
 
 * Now I will use the function from from above
 
@@ -643,21 +643,280 @@ print.the.metrics(lda.metrics)
 
 ```
 ##  OBS =  674 ...................number of observations
-##  ACC =  0.9703264 ..................Accuracy
-##  TPR =  0.9659091 ..................True Positive Rate
-##  TNR =  0.9751553 ..................True Negative Rate
-##  PPV =  0.9770115 ..................Positive Predictive Value (Precision)
-##  NPV =  0.9631902 ..................Negative Predictive Value
-##  FDR =  0.02298851 ..................False Discover Rate
-##  FPR =  0.02484472 ..................False Positive Rate
-##  TP  =  8 ..................True Positives
-##  TN  =  314 ..................True Negatives
-##  FP  =  314 ..................False Positives
-##  FN  =  12 ..................False Negatives
+##  ACC =  0.7670623 ..................Accuracy
+##  TPR =  0.6761364 ..................True Positive Rate
+##  TNR =  0.8664596 ..................True Negative Rate
+##  PPV =  0.8469751 ..................Positive Predictive Value (Precision)
+##  NPV =  0.7099237 ..................Negative Predictive Value
+##  FDR =  0.1530249 ..................False Discover Rate
+##  FPR =  0.1335404 ..................False Positive Rate
+##  TP  =  43 ..................True Positives
+##  TN  =  279 ..................True Negatives
+##  FP  =  279 ..................False Positives
+##  FN  =  114 ..................False Negatives
 ##  P   =  352 ..................Positives
 ##  N   =  322 ..................Negatives
 ```
 
+## Prediction performance {carat}
+
+
+```r
+confusionMatrix(factor(lda.pred), factor(df.test$Y))
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 279 114
+##          1  43 238
+##                                           
+##                Accuracy : 0.7671          
+##                  95% CI : (0.7333, 0.7985)
+##     No Information Rate : 0.5223          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.5375          
+##                                           
+##  Mcnemar's Test P-Value : 2.315e-08       
+##                                           
+##             Sensitivity : 0.8665          
+##             Specificity : 0.6761          
+##          Pos Pred Value : 0.7099          
+##          Neg Pred Value : 0.8470          
+##              Prevalence : 0.4777          
+##          Detection Rate : 0.4139          
+##    Detection Prevalence : 0.5831          
+##       Balanced Accuracy : 0.7713          
+##                                           
+##        'Positive' Class : 0               
+## 
+```
+
+## ROC
+
+
+```r
+p1 <- predict(lda.fit, newdata = df.test, type = 'terms')
+r <- roc(df.test$Y, p1$x, percent = TRUE)
+```
+
+```
+## Setting levels: control = 0, case = 1
+```
+
+```
+## Warning in roc.default(df.test$Y, p1$x, percent = TRUE): Deprecated use a
+## matrix as predictor. Unexpected results may be produced, please pass a numeric
+## vector.
+```
+
+```
+## Setting direction: controls < cases
+```
+
+```r
+plot.roc(r,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+```
+
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+```r
+AUC <- as.numeric(r[['auc']])
+```
+
+# Quadratic Discriminant Analysis (QDA)
+
+Needs library{MASS}
+
+## Fit the model
+
+
+```r
+##
+#
+# QDA from library{MASS}
+#
+##
+qda.fit <- qda(Y~X, data = df.train)
+summary(qda.fit)
+```
+
+```
+##         Length Class  Mode     
+## prior   2      -none- numeric  
+## counts  2      -none- numeric  
+## means   2      -none- numeric  
+## scaling 2      -none- numeric  
+## ldet    2      -none- numeric  
+## lev     2      -none- character
+## N       1      -none- numeric  
+## call    3      -none- call     
+## terms   3      terms  call     
+## xlevels 0      -none- list
+```
+## Predict
+
+* Make predictions using the test dataset.
+
+
+```r
+##
+#
+# predict{stats}
+#
+# Continued based on ISLR 4.6.4 p.163
+#
+
+qda.pred <- predict(qda.fit, df.test)
+```
+
+
+## Confusion matrix
+
+
+```r
+##
+#
+# Continued based on ISLR 4.6.4 p.163
+#
+#
+
+qda.class <- qda.pred$class
+
+table(qda.class, df.test$Y)
+```
+
+```
+##          
+## qda.class   0   1
+##         0 285 123
+##         1  37 229
+```
+
+```r
+mean(qda.class == df.test$Y)
+```
+
+```
+## [1] 0.7626113
+```
+
+## Prediction metrics (function)
+
+* Now I will use the function calculate accuracy, sensitivity, and specificity
+
+
+```r
+##
+#
+# Based on functions from above
+#
+
+qda.pred <- qda.pred.ftn(Y~X, df.train, df.test)
+
+qda.metrics <- prediction.metrics(df.test$Y, qda.pred)
+
+print.the.metrics(qda.metrics)
+```
+
+```
+##  OBS =  674 ...................number of observations
+##  ACC =  0.7626113 ..................Accuracy
+##  TPR =  0.6505682 ..................True Positive Rate
+##  TNR =  0.8850932 ..................True Negative Rate
+##  PPV =  0.8609023 ..................Positive Predictive Value (Precision)
+##  NPV =  0.6985294 ..................Negative Predictive Value
+##  FDR =  0.1390977 ..................False Discover Rate
+##  FPR =  0.1149068 ..................False Positive Rate
+##  TP  =  37 ..................True Positives
+##  TN  =  285 ..................True Negatives
+##  FP  =  285 ..................False Positives
+##  FN  =  123 ..................False Negatives
+##  P   =  352 ..................Positives
+##  N   =  322 ..................Negatives
+```
+
+## Prediction performance {carat}
+
+
+```r
+confusionMatrix(factor(qda.pred), factor(df.test$Y))
+```
+
+```
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 285 123
+##          1  37 229
+##                                           
+##                Accuracy : 0.7626          
+##                  95% CI : (0.7286, 0.7943)
+##     No Information Rate : 0.5223          
+##     P-Value [Acc > NIR] : < 2.2e-16       
+##                                           
+##                   Kappa : 0.5296          
+##                                           
+##  Mcnemar's Test P-Value : 1.819e-11       
+##                                           
+##             Sensitivity : 0.8851          
+##             Specificity : 0.6506          
+##          Pos Pred Value : 0.6985          
+##          Neg Pred Value : 0.8609          
+##              Prevalence : 0.4777          
+##          Detection Rate : 0.4228          
+##    Detection Prevalence : 0.6053          
+##       Balanced Accuracy : 0.7678          
+##                                           
+##        'Positive' Class : 0               
+## 
+```
+
+## ROC
+
+
+```r
+p1 <- predict(qda.fit, newdata = df.test, type = 'terms')
+r <- roc(df.test$Y, p1$posterior[,1], percent = TRUE)
+```
+
+```
+## Setting levels: control = 0, case = 1
+```
+
+```
+## Setting direction: controls > cases
+```
+
+```r
+plot.roc(r,
+         print.auc=TRUE, 
+         auc.polygon=TRUE, 
+         grid=c(0.1, 0.2),
+         grid.col=c("green", "red"), 
+         max.auc.polygon=TRUE,
+         auc.polygon.col="lightblue", 
+         print.thres=TRUE, 
+         main= 'ROC Curve')
+```
+
+![](logistic_reg_LDA_QDA_classification_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+
+```r
+AUC <- as.numeric(r[['auc']])
+```
 
 # References
 
