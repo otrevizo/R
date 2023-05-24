@@ -2,7 +2,7 @@
 title: "Univariate classification vignette"
 subtitle: "Logistic regression, LDA, QDA"
 author: "Oscar Trevizo"
-date: "2023-05-23"
+date: "2023-05-24"
 output:
   html_document:
     toc: yes
@@ -26,48 +26,14 @@ This vignette focuses on logistic regression based on the Generalized Linear Mod
 
 
 ```r
-library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
-library(tidyr)
+# library(dplyr)
+# library(tidyr)
 library(ggplot2)
-library(ggExtra)
+# library(ggExtra)
 
 library(stats)                # Stats contains glm for logistic regression
 library(MASS)                 # LDA and QDA
-```
-
-```
-## 
-## Attaching package: 'MASS'
-```
-
-```
-## The following object is masked from 'package:dplyr':
-## 
-##     select
-```
-
-```r
-library(caret)
+library(caret)                # Performance function
 ```
 
 ```
@@ -83,7 +49,7 @@ library(caret)
 ```
 
 ```r
-library(pROC)
+library(pROC)                 # ROC
 ```
 
 ```

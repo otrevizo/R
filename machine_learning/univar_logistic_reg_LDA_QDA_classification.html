@@ -11,7 +11,7 @@
 
 <meta name="author" content="Oscar Trevizo" />
 
-<meta name="date" content="2023-05-23" />
+<meta name="date" content="2023-05-24" />
 
 <title>Univariate classification vignette</title>
 
@@ -353,7 +353,7 @@ display: none;
 <h1 class="title toc-ignore">Univariate classification vignette</h1>
 <h3 class="subtitle">Logistic regression, LDA, QDA</h3>
 <h4 class="author">Oscar Trevizo</h4>
-<h4 class="date">2023-05-23</h4>
+<h4 class="date">2023-05-24</h4>
 
 </div>
 
@@ -422,31 +422,18 @@ examples overtime.</p>
 Linear Models from the “stats” library.</p>
 <div id="load-the-libraries" class="section level1">
 <h1>Load the libraries</h1>
-<pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(tidyr)
+<pre class="r"><code># library(dplyr)
+# library(tidyr)
 library(ggplot2)
-library(ggExtra)
+# library(ggExtra)
 
 library(stats)                # Stats contains glm for logistic regression
-library(MASS)                 # LDA and QDA</code></pre>
-<pre><code>## 
-## Attaching package: &#39;MASS&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     select</code></pre>
-<pre class="r"><code>library(caret)</code></pre>
+library(MASS)                 # LDA and QDA
+library(caret)                # Performance function</code></pre>
 <pre><code>## Warning: package &#39;caret&#39; was built under R version 4.2.3</code></pre>
 <pre><code>## Loading required package: lattice</code></pre>
 <pre><code>## Warning: package &#39;lattice&#39; was built under R version 4.2.3</code></pre>
-<pre class="r"><code>library(pROC)</code></pre>
+<pre class="r"><code>library(pROC)                 # ROC</code></pre>
 <pre><code>## Warning: package &#39;pROC&#39; was built under R version 4.2.3</code></pre>
 <pre><code>## Type &#39;citation(&quot;pROC&quot;)&#39; for a citation.</code></pre>
 <pre><code>## 

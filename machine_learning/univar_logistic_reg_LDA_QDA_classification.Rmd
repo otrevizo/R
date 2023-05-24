@@ -42,15 +42,15 @@ colors <- palette()
 # Load the libraries
 
 ```{r}
-library(dplyr)
-library(tidyr)
+# library(dplyr)
+# library(tidyr)
 library(ggplot2)
-library(ggExtra)
+# library(ggExtra)
 
 library(stats)                # Stats contains glm for logistic regression
 library(MASS)                 # LDA and QDA
-library(caret)
-library(pROC)
+library(caret)                # Performance function
+library(pROC)                 # ROC
 
 ```
 
